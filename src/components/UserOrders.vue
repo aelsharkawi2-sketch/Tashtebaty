@@ -431,7 +431,7 @@ const confirmPayment = async () => {
     await updateDoc(orderRef, { status: "upcoming" });
 
     // 🟦 ثانيًا: كمل العملية عادي بالربط مع السيرفر / باي موب
-    const response = await fetch("http://localhost:5000/pay", {
+    const response = await fetch("http://localhost:5001/pay", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
