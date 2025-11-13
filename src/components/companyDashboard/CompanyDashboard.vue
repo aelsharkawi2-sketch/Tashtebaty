@@ -20,15 +20,15 @@ import {
 import ordersCard from "./ordersCard.vue";
 import UpcomingCard from "./UpcomingCard.vue";
 import ServiceCard from "./ServiceCard.vue";
-import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import CreateServiceCard from "./CreateServiceCard.vue";
-import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
-import TechnicianWorkGallery from "./TechnicianWorkGallery.vue";
+import ManageTechnicianProfile from "./MannageCompanyProfile.vue";
+import TechnicianWorkGallery from "./CompanyWorkGallery.vue";
 // NEW: Import the AlertPopup component
 import AlertPopup from "../AlertPopup.vue"; // <-- Adjust path if needed
 // ✅ NEW: use the same Cloudinary uploader used elsewhere
 import { uploadImageOnly } from "@/composables/useImageUpload";
 import { useTechnicianNotifications } from "@/composables/useTechnicianNotifications"; // ✅ shared composable
+import CompanyDashNav from "@/layout/CompanyDashNav.vue";
 
 // ✅ Shared notifications (sidebar + top navbar)
 const { notifications, unreadCount, showNotifications, toggleNotifications } =
@@ -37,11 +37,11 @@ const { notifications, unreadCount, showNotifications, toggleNotifications } =
 const isDark = ref(false);
 
 // 🟦 Refs & states
-const technicianId = ref(null);
+const companyId = ref(null);
 const orders = ref([]);
 const services = ref([]);
 const unreadChatCount = ref(0);
-const mainTab = ref("orders");
+const mainTab = ref("projects");
 const orderTab = ref("requests");
 const reviews = ref([]); // ✅ جديد — لتخزين الريفيوهات
 
@@ -109,14 +109,14 @@ const toggleDarkMode = () => {
 onMounted(() => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      technicianId.value = user.uid;
+      companyId.value = user.uid;
       loadAvailability();
       listenForOrders();
       listenForServices();
       listenForUnreadChats();
       listenForReviews();
     } else {
-      technicianId.value = null;
+      companyId.value = null;
       orders.value = [];
       services.value = [];
       days.value.forEach((d) => (d.active = false));
@@ -126,9 +126,9 @@ onMounted(() => {
 });
 //Listen for reviews
 const listenForReviews = () => {
-  if (!technicianId.value) return;
- const reviewsRef = collection(db, "Ratings");
-  const q = query(reviewsRef, where("technicianId", "==", technicianId.value));
+  if (!companyId.value) return;
+  const reviewsRef = collection(db, "Ratings");
+  const q = query(reviewsRef, where("providerId", "==", companyId.value));
   onSnapshot(q, (snapshot) => {
     reviews.value = snapshot.docs.map((doc) => ({
       id: doc.id,
@@ -139,9 +139,9 @@ const listenForReviews = () => {
 
 // 🟩 Listen for unread chats
 const listenForUnreadChats = () => {
-  if (!technicianId.value) return;
+  if (!companyId.value) return;
   const q = query(
-    collection(db, "users", technicianId.value, "active_chats"),
+    collection(db, "users", companyId.value, "active_chats"),
     where("isRead", "==", false)
   );
 
@@ -152,10 +152,10 @@ const listenForUnreadChats = () => {
 
 // 🟩 Load & Save Availability
 const loadAvailability = async () => {
-  if (!technicianId.value) return;
+  if (!companyId.value) return;
   availabilityLoading.value = true;
   try {
-    const docRef = doc(db, "technicians", technicianId.value);
+    const docRef = doc(db, "companies", companyId.value);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
@@ -173,10 +173,10 @@ const loadAvailability = async () => {
 };
 
 const saveAvailability = async () => {
-  if (!technicianId.value) return;
+  if (!companyId.value) return;
   availabilitySaving.value = true;
   try {
-    const docRef = doc(db, "technicians", technicianId.value);
+    const docRef = doc(db, "companies", companyId.value);
     const anyActive = days.value.some((d) => d.active);
     await updateDoc(docRef, {
       availability: anyActive ? days.value : [],
@@ -191,9 +191,9 @@ const saveAvailability = async () => {
 
 // 🟩 Live Firestore listeners
 const listenForOrders = () => {
-  if (!technicianId.value) return;
+  if (!companyId.value) return;
   const ordersRef = collection(db, "orders");
-  const q = query(ordersRef, where("technicianId", "==", technicianId.value));
+  const q = query(ordersRef, where("companyId", "==", companyId.value));
   onSnapshot(q, (snapshot) => {
     const fetched = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
     orders.value = fetched.sort(
@@ -203,13 +203,8 @@ const listenForOrders = () => {
 };
 
 const listenForServices = () => {
-  if (!technicianId.value) return;
-  const servicesCol = collection(
-    db,
-    "technicians",
-    technicianId.value,
-    "services"
-  );
+  if (!companyId.value) return;
+  const servicesCol = collection(db, "companies", companyId.value, "services");
   onSnapshot(servicesCol, (snap) => {
     services.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   });
@@ -266,10 +261,8 @@ const updateOrderStatus = async (id, status, reason = "") => {
 const handleAcceptOrder = (id) => updateOrderStatus(id, "unconfirmed");
 const handleConfirmPayment = (id) => updateOrderStatus(id, "upcoming");
 const handleMarkCompletedOrder = (id) => updateOrderStatus(id, "completed");
-const handleDeclineOrder = ({ id, reason }) =>
-  updateOrderStatus(id, "declined", reason);
-const handleCancelOrder = ({ id, reason }) =>
-  updateOrderStatus(id, "cancelled", reason);
+const handleDeclineOrder = ({ id, reason }) => updateOrderStatus(id, "declined", reason);
+const handleCancelOrder = ({ id, reason }) => updateOrderStatus(id, "cancelled", reason);
 
 // 🟩 Services popups
 const openEditPopup = (service) => {
@@ -315,23 +308,15 @@ const deleteImage = () => {
 
 // 🟩 Firestore Service CRUD
 const saveChanges = async () => {
-  if (!technicianId.value) return;
+  if (!companyId.value) return;
 
   try {
-    const servicesCol = collection(
-      db,
-      "technicians",
-      technicianId.value,
-      "services"
-    );
+    const servicesCol = collection(db, "companies", companyId.value, "services");
 
     const payload = {
       descreption: serviceTitle.value,
       price: servicePrice.value,
-      image:
-        newImage.value ||
-        selectedService.value?.image ||
-        "/images/create service.png",
+      image: newImage.value || selectedService.value?.image || "/images/create service.png",
     };
 
     if (selectedService.value?.id) {
@@ -350,11 +335,9 @@ const saveChanges = async () => {
 };
 
 const handleDeleteService = async (serviceId) => {
-  if (!technicianId.value || !serviceId) return;
+  if (!companyId.value || !serviceId) return;
   try {
-    await deleteDoc(
-      doc(db, "technicians", technicianId.value, "services", serviceId)
-    );
+    await deleteDoc(doc(db, "companies", companyId.value, "services", serviceId));
     triggerAlert("Service deleted.");
   } catch (e) {
     console.error("delete service error:", e);
@@ -374,9 +357,7 @@ const formatLocation = (loc) => {
   if (!loc) return "—";
   if (typeof loc === "string") return loc;
   if (typeof loc === "object") {
-    const parts = [loc.street, loc.city, loc.country]
-      .filter(Boolean)
-      .join(", ");
+    const parts = [loc.street, loc.city, loc.country].filter(Boolean).join(", ");
     return parts || "Location not specified";
   }
   return "—";
@@ -386,33 +367,30 @@ const formatLocation = (loc) => {
 const filteredOrders = computed(() =>
   orders.value.filter((o) => {
     if (orderTab.value === "requests") return o.status === "new";
-    if (orderTab.value === "upcoming")
-      return o.status === "unconfirmed" || o.status === "upcoming";
+    if (orderTab.value === "upcoming") return o.status === "unconfirmed" || o.status === "upcoming";
     if (orderTab.value === "completed") return o.status === "completed";
     if (orderTab.value === "cancelled") return o.status === "cancelled";
     return false;
   })
 );
 
-const completedCount = computed(() =>
-  orders.value.filter((o) => o.status === "completed").length
-);
+const completedCount = computed(() => orders.value.filter((o) => o.status === "completed").length);
 
-// Calculate total (90% of order price)
+// 🔹 Calculate total and monthly earnings dynamically
 const totalEarnings = computed(() => {
   return orders.value
     .filter((o) => o.status === "completed")
-    .reduce((sum, o) => sum + (parseFloat(o.price) * 0.9 || 0), 0);
+    .reduce((sum, o) => sum + (parseFloat(o.price) || 0), 0);
 });
 
-// 🔹 Earnings grouped by month (for chart) (90% of order price)
+// 🔹 Earnings grouped by month (for chart)
 const monthlyEarnings = computed(() => {
   const monthly = Array(12).fill(0);
   orders.value.forEach((order) => {
     if (order.status === "completed" && order.date) {
       const dateObj = new Date(order.date);
       const monthIndex = dateObj.getMonth();
-      monthly[monthIndex] += (parseFloat(order.price) * 0.9) || 0;
+      monthly[monthIndex] += parseFloat(order.price) || 0;
     }
   });
   return monthly;
@@ -420,9 +398,7 @@ const monthlyEarnings = computed(() => {
 
 const earningsGrowth = computed(() => {
   const m = monthlyEarnings.value;
-  const activeMonths = m
-    .map((v, i) => ({ value: v, month: i }))
-    .filter((x) => x.value > 0);
+  const activeMonths = m.map((v, i) => ({ value: v, month: i })).filter((x) => x.value > 0);
 
   if (activeMonths.length === 0) return 0;
   if (activeMonths.length === 1) return "first";
@@ -511,14 +487,6 @@ watch(
 );
 </script>
 
-
-
-
-
-
-
-
-
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-[#0B1217] flex">
     <!-- 🟦 Fixed Top Mini Navbar -->
@@ -526,7 +494,11 @@ watch(
       class="fixed top-0 left-[20%] w-[80%] h-[60px] bg-white/70 dark:bg-[#0b1822]/80 backdrop-blur-md flex justify-end items-center px-8 shadow-md z-40"
     >
       <!-- 🌙 Dark Mode -->
-      <button @click="toggleDarkMode" class="mr-6 cursor-pointer" :title="isDark ? 'Light mode' : 'Dark mode'">
+      <button
+        @click="toggleDarkMode"
+        class="mr-6 cursor-pointer"
+        :title="isDark ? 'Light mode' : 'Dark mode'"
+      >
         <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
         <i v-else class="fa-solid fa-moon text-[#133B5D] dark:text-white text-xl"></i>
       </button>
@@ -548,7 +520,9 @@ watch(
             v-if="showNotifications"
             class="absolute right-0 mt-2 w-80 bg-white dark:bg-[#16222B] border border-gray-300 dark:border-gray-600 rounded-xl shadow-xl z-50"
           >
-            <div class="p-3 font-semibold border-b border-gray-300 dark:border-gray-600 text-[#133B5D] dark:text-white">
+            <div
+              class="p-3 font-semibold border-b border-gray-300 dark:border-gray-600 text-[#133B5D] dark:text-white"
+            >
               Notifications
             </div>
             <ul class="max-h-64 overflow-y-auto">
@@ -559,24 +533,50 @@ watch(
               >
                 <p>{{ n.message }}</p>
                 <p class="text-xs text-gray-400 mt-1">
-                  {{ n.timestamp?.toDate?.().toLocaleString?.() || 'Just now' }}
+                  {{ n.timestamp?.toDate?.().toLocaleString?.() || "Just now" }}
                 </p>
               </li>
-              <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">No notifications yet</li>
+              <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
+                No notifications yet
+              </li>
             </ul>
           </div>
         </transition>
       </div>
     </div>
-    <TechnicionDashNav :active="mainTab" @changeTab="handleTabChange" />
+    <CompanyDashNav :active="mainTab" @changeTab="handleTabChange" />
 
-
-    <div class="myOrders ml-[20%] w-[80%] px-8 py-6 relative pt-[80px]">
-      <template v-if="mainTab === 'orders'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4">Orders</h2>
-        <div
-          class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium"
-        >
+    <div class="myOrders ml-[20%] w-[80%] px-8 py-6 relative pt-20">
+      <template v-if="mainTab === 'dashboard'">
+        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4">Dashboard</h2>
+        <div class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium">
+          <button
+            @click="mainTab = 'dashboard'"
+            :class="[
+              'pb-2 border-b-2 transition-colors duration-200 cursor-pointer',
+              mainTab === 'dashboard'
+                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
+            ]"
+          >
+            Dashboard
+          </button>
+          <button
+            @click="mainTab = 'projects'"
+            :class="[
+              'pb-2 border-b-2 transition-colors duration-200',
+              mainTab === 'projects'
+                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
+            ]"
+          >
+            Projects
+          </button>
+        </div>
+      </template>
+      <template v-if="mainTab === 'projects'">
+        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4">Projects</h2>
+        <div class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium">
           <button
             @click="orderTab = 'requests'"
             :class="[
@@ -586,7 +586,7 @@ watch(
                 : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
             ]"
           >
-            New Requests
+            New Project
           </button>
           <button
             @click="orderTab = 'upcoming'"
@@ -625,14 +625,11 @@ watch(
                 : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
             ]"
           >
-            Cancelled Orders
+            Cancelled Project
           </button>
         </div>
-        <div
-          v-if="!filteredOrders.length"
-          class="text-center text-gray-500 dark:text-white mt-10"
-        >
-          No orders found in this category.
+        <div v-if="!filteredOrders.length" class="text-center text-gray-500 dark:text-white mt-10">
+          No Project found in this category.
         </div>
         <div class="ordersContainer flex flex-wrap -mx-2">
           <template v-if="orderTab === 'requests'">
@@ -666,15 +663,10 @@ watch(
                 Details
               </button>
 
-              <p
-                class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words"
-              >
-                <span class="font-bold">Order:</span>
+              <p class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words">
+                <span class="font-bold">Project:</span>
                 {{
-                  (order.descreption || "")
-                    .split(/\s+/)
-                    .slice(0, 15)
-                    .join(" ") +
+                  (order.descreption || "").split(/\s+/).slice(0, 15).join(" ") +
                   ((order.descreption || "").split(/\s+/).length > 15 ? "..." : "")
                 }}
               </p>
@@ -727,7 +719,8 @@ watch(
                     <textarea
                       disabled
                       class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] dark:bg-[#16222B] dark:text-white"
-                    >{{ order.descreption }}</textarea>
+                      >{{ order.descreption }}</textarea
+                    >
                     <p>
                       <span class="font-bold text-[#133B5D] dark:text-white">Price:</span>
                       {{ order.price }} EGP
@@ -757,7 +750,7 @@ watch(
             </div>
           </template>
 
-          <template v-else-if="orderTab === 'cancelled'"> 
+          <template v-else-if="orderTab === 'cancelled'">
             <div
               v-for="order in filteredOrders"
               :key="order.id"
@@ -805,8 +798,6 @@ watch(
               </p>
             </div>
           </template>
-
-
         </div>
       </template>
 
@@ -856,19 +847,15 @@ watch(
                 <img
                   v-else
                   :src="
-                    earningsGrowth > 0
-                      ? '../../images/increase.png'
-                      : '../../images/decrease.png'
+                    earningsGrowth > 0 ? '../../images/increase.png' : '../../images/decrease.png'
                   "
                   class="w-5 h-5 mr-1"
                   alt=""
                 />
 
-                <span v-if="earningsGrowth === 'first'">
-                  New earnings this month
-                </span>
+                <span v-if="earningsGrowth === 'first'"> New earnings this month </span>
                 <span v-else>
-                  {{ earningsGrowth > 0 ? '+' : '' }}{{ earningsGrowth }}% this month
+                  {{ earningsGrowth > 0 ? "+" : "" }}{{ earningsGrowth }}% this month
                 </span>
               </p>
             </div>
@@ -884,9 +871,7 @@ watch(
           </div>
 
           <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
-              Recent Orders
-            </h3>
+            <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">Recent Orders</h3>
             <div class="overflow-x-auto">
               <table class="min-w-full text-left border-collapse dark:text-gray-200">
                 <thead>
@@ -921,10 +906,7 @@ watch(
                               order.status === 'cancelled',
                           }"
                         >
-                          {{
-                            order.status.charAt(0).toUpperCase() +
-                            order.status.slice(1)
-                          }}
+                          {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
                         </span>
                         <span class="text-sm text-[#133B5D] dark:text-gray-100 font-medium">
                           {{ order.price }} EGP
@@ -934,10 +916,7 @@ watch(
                   </tr>
 
                   <tr v-if="!orders.length">
-                    <td
-                      colspan="4"
-                      class="text-center py-4 text-gray-500 dark:text-gray-300"
-                    >
+                    <td colspan="4" class="text-center py-4 text-gray-500 dark:text-gray-300">
                       No recent orders yet
                     </td>
                   </tr>
@@ -948,23 +927,19 @@ watch(
         </div>
       </template>
 
-
       <template v-else-if="mainTab === 'appointments'">
         <div
-          v-if="!technicianId"
+          v-if="!companyId"
           class="text-center text-gray-500 mt-10 p-6 bg-white dark:bg-[#16222B] rounded-lg shadow"
         >
           <p>Loading user information...</p>
         </div>
         <div v-else class="p-6 bg-white dark:bg-[#16222B] rounded-2xl shadow-md">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 dark:text-white ">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 dark:text-white">
             My Availability
           </h2>
 
-          <div
-            v-if="availabilityLoading"
-            class="text-center text-gray-500 py-10"
-          >
+          <div v-if="availabilityLoading" class="text-center text-gray-500 py-10">
             <div
               class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"
             ></div>
@@ -975,11 +950,9 @@ watch(
             <div
               v-for="day in days"
               :key="day.name"
-              class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-[#16222B]  hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors d "
+              class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-[#16222B] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors d"
             >
-              <div
-                class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4"
-              >
+              <div class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4">
                 <input
                   type="checkbox"
                   :id="`avail-${day.name}`"
@@ -1001,16 +974,16 @@ watch(
                   <div class="flex-1 w-full sm:w-auto">
                     <label
                       :for="`start-${day.name}`"
-                      class="block text-sm font-medium text-gray-600 mb-1 dark:text-white "
+                      class="block text-sm font-medium text-gray-600 mb-1 dark:text-white"
                       >Start Time</label
                     >
                     <select
                       :id="`start-${day.name}`"
                       v-model="day.start"
-                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white "
+                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white"
                     >
                       <option
-                       class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                        class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
                         v-for="time in timeOptions"
                         :key="`start-${time}`"
                         :value="time"
@@ -1032,7 +1005,7 @@ watch(
                       class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white"
                     >
                       <option
-                      class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                        class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
                         v-for="time in timeOptions"
                         :key="`end-${time}`"
                         :value="time"
@@ -1045,10 +1018,7 @@ watch(
               </transition>
 
               <transition name="fade-fast">
-                <div
-                  v-if="!day.active"
-                  class="flex-1 w-full md:w-3/4"
-                >
+                <div v-if="!day.active" class="flex-1 w-full md:w-3/4">
                   <p
                     class="text-gray-500 italic p-2 rounded bg-gray-200 text-center dark:bg-[#9ca3af]/30 dark:text-white"
                   >
@@ -1061,7 +1031,7 @@ watch(
             <div class="mt-8 flex justify-end">
               <button
                 @click="saveAvailability"
-                :disabled="availabilitySaving || !technicianId"
+                :disabled="availabilitySaving || !companyId"
                 class="bg-[#133B5D] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1b5383] transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <svg
@@ -1092,62 +1062,70 @@ watch(
         </div>
       </template>
       <template v-else-if="mainTab === 'reviews'">
-  <h2 class="text-2xl font-bold mb-4 text-[#133B5D] dark:text-white">Reviews</h2>
+        <h2 class="text-2xl font-bold mb-4 text-[#133B5D] dark:text-white">Reviews</h2>
 
-  <div v-if="reviews.length === 0" class="text-gray-500 dark:text-gray-300 dark:bg-[#16222B] p-4 rounded-lg">
-    No reviews yet.
-  </div>
-
-  <div
-    v-for="review in reviews"
-    :key="review.id"
-    class="bg-white rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-gray-700 dark:bg-[#16222B] dark:text-white"
-  >
-    <!-- Date at top right -->
-    <div class="flex justify-end mb-2">
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        {{ new Date(review.createdAt?.seconds * 1000).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }}
-      </p>
-    </div>
-
-    <!-- Body: icon left + content right -->
-    <div class="flex gap-4">
-      <!-- Icon -->
-      <img
-        :src="review.clientImageUrl || '/images/default-user.png'"
-        alt="client"
-        class="w-12 h-12 rounded-full object-cover border border-gray-300"
-      />
-
-      <!-- Content -->
-      <div class="flex-1">
-        <!-- Name -->
-        <p class="font-semibold text-lg text-[#133B5D] dark:text-white mb-2">{{ review.clientName }}</p>
-
-        <!-- Comment -->
-        <p class="text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
-          {{ review.comment }}
-        </p>
-
-        <!-- Stars -->
-        <div class="flex items-center">
-          <i
-            v-for="i in 5"
-            :key="i"
-            :class="[
-              'fa-star',
-              'text-lg',
-              i <= review.stars ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400',
-            ]"
-            class="fa"
-          ></i>
+        <div
+          v-if="reviews.length === 0"
+          class="text-gray-500 dark:text-gray-300 dark:bg-[#16222B] p-4 rounded-lg"
+        >
+          No reviews yet.
         </div>
-      </div>
-    </div>
-  </div>
-</template>
 
+        <div
+          v-for="review in reviews"
+          :key="review.id"
+          class="bg-white rounded-lg shadow-md p-6 mb-6 border border-gray-200 dark:border-gray-700 dark:bg-[#16222B] dark:text-white"
+        >
+          <!-- Date at top right -->
+          <div class="flex justify-end mb-2">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              {{
+                new Date(review.createdAt?.seconds * 1000).toLocaleDateString("en-US", {
+                  month: "long",
+                  year: "numeric",
+                })
+              }}
+            </p>
+          </div>
 
+          <!-- Body: icon left + content right -->
+          <div class="flex gap-4">
+            <!-- Icon -->
+            <img
+              :src="review.clientImageUrl || '/images/default-user.png'"
+              alt="client"
+              class="w-12 h-12 rounded-full object-cover border border-gray-300"
+            />
+
+            <!-- Content -->
+            <div class="flex-1">
+              <!-- Name -->
+              <p class="font-semibold text-lg text-[#133B5D] dark:text-white mb-2">
+                {{ review.clientName }}
+              </p>
+
+              <!-- Comment -->
+              <p class="text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
+                {{ review.comment }}
+              </p>
+
+              <!-- Stars -->
+              <div class="flex items-center">
+                <i
+                  v-for="i in 5"
+                  :key="i"
+                  :class="[
+                    'fa-star',
+                    'text-lg',
+                    i <= review.stars ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400',
+                  ]"
+                  class="fa"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
 
       <template v-else-if="mainTab === 'Techsettings'">
         <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">Settings</h2>
@@ -1156,14 +1134,13 @@ watch(
       </template>
 
       <template v-else-if="mainTab === 'chat'">
-        <h2 class="text-2xl font-semibold text-[#133B5D]  dark:text-white mb-6">Chat</h2>
+        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">Chat</h2>
         <ChatPage />
       </template>
 
       <template v-else-if="mainTab === 'workGallery'">
         <TechnicianWorkGallery />
       </template>
-
     </div>
 
     <div
@@ -1171,9 +1148,7 @@ watch(
       @click.self="closePopup"
       class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
     >
-      <div
-        class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative"
-      >
+      <div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative">
         <button
           @click="closePopup"
           class="absolute top-3 right-4 text-gray-400 hover:text-red-500 text-2xl"
@@ -1185,11 +1160,7 @@ watch(
         </h2>
         <div class="flex flex-col items-center mb-6">
           <img
-            :src="
-              newImage ||
-              selectedService?.image ||
-              '/images/create service.png'
-            "
+            :src="newImage || selectedService?.image || '/images/create service.png'"
             alt="Service"
             class="w-32 h-32 object-contain mb-3 border rounded-lg bg-gray-100"
           />
@@ -1215,8 +1186,7 @@ watch(
         </div>
         <div class="space-y-4">
           <div>
-            <label
-              class="block text-left font-semibold text-gray-700 mb-1 text-sm"
+            <label class="block text-left font-semibold text-gray-700 mb-1 text-sm"
               >Service Title</label
             >
             <input
@@ -1227,8 +1197,7 @@ watch(
             />
           </div>
           <div>
-            <label
-              class="block text-left font-semibold text-gray-700 mb-1 text-sm"
+            <label class="block text-left font-semibold text-gray-700 mb-1 text-sm"
               >Service Price</label
             >
             <input
@@ -1260,9 +1229,9 @@ watch(
   <div v-if="showPopup" @click.self="closePopup" class="fixed inset-0 ..."></div>
 
   <button
-    v-if="technicianId && mainTab !== 'chat'"
+    v-if="companyId && mainTab !== 'chat'"
     @click="handleTabChange('chat')"
-    class="cursor-pointer sticky bottom-5 left-360 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110 "
+    class="cursor-pointer sticky bottom-5 left-360 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110"
   >
     <i class="fa-solid fa-comments text-3xl"></i>
 
@@ -1275,13 +1244,8 @@ watch(
     </span>
   </button>
 
-  <AlertPopup
-    :show="showPopupMessage"
-    :message="popupMessageContent"
-    @close="closeAlert"
-  />
-
-  </template>
+  <AlertPopup :show="showPopupMessage" :message="popupMessageContent" @close="closeAlert" />
+</template>
 
 <style scoped>
 .fade-enter-active,
