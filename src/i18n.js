@@ -1,38 +1,36 @@
+// ===============================
+// src/i18n.js
+// ===============================
+
 import { createI18n } from "vue-i18n";
 
-let savedLang = localStorage.getItem("lang") || "ar";
+let savedLang = "en";
+try {
+  const stored = localStorage.getItem("lang");
+  if (stored) savedLang = stored;
+} catch (e) {}
 
-async function loadMessages() {
-  const messages = {};
-  const files = {
-    en: "/locals/en.json",
-    ar: "/locals/ar.json",
+// Load JSON file
+async function loadLocale(lang) {
+  const res = await fetch(`/locals/${lang}.json`);
+  if (!res.ok) {
+    console.error(`❌ Failed to load locale file: /locals/${lang}.json`);
+    return {};
+  }
+  return await res.json();
+}
+
+export async function createI18nInstance() {
+  const messages = {
+    en: await loadLocale("en"),
+    ar: await loadLocale("ar"),
   };
 
-  for (const [lang, url] of Object.entries(files)) {
-    const res = await fetch(url);
-    messages[lang] = await res.json();
-  }
-
-  return messages;
-}
-
-export const i18n = createI18n({
-  legacy: false,
-  globalInjection: true,
-  locale: savedLang,
-  fallbackLocale: "en",
-  messages: {},
-});
-
-export async function setupI18n() {
-  const messages = await loadMessages();
-
-  Object.entries(messages).forEach(([lang, msg]) => {
-    i18n.global.setLocaleMessage(lang, msg);
+  return createI18n({
+    legacy: false,
+    globalInjection: true,
+    locale: savedLang,
+    fallbackLocale: "en",
+    messages,
   });
-
-  i18n.global.locale.value = savedLang;
 }
-
-export default i18n;
