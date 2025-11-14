@@ -1,6 +1,13 @@
+// src/i18n.js
 import { createI18n } from "vue-i18n";
 
-let savedLang = localStorage.getItem("lang") || "ar";
+const DEFAULT_LANG = (() => {
+  try {
+    return localStorage.getItem("lang") || "ar";
+  } catch {
+    return "ar";
+  }
+})();
 
 async function loadMessages() {
   const files = {
@@ -12,18 +19,22 @@ async function loadMessages() {
 
   for (const [lang, url] of Object.entries(files)) {
     const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch ${url}: ${res.status}`);
+    }
     messages[lang] = await res.json();
   }
 
   return messages;
 }
 
+// named export (so main.js can import { i18n })
 export const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: savedLang,
+  locale: DEFAULT_LANG,
   fallbackLocale: "en",
-  messages: {},
+  messages: {}, // will populate after loading
 });
 
 export async function setupI18n() {
@@ -33,7 +44,15 @@ export async function setupI18n() {
     i18n.global.setLocaleMessage(lang, msg);
   }
 
-  i18n.global.locale.value = savedLang;
+  // Force the selected locale to be applied
+  i18n.global.locale.value = DEFAULT_LANG;
+
+  // Return some debug info for main.js to log
+  return {
+    locales: i18n.global.availableLocales,
+    current: i18n.global.locale.value,
+    currentMessages: i18n.global.getLocaleMessage(i18n.global.locale.value),
+  };
 }
 
 export default i18n;
