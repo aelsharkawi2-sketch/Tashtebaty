@@ -13,11 +13,15 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./assets/App.vue";
 import "./assets/main.css";
-import i18n from "./i18n";
+
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+
+// i18n imports
+import { i18n, setupI18n } from "./i18n";
+
 // ================================
-// 🔹 Components Imports (unchanged)
+// 🔹 Components Imports
 // ================================
 import HomePage from "./components/HomePage.vue";
 import OfferPage from "./components/OfferPage.vue";
@@ -46,9 +50,11 @@ import AddOffer from "./components/AdminDashboard/AddOffers.vue";
 
 // Technician Dashboard
 import TechncionDashboard from "./components/Technicion Dashboard/TechncionDashboard.vue";
+
 // Company Dashboard
 import CompanyDashboard from "./components/companyDashboard/CompanyDashboard.vue";
-// ✅ User Pages
+
+// User Pages
 import UserOrders from "./components/UserOrders.vue";
 import PaymentSuccess from "./components/PaymentSuccess.vue";
 import PaymentFailed from "./components/PaymentFailed.vue";
@@ -92,6 +98,7 @@ const routes = [
   { path: "/payment", name: "PaymentPage", component: PaymentPage, meta: { requiresAuth: true } },
   { path: "/payment-success", name: "PaymentSuccess", component: PaymentSuccess },
   { path: "/payment-failed", name: "PaymentFailed", component: PaymentFailed },
+
   {
     path: "/dashboard",
     component: DashboardLayout,
@@ -114,6 +121,7 @@ const routes = [
       },
     ],
   },
+
   { path: "/technician-dashboard", component: TechncionDashboard, meta: { requiresTechnician: true } },
   { path: "/company-dashboard", name: "CompanyDashboard", component: CompanyDashboard, meta: { requiresCompany: true } },
   { path: "/technician-chat", name: "TechnicianChat", component: ChatPage, meta: { requiresTechnician: true } },
@@ -128,85 +136,34 @@ const router = createRouter({
 });
 
 router.afterEach((to) => {
-  if (to.path.startsWith("/dashboard") || to.path.startsWith("/technician-dashboard") || to.path.startsWith("/company-dashboard")) {
+  if (
+    to.path.startsWith("/dashboard") ||
+    to.path.startsWith("/technician-dashboard") ||
+    to.path.startsWith("/company-dashboard")
+  ) {
     localStorage.setItem("lastDashboardRoute", to.fullPath);
   }
 });
 
-
-router.beforeEach(async (to, from, next) => {
-  const user = auth.currentUser;
-
-  const requiresAdmin = to.meta.requiresAdmin;
-  const requiresTechnician = to.meta.requiresTechnician;
-  const requiresAuth = to.meta.requiresAuth;
-  const requiresCompany = to.meta.requiresCompany;
-
-  if (!user && (requiresAdmin || requiresTechnician || requiresAuth|| requiresCompany)) {
-    return next("/login");
-  }
-
-  if (user) {
-
-    const collections = ["admin", "clients", "technicians", "companies"];
-    let found = false;
-
-    for (const collection of collections) {
-      const docRef = doc(db, collection, user.uid);
-      const userDoc = await getDoc(docRef);
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-         if (userData.status === "banned") {
-          await auth.signOut();
-         setTimeout(() => {
-    router.push('/ContactUs');
-  }, 4000); 
-  return;
-        }
-        found = true;
-        break;
-      }
-    }
-
-    if (!found) {
-     
-      await auth.signOut();
-      return next("/login");
-    }
-  }
-
-  if ((to.path === "/login" || to.path === "/signup") && user) {
-    const lastRoute = localStorage.getItem("lastDashboardRoute");
-    if (lastRoute?.startsWith("/dashboard")) return next(lastRoute);
-    if (lastRoute?.startsWith("/technician-dashboard")) return next(lastRoute);
-    if(lastRoute?.startsWith("/company-dashboard")) return next(lastRoute);
-    return next("/");
-  }
-
-  next();
-});
-
 // ================================
-// 🚀 Mount app BEFORE Firebase check
+// 🚀 Mount App AFTER i18n is READY
 // ================================
-import { setupI18n } from "./i18n"; // ✅ IMPORTANT
-
 const app = createApp(App);
 app.use(router);
 
 app.use(Toast, {
-  position: 'top-center',
+  position: "top-center",
   timeout: 5000,
   closeOnClick: true,
   pauseOnHover: true,
   draggable: true,
 });
 
-// ✅ Load translations BEFORE mounting the app
-setupI18n(app).then(() => {
+// 🔥 Load translations BEFORE installing i18n and mounting the app
+setupI18n().then(() => {
+  app.use(i18n); // ← REQUIRED!
   app.mount("#app");
 });
-
 
 // ================================
 // 🧭 Firebase user listener
@@ -214,7 +171,11 @@ setupI18n(app).then(() => {
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     localStorage.removeItem("lastDashboardRoute");
-    if (router.currentRoute.value.meta.requiresAdmin || router.currentRoute.value.meta.requiresTechnician|| router.currentRoute.value.meta.requiresCompany) {
+    if (
+      router.currentRoute.value.meta.requiresAdmin ||
+      router.currentRoute.value.meta.requiresTechnician ||
+      router.currentRoute.value.meta.requiresCompany
+    ) {
       router.push("/login");
     }
     return;
@@ -246,7 +207,7 @@ onAuthStateChanged(auth, async (user) => {
       if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
         router.replace(lastRoute);
       }
-    }else if (companyDoc.exists()) {
+    } else if (companyDoc.exists()) {
       if (!lastRoute || !lastRoute.startsWith("/company-dashboard")) {
         localStorage.setItem("lastDashboardRoute", "/company-dashboard");
         lastRoute = "/company-dashboard";
@@ -254,8 +215,7 @@ onAuthStateChanged(auth, async (user) => {
       if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
         router.replace(lastRoute);
       }
-    } 
-    else if (currentPath === "/login" || currentPath === "/signup") {
+    } else if (currentPath === "/login" || currentPath === "/signup") {
       router.replace("/");
     }
   } catch (error) {

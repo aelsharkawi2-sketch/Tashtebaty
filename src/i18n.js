@@ -1,10 +1,6 @@
 import { createI18n } from "vue-i18n";
 
-let savedLang = "ar";
-try {
-  const stored = localStorage.getItem("lang");
-  if (stored) savedLang = stored;
-} catch (e) {}
+let savedLang = localStorage.getItem("lang") || "ar";
 
 async function loadMessages() {
   const files = {
@@ -22,26 +18,22 @@ async function loadMessages() {
   return messages;
 }
 
-const i18n = createI18n({
+export const i18n = createI18n({
   legacy: false,
   globalInjection: true,
   locale: savedLang,
   fallbackLocale: "en",
-  messages: {}, // temporary empty
+  messages: {},
 });
 
-export async function setupI18n(app) {
+export async function setupI18n() {
   const messages = await loadMessages();
 
-  // Load translations into i18n
-  Object.entries(messages).forEach(([lang, msg]) => {
+  for (const [lang, msg] of Object.entries(messages)) {
     i18n.global.setLocaleMessage(lang, msg);
-  });
+  }
 
-  // Force Vue to update after messages load
   i18n.global.locale.value = savedLang;
-
-  app.use(i18n);
 }
 
 export default i18n;
