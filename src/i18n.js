@@ -1578,5 +1578,5 @@ export const i18n = createI18n({
   globalInjection: true,
   locale: localStorage.getItem("lang") || "ar",
   fallbackLocale: "en",
-  messages
+  messages:messages,
 });
