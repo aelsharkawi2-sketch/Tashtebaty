@@ -189,10 +189,12 @@ router.beforeEach(async (to, from, next) => {
 // ================================
 // 🚀 Mount app BEFORE Firebase check
 // ================================
+import { setupI18n } from "./i18n"; // ✅ IMPORTANT
+
 const app = createApp(App);
 app.use(router);
-app.use(i18n);
-   app.use(Toast, {
+
+app.use(Toast, {
   position: 'top-center',
   timeout: 5000,
   closeOnClick: true,
@@ -200,7 +202,11 @@ app.use(i18n);
   draggable: true,
 });
 
-app.mount("#app");
+// ✅ Load translations BEFORE mounting the app
+setupI18n(app).then(() => {
+  app.mount("#app");
+});
+
 
 // ================================
 // 🧭 Firebase user listener
