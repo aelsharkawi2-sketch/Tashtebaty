@@ -23,7 +23,6 @@ import { i18n, setupI18n } from "./i18n";
 
 // ================================
 // 🔹 Components Imports
-// (leave these as your project already has them)
 // ================================
 import HomePage from "./components/HomePage.vue";
 import OfferPage from "./components/OfferPage.vue";
@@ -81,7 +80,7 @@ export const auth = getAuth();
 export const db = getFirestore();
 
 // ================================
-// 🚦 Router Setup (unchanged)
+// 🚦 Router Setup
 // ================================
 const routes = [
   { path: "/", component: HomePage },
@@ -161,29 +160,19 @@ app.use(Toast, {
   draggable: true,
 });
 
-// Load translations, then install i18n, then mount
 setupI18n()
-  .then((debugInfo) => {
-    // Install the i18n plugin (must be done after messages are set)
+  .then(() => {
     app.use(i18n);
-
-    // Debug logs to confirm everything loaded correctly — check console in deployed site
-    console.info("i18n loaded. availableLocales:", debugInfo.locales);
-    console.info("i18n current locale:", debugInfo.current);
-    console.info("Sample message (home.services.title):", debugInfo.currentMessages?.home?.services?.title);
-
     app.mount("#app");
   })
   .catch((err) => {
-    // If loading translations fails, still install i18n (with empty messages) so app doesn't crash,
-    // and mount — but log error clearly so you can see what's wrong in console.
-    console.error("Failed to load i18n messages:", err);
+    console.error("❌ Failed to load i18n:", err);
     app.use(i18n);
     app.mount("#app");
   });
 
 // ================================
-// 🧭 Firebase user listener (unchanged)
+// 🧭 Firebase user listener
 // ================================
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -213,7 +202,7 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.setItem("lastDashboardRoute", "/technician-dashboard");
         lastRoute = "/technician-dashboard";
       }
-      if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
+      if (["/", "/login", "/signup"].includes(currentPath)) {
         router.replace(lastRoute);
       }
     } else if (adminDoc.exists()) {
@@ -221,7 +210,7 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.setItem("lastDashboardRoute", "/dashboard");
         lastRoute = "/dashboard";
       }
-      if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
+      if (["/", "/login", "/signup"].includes(currentPath)) {
         router.replace(lastRoute);
       }
     } else if (companyDoc.exists()) {
@@ -229,10 +218,10 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.setItem("lastDashboardRoute", "/company-dashboard");
         lastRoute = "/company-dashboard";
       }
-      if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
+      if (["/", "/login", "/signup"].includes(currentPath)) {
         router.replace(lastRoute);
       }
-    } else if (currentPath === "/login" || currentPath === "/signup") {
+    } else if (["/login", "/signup"].includes(currentPath)) {
       router.replace("/");
     }
   } catch (error) {
