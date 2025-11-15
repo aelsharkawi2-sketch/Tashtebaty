@@ -30,9 +30,10 @@
       "contact": "Contact",
       "services": "Services",
       "offers": "Offers",
-      "terms": "Terms of use",
-      "privacy": "Privacy policy",
-      "cookie": "Cookie policy"
+      "plumbing": "plumbing",
+      "electrical": "electrical",
+      "finishing": "finishing",
+      "carpentry": "carpentry"
     }
   },
   "forgotPassword": {

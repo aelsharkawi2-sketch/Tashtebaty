@@ -30,9 +30,10 @@
       "contact": "اتصل بنا",
       "services": "الخدمات",
       "offers": "العروض",
-      "terms": "شروط الاستخدام",
-      "privacy": "سياسة الخصوصية",
-      "cookie": "سياسة ملفات الارتباط"
+      "plumbing": "سباكة",
+      "electrical": "كهرباء",
+      "finishing": "تشطيبات",
+      "carpentry": "نجارة"
     }
   },
   "forgotPassword": {

@@ -1,3 +1,4 @@
+
 <template>
   <link
     rel="stylesheet"
@@ -10,9 +11,10 @@
       <p class="text-accent-color">Initializing Chat...</p>
     </div>
 
-<div v-else-if="user" class="bg-white rounded-2xl shadow-xl w-full h-[calc(100vh-10rem)] flex">
-      <div class="w-64 border-r border-gray-200 flex flex-col">
-        <div class="bg-accent-color dark:bg-dark-blue text-white p-4 rounded-tl-2xl">
+    <div v-else-if="user" class="bg-white rounded-2xl shadow-xl w-full h-[calc(100vh-10rem)] flex flex-col md:flex-row overflow-hidden">
+      
+      <div :class="[selectedUser ? 'hidden md:flex' : 'flex', 'flex-col h-full w-full md:w-64 md:border-r border-gray-200']">
+        <div class="bg-accent-color dark:bg-dark-blue text-white p-4 rounded-tl-2xl md:rounded-tr-none">
           <h3 class="font-semibold">Chats</h3>
         </div>
 
@@ -59,8 +61,17 @@
         </div>
       </div>
 
-      <div class="flex-1 flex flex-col">
-        <div class="bg-accent-color dark:bg-dark-blue text-white p-4 rounded-tr-2xl">
+      <div :class="[selectedUser ? 'flex' : 'hidden md:flex', 'flex-1 flex-col h-full']">
+        
+        <div class="bg-accent-color dark:bg-dark-blue text-white p-4 md:rounded-tr-2xl flex items-center gap-3">
+          <button
+            @click="goBack"
+            class="md:hidden p-1 rounded-full hover:bg-white/20"
+            title="Back to chats"
+          >
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          
           <h2 class="text-lg font-bold">
             {{ selectedUser ? (selectedUser.name || selectedUser.email.split('@')[0]) : 'Select a chat' }}
           </h2>
@@ -80,7 +91,7 @@
           </div>
         </div>
 
-        <div class="p-4 border-t border-gray-200 flex gap-2 bg-white rounded-br-2xl">
+        <div class="p-4 border-t border-gray-200 flex gap-2 bg-white md:rounded-br-2xl">
           <input
             v-model="newMessage"
             @keyup.enter="sendMessage"
@@ -118,7 +129,7 @@ import {
   setDoc,
   doc,
   getDoc,
-  deleteDoc, // <-- 3. IMPORTED deleteDoc
+  deleteDoc,
 } from "firebase/firestore"
 import { auth, db } from "@/firebase/firebase"
 
@@ -140,6 +151,19 @@ const currentUserDoc = ref(null)
 let unsubscribeMessages = null
 let unsubscribeAuth = null
 let unsubscribeUsers = null
+
+// --- NEW FUNCTION ---
+// Handles the mobile back button
+const goBack = () => {
+  selectedUser.value = null
+  currentRoomId.value = null
+  messages.value = []
+  // Stop listening to old messages to save resources
+  if (unsubscribeMessages) {
+    unsubscribeMessages()
+    unsubscribeMessages = null
+  }
+}
 
 const defaultAvatar = "https://via.placeholder.com/150/808080/FFFFFF?text=G"
 
@@ -300,12 +324,10 @@ const deleteChat = async (chatUserId) => {
     await deleteDoc(chatDocRef);
 
     // 4. Clear selection if the active chat was deleted
+    // This will automatically trigger the responsive change
     if (selectedUser.value?.id === chatUserId) {
-      selectedUser.value = null;
-      messages.value = [];
-      currentRoomId.value = null;
+      goBack() // Use our new function
     }
-    // The onSnapshot listener will automatically update the allUsers list
     
   } catch (err) {
     console.error("Error deleting chat:", err);
@@ -334,3 +356,4 @@ const stringToColor = (str) => {
   return "#" + (hash & 0x00FFFFFF).toString(16).padStart(6, "0");
 }
 </script>
+```

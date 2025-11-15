@@ -9,30 +9,31 @@
         alt="Tashtebaty Logo"
         class="w-70 mb-4"
       />
-      <p class="w-full sm:w-80 sm:ms-10 ms-0 max-w-full">
+      <p class="w-full sm:w-80 sm:ms-10  max-w-full rtl:text-right text-left ">
         {{ texts[lang].footer.description }}
       </p>
     </div>
 
     <!-- Quick Links -->
-    <div class="ms-0 sm:ms-10 text-left sm:text-left">
+    <div class="ms-0 sm:ms-10 text-left sm:text-left rtl:text-right">
       <h6 class="footer-title">{{ texts[lang].footer.quickLinks }}</h6>
       <ul class="space-y-2">
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.about }}</a></li>
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.contact }}</a></li>
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.services }}</a></li>
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.offers }}</a></li>
+        <li><router-link to="/" class="footer-link">{{ texts[lang].footer.links.home }}</router-link></li>
+        <li><router-link to="/about" class="footer-link">{{ texts[lang].footer.links.about }}</router-link></li>
+        <li><router-link to="/contactus" class="footer-link">{{ texts[lang].footer.links.contact }}</router-link></li>
+        <li><router-link to="/offers" class="footer-link">{{ texts[lang].footer.links.offers }}</router-link></li>
       </ul>
     </div>
 
     <!-- Legal -->
-    <div class="ms-0 sm:ms-10 text-left sm:text-left">
-      <h6 class="footer-title">{{ texts[lang].footer.legal }}</h6>
+    <div class="ms-0 sm:ms-10 text-left sm:text-left rtl:text-right">
+      <h6 class="footer-title">{{ texts[lang].footer.links.services }}</h6>
       <ul class="space-y-2">
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.terms }}</a></li>
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.privacy }}</a></li>
-        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.cookie }}</a></li>
-      </ul>
+        <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" class="footer-link">{{ texts[lang].footer.links.plumbing }}</router-link></li>
+        <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" class="footer-link">{{ texts[lang].footer.links.electrical }}</router-link></li>
+        <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" class="footer-link">{{ texts[lang].footer.links.finishing }}</router-link></li>
+        <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }" class="footer-link">{{ texts[lang].footer.links.carpentry }}</router-link></li>
+        </ul>
     </div>
 
     <!-- Contact & Social -->
