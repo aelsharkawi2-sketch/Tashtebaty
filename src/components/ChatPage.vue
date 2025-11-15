@@ -5,16 +5,16 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+  <div class="min-h-screen  dark:bg-[#0b1217] flex items-center justify-center p-4">
     <div v-if="initializing" class="text-center">
       <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
       <p class="text-accent-color">Initializing Chat...</p>
     </div>
 
-    <div v-else-if="user" class="bg-white rounded-2xl shadow-xl w-full h-[calc(100vh-10rem)] flex flex-col md:flex-row overflow-hidden">
+    <div v-else-if="user" class="bg-white dark:bg-[#16222b] rounded-2xl shadow-xl w-full h-[calc(100vh-10rem)] flex flex-col md:flex-row overflow-hidden">
       
-      <div :class="[selectedUser ? 'hidden md:flex' : 'flex', 'flex-col h-full w-full md:w-64 md:border-r border-gray-200']">
-        <div class="bg-accent-color dark:bg-dark-blue text-white p-4 rounded-tl-2xl md:rounded-tr-none">
+      <div :class="[selectedUser ? 'hidden md:flex' : 'flex', 'flex-col h-full w-full md:w-64 md:border-r  dark:border-0']">
+        <div class="bg-accent-color dark:bg-[#16222b] text-white p-4 rounded-tl-2xl md:rounded-tr-none">
           <h3 class="font-semibold">Chats</h3>
         </div>
 
@@ -26,15 +26,15 @@
           <div
             v-for="chatUser in allUsers"
             :key="chatUser.id"
-            class="relative group"
+            class="relative group b"
           >
             <button
               @click="selectChatUser(chatUser.id)"
-              :class="[ 'w-full p-4 text-left hover:bg-gray-100 transition-colors border-b border-gray-100', selectedUser?.id === chatUser.id ? 'bg-indigo-50' : '' ]"
+              :class="[ 'w-full p-4 text-left  hover:bg-gray-100 transition-colors ', selectedUser?.id === chatUser.id ? 'bg-indigo-50' : '' ]"
             >
               <div class="flex items-center gap-3">
                 <div 
-                  class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+                  class="w-10 h-10 rounded-full  flex items-center justify-center text-white font-semibold"
                   :style="{ backgroundColor: stringToColor(chatUser.email) }"
                 >
                   {{ (chatUser.name || chatUser.email).charAt(0).toUpperCase() }}
@@ -63,7 +63,7 @@
 
       <div :class="[selectedUser ? 'flex' : 'hidden md:flex', 'flex-1 flex-col h-full']">
         
-        <div class="bg-accent-color dark:bg-dark-blue text-white p-4 md:rounded-tr-2xl flex items-center gap-3">
+        <div class="bg-accent-color dark:bg-[#16222b] text-white p-4 md:rounded-tr-2xl flex items-center gap-3">
           <button
             @click="goBack"
             class="md:hidden p-1 rounded-full hover:bg-white/20"
@@ -77,13 +77,13 @@
           </h2>
         </div>
 
-        <div ref="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+        <div ref="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-dark-blue">
           <div v-if="!selectedUser" class="text-center text-gray-500 py-20">
             <p class="text-lg font-semibold">No chat selected</p>
           </div>
 
           <div v-else v-for="msg in messages" :key="msg.id" class="flex" :class="msg.userId === user.uid ? 'justify-end' : 'justify-start'">
-            <div :class="['max-w-xs px-4 py-3 rounded-2xl', msg.userId === user.uid ? 'bg-accent-color dark:bg-dark-blue text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none shadow-md']">
+            <div :class="['max-w-xs px-4 py-3 rounded-2xl', msg.userId === user.uid ? 'bg-accent-color dark:bg-(--surface) text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none shadow-md']">
               <p class="text-sm mb-1 font-semibold">{{ msg.userName }}</p>
               <p>{{ msg.text }}</p>
               <p class="text-xs mt-1 opacity-75">{{ formatTime(msg.timestamp) }}</p>
@@ -91,19 +91,19 @@
           </div>
         </div>
 
-        <div class="p-4 border-t border-gray-200 flex gap-2 bg-white md:rounded-br-2xl">
+        <div class="p-4  flex gap-2 bg-white dark:bg-[#16222b] md:rounded-br-2xl">
           <input
             v-model="newMessage"
             @keyup.enter="sendMessage"
             type="text"
             placeholder="Type a message..."
             :disabled="sending || !selectedUser"
-            class="flex-1 px-4 py-3 border dark:text-dark-blue border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+            class="flex-1 px-4 py-3  dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500"
           />
           <button
             @click="sendMessage"
             :disabled="!newMessage.trim() || sending || !selectedUser"
-            class="bg-accent-color dark:bg-dark-blue text-white px-6 py-3 rounded-lg hover:bg-accent-color transition-colors disabled:opacity-50"
+            class="bg-accent-color dark:bg-accent-color text-white px-6 py-3 rounded-lg hover:bg-accent-color transition-colors disabled:opacity-50"
           >
             Send
           </button>
