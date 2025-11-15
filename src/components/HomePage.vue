@@ -31,12 +31,6 @@
 
     <h2 class="text-center main-header">{{ texts[lang].home.services.title }}</h2>
     <div class="flex justify-center mb-10 p-5 items-center mx-auto">
-       <div>
-          <h1>{{ texts[lang].test }}</h1>
-
-          <button @click="switchLang('ar')">AR</button>
-          <button @click="switchLang('en')">EN</button>
-        </div>
       <div class="grid grid-cols-1 md:gap-20 gap-8 md:grid-cols-4">
         <div
           class="card cursor-pointer bg-(--surface) image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
