@@ -1,4 +1,5 @@
 <script>
+import { useTestLang } from "@/langTest/useTestLang";
   export default{
     name:"AboutUs",
     data(){
@@ -111,7 +112,13 @@
     clearInterval(this.interval);
     window.removeEventListener("scroll", this.handleScroll);
   },
-  
+  setup() {
+    // استدعاء اللغة
+    const { lang, texts, switchLang } = useTestLang();
+
+    // لازم نرجعهم عشان نستخدمهم في template أو داخل methods
+    return { lang, texts, switchLang };
+  },
   }
 </script>
 
@@ -129,14 +136,14 @@
     <div
       class="textContainer absolute flex flex-col w-11/12 md:w-2/3 lg:w-1/2 mx-auto text-center rtl:md:text-right"
     >
-      <h2 class="text-xl md:text-2xl font-semibold my-4">{{ $t('aboutUs.hero.title') }}</h2>
+      <h2 class="text-xl md:text-2xl font-semibold my-4">{{ texts[lang].aboutUs.hero.title }}</h2>
       <h1
         class="text-2xl md:text-4xl font-semibold my-4 leading-snug md:leading-tight"
       >
-        {{ $t('aboutUs.hero.subtitle') }}
+        {{ texts[lang].aboutUs.hero.subtitle }}
       </h1>
       <p class="text-sm md:text-base leading-relaxed">
-        {{ $t('aboutUs.hero.description') }}
+        {{ texts[lang].aboutUs.hero.description }}
       </p>
     </div>
   </div>
@@ -158,12 +165,12 @@
     </div>
 
     <div class="textContainer lg:w-xl gap-3 flex flex-col w-96 md:w-2xl justify-center">
-      <h2 class="text-xl font-semibold my-2 text-(--text-primary)">{{ $t('aboutUs.features.title') }}</h2>
-      <h1 class="text-4xl font-semibold text-accent-color">{{ $t('aboutUs.features.subtitle') }}</h1>
+      <h2 class="text-xl font-semibold my-2 text-(--text-primary)">{{ texts[lang].aboutUs.features.title }}</h2>
+      <h1 class="text-4xl font-semibold text-accent-color">{{ texts[lang].aboutUs.features.subtitle }}</h1>
       <ul>
-        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature1Title') }}</h2>{{ $t('aboutUs.features.feature1Text') }}</li>
-        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature2Title') }}</h2>{{ $t('aboutUs.features.feature2Text') }}</li>
-        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature3Title') }}</h2>{{ $t('aboutUs.features.feature3Text') }}</li>
+        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ texts[lang].aboutUs.features.feature1Title }}</h2>{{ texts[lang].aboutUs.features.feature1Text }}</li>
+        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ texts[lang].aboutUs.features.feature2Title }}</h2>{{ texts[lang].aboutUs.features.feature2Text }}</li>
+        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ texts[lang].aboutUs.features.feature3Title }}</h2>{{ texts[lang].aboutUs.features.feature3Text }}</li>
       </ul>
     </div>
     </div>
@@ -177,25 +184,25 @@
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.services }}+
         </h1>
-        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.services') }}</p>
+        <p class="text-lg md:text-2xl">{{ texts[lang].aboutUs.stats.services }}</p>
       </div>
       <div class="number flex flex-col">
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.users }}+
         </h1>
-        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.users') }}</p>
+        <p class="text-lg md:text-2xl">{{ texts[lang].aboutUs.stats.users }}</p>
       </div>
       <div class="number flex flex-col">
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.orders }}%
         </h1>
-        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.orders') }}</p>
+        <p class="text-lg md:text-2xl">{{ texts[lang].aboutUs.stats.orders }}</p>
       </div>
       <div class="number flex flex-col">
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.rating }}+
         </h1>
-        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.rating') }}</p>
+        <p class="text-lg md:text-2xl">{{ texts[lang].aboutUs.stats.rating }}</p>
       </div>
     </div>
   </div>
@@ -209,8 +216,8 @@
 
       <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
 
-        <h2 class="text-3xl font-semibold text-(--text-primary)">{{ $t('aboutUs.whyUs.title') }}</h2>
-        <p class="md:text-md text-md text-(--text-muted)">{{ $t('aboutUs.whyUs.description') }}</p>
+        <h2 class="text-3xl font-semibold text-(--text-primary)">{{ texts[lang].aboutUs.whyUs.title }}</h2>
+        <p class="md:text-md text-md text-(--text-muted)">{{ texts[lang].aboutUs.whyUs.description }}</p>
         
         <ul class="space-y-4">
         <li class="flex items-start gap-3 text-xl text-(--text-primary)">
@@ -221,7 +228,7 @@
             18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          {{ $t('aboutUs.whyUs.point1') }}
+          {{ texts[lang].aboutUs.whyUs.point1 }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-(--text-primary)">
@@ -234,7 +241,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          {{ $t('aboutUs.whyUs.point2') }}
+          {{ texts[lang].aboutUs.whyUs.point2 }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-(--text-primary)">
@@ -247,7 +254,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          {{ $t('aboutUs.whyUs.point3') }}
+          {{ texts[lang].aboutUs.whyUs.point3 }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-(--text-primary)">
@@ -260,7 +267,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          {{ $t('aboutUs.whyUs.point4') }}
+          {{ texts[lang].aboutUs.whyUs.point4 }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-(--text-primary)">
@@ -273,7 +280,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          {{ $t('aboutUs.whyUs.point5') }}
+          {{ texts[lang].aboutUs.whyUs.point5 }}
         </li>
       </ul>
       </div>
@@ -281,7 +288,7 @@
   </div>
 
   <div class="relative w-full">
-      <h2 class="font-semibold text-accent-color text-3xl text-center mt-5 lg:main-header">{{ $t('aboutUs.feedback.title') }}</h2>
+      <h2 class="font-semibold text-accent-color text-3xl text-center mt-5 lg:main-header">{{ texts[lang].aboutUs.feedback.title }}</h2>
 
       <div class="relative h-80 overflow-hidden rounded-lg">
         <div

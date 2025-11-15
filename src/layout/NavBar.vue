@@ -23,13 +23,13 @@
         >
           <li>
             <router-link to="/" active-class="font-semibold" class="hover:text-(--nav-hover)">
-              {{ $t('navbar.home') }}
+              {{ texts[lang].navbar.home }}
             </router-link>
           </li>
 
           <li class="relative group">
             <a class="cursor-pointer flex items-center space-x-1 rtl:space-x-reverse transition-colors duration-200 hover:text-(--nav-hover)">
-              {{ $t('navbar.services') }}
+              {{ texts[lang].navbar.services }}
             </a>
             <ul
               class="absolute hidden group-hover:block p-2 mt-10 rounded-xl border shadow-md"
@@ -39,16 +39,16 @@
                 color: 'var(--nav-text)',
               }"
             >
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" class="hover:text-(--nav-hover)">{{ $t('navbar.plumbing') }}</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" class="hover:text-(--nav-hover)">{{ $t('navbar.electrical') }}</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" class="hover:text-(--nav-hover)">{{ $t('navbar.finishing') }}</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }" class="hover:text-(--nav-hover)">{{ $t('navbar.carpentry') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.plumbing }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.electrical }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.finishing }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.carpentry }}</router-link></li>
             </ul>
           </li>
 
-          <li><router-link to="/offers" active-class="font-semibold" class="hover:text-(--nav-hover)">{{ $t('navbar.offers') }}</router-link></li>
-          <li><router-link to="/about" active-class="font-semibold" class="hover:text-(--nav-hover)">{{ $t('navbar.about') }}</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-semibold" class="hover:text-(--nav-hover)">{{ $t('navbar.contact') }}</router-link></li>
+          <li><router-link to="/offers" active-class="font-semibold" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.offers }}</router-link></li>
+          <li><router-link to="/about" active-class="font-semibold" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.about }}</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-semibold" class="hover:text-(--nav-hover)">{{ texts[lang].navbar.contact }}</router-link></li>
         </ul>
       </div>
 
@@ -74,7 +74,7 @@
                 :style="{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }"
               >
                 <div class="p-3 font-semibold border-b" :style="{ borderColor: 'var(--border)' }">
-                  {{ $t('navbar.notifications') }}
+                  {{ texts[lang].navbar.notifications }}
                 </div>
                 <ul class="max-h-64 overflow-y-auto">
                   <li
@@ -89,7 +89,7 @@
                     </p>
                   </li>
                   <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
-                    {{ $t('navbar.noNotifications') }}
+                    {{ texts[lang].navbar.noNotifications }}
                   </li>
                 </ul>
               </div>
@@ -115,7 +115,7 @@
 
         <!-- User Menu -->
         <div v-else-if="user" class="relative flex items-center">
-          <span class="font-medium text-black dark:text-white hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
+          <span class="font-medium text-black dark:text-white hidden sm:block me-5">{{ texts[lang].navbar.hello + ' ' + firstName }}</span>
 
           <div
             ref="profileButton"
@@ -148,30 +148,30 @@
                       v-if="user"
                       to="/my-orders"
                       class="relative cursor-pointer"  :style="{ color: 'var(--accent)' }"
-                      :title="$t('navbar.myOrdersTitle')"
+                      :title="texts[lang].navbar.myOrdersTitle"
                     >
                     <i class="fa-solid fa-cart-shopping " :style="{ color: 'var(--accent)' }"></i>
-                    {{ $t('navbar.myOrdersTitle') }}
+                    {{ texts[lang].navbar.myOrdersTitle }}
                     </router-link>
                   </div>
                   <div class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-(--secondary-blue) rounded-md transition" :style="{ borderColor: 'var(--border)' }">
                     <i class="fa-solid fa-user" :style="{ color: 'var(--accent)' }"></i>
                     <router-link to="/manageuserprofile" @click="closeMenu">
-                      <h4 class="cursor-pointer" :style="{ color: 'var(--accent)' }">{{ $t('navbar.manageProfile') }}</h4>
+                      <h4 class="cursor-pointer" :style="{ color: 'var(--accent)' }">{{ texts[lang].navbar.manageProfile }}</h4>
                     </router-link>
                   </div>
 
                   <div class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-(--secondary-blue) rounded-md transition"
                        @click="switchAccount" :style="{ borderColor: 'var(--border)' }">
                     <i class="fa-solid fa-repeat" :style="{ color: 'var(--accent)' }"></i>
-                    <h4 :style="{ color: 'var(--accent)' }">{{ $t('navbar.switchAccount') }}</h4>
+                    <h4 :style="{ color: 'var(--accent)' }">{{ texts[lang].navbar.switchAccount }}</h4>
                   </div>
 
                   <div @click="handleLogout"
                        class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-(--secondary-blue) rounded-md transition"
                        :style="{ borderColor: 'var(--border)' }">
                     <i class="fa-solid fa-arrow-right-from-bracket" :style="{ color: 'var(--accent)' }"></i>
-                    <h4 :style="{ color: 'var(--accent)' }">{{ $t('navbar.logout') }}</h4>
+                    <h4 :style="{ color: 'var(--accent)' }">{{ texts[lang].navbar.logout }}</h4>
                   </div>
                 </div>
               </div>
@@ -186,14 +186,14 @@
             class="btn btn-sm rounded-[10px] text-white border-none transition"
             :style="{ backgroundColor: 'var(--accent)' }"
           >
-            {{ $t('navbar.signup') }}
+            {{ texts[lang].navbar.signup }}
           </router-link>
           <router-link
             to="/login"
             class="btn btn-outline btn-sm rounded-[10px] border-2 transition"
             :style="{ color: 'var(--accent)', borderColor: 'var(--accent)' }"
           >
-            {{ $t('navbar.login') }}
+            {{ texts[lang].navbar.login }}
           </router-link>
         </div>
 
@@ -229,21 +229,21 @@
           </button>
 
           <ul class="menu text-lg font-medium space-y-3 mt-2">
-            <li><router-link to="/" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ $t('navbar.home') }}</router-link></li>
+            <li><router-link to="/" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ texts[lang].navbar.home }}</router-link></li>
             <li>
               <details>
-                <summary class="cursor-pointer hover:text-(--nav-hover) transition">{{ $t('navbar.services') }}</summary>
+                <summary class="cursor-pointer hover:text-(--nav-hover) transition">{{ texts[lang].navbar.services }}</summary>
                 <ul class="pl-4 mt-1 space-y-1 text-(--accent)">
-                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" @click="isSidebarOpen = false">{{ $t('navbar.plumbing') }}</router-link></li>
-                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" @click="isSidebarOpen = false">{{ $t('navbar.electrical') }}</router-link></li>
-                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" @click="isSidebarOpen = false">{{ $t('navbar.finishing') }}</router-link></li>
-                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }" @click="isSidebarOpen = false">{{ $t('navbar.carpentry') }}</router-link></li>
+                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" @click="isSidebarOpen = false">{{ texts[lang].navbar.plumbing }}</router-link></li>
+                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" @click="isSidebarOpen = false">{{ texts[lang].navbar.electrical }}</router-link></li>
+                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" @click="isSidebarOpen = false">{{ texts[lang].navbar.finishing }}</router-link></li>
+                  <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }" @click="isSidebarOpen = false">{{ texts[lang].navbar.carpentry }}</router-link></li>
                 </ul>
               </details>
             </li>
-            <li><router-link to="/offers" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ $t('navbar.offers') }}</router-link></li>
-            <li><router-link to="/about" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ $t('navbar.about') }}</router-link></li>
-            <li><router-link to="/ContactUs" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ $t('navbar.contact') }}</router-link></li>
+            <li><router-link to="/offers" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ texts[lang].navbar.offers }}</router-link></li>
+            <li><router-link to="/about" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ texts[lang].navbar.about }}</router-link></li>
+            <li><router-link to="/ContactUs" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ texts[lang].navbar.contact }}</router-link></li>
           </ul>
 
           <!-- Sidebar Login/Signup -->
@@ -254,7 +254,7 @@
               class="btn w-full rounded-[10px] text-white transition"
               :style="{ backgroundColor: 'var(--accent)' }"
             >
-              {{ $t('navbar.signup') }}
+              {{ texts[lang].navbar.signup }}
             </router-link>
             <router-link
               to="/login"
@@ -262,7 +262,7 @@
               class="btn btn-outline w-full rounded-[10px] transition"
               :style="{ color: 'var(--accent)', borderColor: 'var(--accent)' }"
             >
-              {{ $t('navbar.login') }}
+              {{ texts[lang].navbar.login }}
             </router-link>
           </div>
         </aside>
@@ -276,6 +276,7 @@
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import { useTestLang } from "@/langTest/useTestLang";
 
 export default {
   name: "NavBar",
@@ -358,10 +359,14 @@ export default {
     },
 
     toggleLanguage() {
-      const newLang = this.$i18n.locale === "en" ? "ar" : "en";
-      this.$i18n.locale = newLang;
+      const newLang = this.lang === "en" ? "ar" : "en";
+      this.switchLang(newLang);
+
+      // Update html attributes
       document.documentElement.lang = newLang;
       document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+
+      // Save user preference
       localStorage.setItem("lang", newLang);
     },
     toggleNotifications() {
@@ -487,7 +492,11 @@ export default {
   },
   onUnmounted() {
     window.removeEventListener('userUpdated');
-  }
+  },
+  setup() {
+  const { lang, texts, switchLang } = useTestLang();
+  return { lang, texts, switchLang };
+},
 };
 </script>
 

@@ -19,16 +19,11 @@
         alt="Worker"
         class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[80vh] object-contain z-10 rtl:left-auto rtl:right-[20px] md:rtl:right-[50px] lg:rtl:right-[70px]"
       />
-<div
-  class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2 rtl:text-center rtl:left-1/2 rtl:right-auto rtl:translate-x-[-30%] rtl:top-[25%] rtl-hero-title"
-  v-html="$t('loginPage.heroTitle')"
-></div>
 
-      <!-- <img
-        src="../images/white logo.png"
-        alt="Logo"
-        class="absolute z-50 lg:w-[350px] w-[200px] lg:top-15 top-7 rtl:invisible"
-      /> -->
+      <div
+        class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2 rtl:text-center rtl:left-1/2 rtl:right-auto rtl:translate-x-[-30%] rtl:top-[25%] rtl-hero-title"
+        v-html="texts[lang].loginPage.heroTitle"
+      ></div>
     </div>
 
     <!-- Right Section -->
@@ -36,25 +31,30 @@
       class="w-full lg:w-1/2 xl:w-1/3 flex flex-col justify-center lg:justify-start p-6 md:p-8 lg:p-8 lg:mt-10"
     >
       <div class="w-full max-w-md mx-auto">
-        <h2 class="text-2xl md:text-3xl font-semibold text-black dark:text-white mb-6 rtl:text-right" v-html="$t('loginPage.welcomeTitle')">
+        <h2 class="text-2xl md:text-3xl font-semibold text-black dark:text-white mb-6 rtl:text-right"
+            v-html="texts[lang].loginPage.welcomeTitle">
         </h2>
 
         <form @submit.prevent="handleSignIn" class="space-y-5">
+
+          <!-- Email -->
           <div class="mb-6 lg:mb-8 text-left rtl:text-right">
             <label for="email" class="block text-sm font-medium text-black dark:text-white mb-2">
-              {{ $t('loginPage.emailLabel') }}
+              {{ texts[lang].loginPage.emailLabel }}
             </label>
+
             <div class="relative">
               <div
                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none rtl:left-auto rtl:right-0 rtl:pl-0 rtl:pr-3"
               >
                 <i class="fas fa-envelope text-gray-400"></i>
               </div>
+
               <input
                 type="email"
                 id="email"
                 v-model="email"
-                :placeholder="$t('loginPage.emailPlaceholder')"
+                :placeholder="texts[lang].loginPage.emailPlaceholder"
                 required
                 class="block w-full pl-10 pr-3 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400
                       focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200
@@ -63,9 +63,10 @@
             </div>
           </div>
 
+          <!-- Password -->
           <div class="text-left rtl:text-right">
             <label for="password" class="block text-sm font-medium text-black dark:text-white mb-2">
-              {{ $t('loginPage.passwordLabel') }}
+              {{ texts[lang].loginPage.passwordLabel }}
             </label>
 
             <div class="relative">
@@ -79,7 +80,7 @@
                 :type="showPassword ? 'text' : 'password'"
                 id="password"
                 v-model="password"
-                :placeholder="$t('loginPage.passwordPlaceholder')"
+                :placeholder="texts[lang].loginPage.passwordPlaceholder"
                 required
                 class="block w-full pl-10 pr-12 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400
                        focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200
@@ -95,26 +96,30 @@
             </div>
           </div>
 
+          <!-- Forgot Password -->
           <div class="flex justify-end rtl:justify-start mb-4 lg:mb-6">
             <router-link to="/forgot-password" class="text-sm text-[#5984C6] hover:text-blue-500">
-              {{ $t('loginPage.forgotPassword') }}
+              {{ texts[lang].loginPage.forgotPassword }}
             </router-link>
           </div>
 
+          <!-- Sign In Button -->
           <button
             type="submit"
             class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-[#5984C6] hover:bg-[#4a73b1] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5984C6]"
           >
-            {{ $t('loginPage.signInButton') }}
+            {{ texts[lang].loginPage.signInButton }}
           </button>
         </form>
 
+        <!-- Divider -->
         <div class="flex items-center my-6">
           <hr class="flex-grow border-gray-300" />
-          <span class="mx-3 text-gray-400 text-sm">{{ $t('loginPage.divider') }}</span>
+          <span class="mx-3 text-gray-400 text-sm">{{ texts[lang].loginPage.divider }}</span>
           <hr class="flex-grow border-gray-300" />
         </div>
 
+        <!-- Google Login -->
         <button
           @click="handleGoogleSignIn"
           type="button"
@@ -125,15 +130,22 @@
             alt="Google"
             class="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2"
           />
-          <span class="text-gray-700 font-medium dark:text-white">{{ $t('loginPage.googleButton') }}</span>
+          <span class="text-gray-700 font-medium dark:text-white">
+            {{ texts[lang].loginPage.googleButton }}
+          </span>
         </button>
 
+        <!-- Signup Prompt -->
         <p class="mt-6 text-center text-gray-600 text-sm dark:text-white">
-          {{ $t('loginPage.promptSignup') }}
-          <router-link to="/signup" class="ml-1 rtl:ml-0 rtl:mr-1 font-medium text-[#5984C6] hover:text-blue-500">
-            {{ $t('loginPage.signupLink') }}
+          {{ texts[lang].loginPage.promptSignup }}
+          <router-link
+            to="/signup"
+            class="ml-1 rtl:ml-0 rtl:mr-1 font-medium text-[#5984C6] hover:text-blue-500"
+          >
+            {{ texts[lang].loginPage.signupLink }}
           </router-link>
         </p>
+
       </div>
     </div>
 
@@ -141,7 +153,10 @@
 </template>
 
 
+
 <script setup>
+import { useTestLang } from "@/langTest/useTestLang";
+const { lang, texts } = useTestLang();
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import {

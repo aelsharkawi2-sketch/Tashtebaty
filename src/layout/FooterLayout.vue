@@ -10,34 +10,34 @@
         class="w-70 mb-4"
       />
       <p class="w-full sm:w-80 sm:ms-10 ms-0 max-w-full">
-        {{ $t('footer.description') }}
+        {{ texts[lang].footer.description }}
       </p>
     </div>
 
     <!-- Quick Links -->
     <div class="ms-0 sm:ms-10 text-left sm:text-left">
-      <h6 class="footer-title">{{ $t('footer.quickLinks') }}</h6>
+      <h6 class="footer-title">{{ texts[lang].footer.quickLinks }}</h6>
       <ul class="space-y-2">
-        <li><a href="#" class="footer-link">{{ $t('footer.links.about') }}</a></li>
-        <li><a href="#" class="footer-link">{{ $t('footer.links.contact') }}</a></li>
-        <li><a href="#" class="footer-link">{{ $t('footer.links.services') }}</a></li>
-        <li><a href="#" class="footer-link">{{ $t('footer.links.offers') }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.about }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.contact }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.services }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.offers }}</a></li>
       </ul>
     </div>
 
     <!-- Legal -->
     <div class="ms-0 sm:ms-10 text-left sm:text-left">
-      <h6 class="footer-title">{{ $t('footer.legal') }}</h6>
+      <h6 class="footer-title">{{ texts[lang].footer.legal }}</h6>
       <ul class="space-y-2">
-        <li><a href="#" class="footer-link">{{ $t('footer.links.terms') }}</a></li>
-        <li><a href="#" class="footer-link">{{ $t('footer.links.privacy') }}</a></li>
-        <li><a href="#" class="footer-link">{{ $t('footer.links.cookie') }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.terms }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.privacy }}</a></li>
+        <li><a href="#" class="footer-link">{{ texts[lang].footer.links.cookie }}</a></li>
       </ul>
     </div>
 
     <!-- Contact & Social -->
     <div class="ms-0 sm:ms-10 rtl:text-right text-left sm:text-left">
-      <h6 class="footer-title">{{ $t('footer.contactUs') }}</h6>
+      <h6 class="footer-title">{{ texts[lang].footer.contactUs }}</h6>
       <div class="flex gap-x-4 mt-2 rtl:justify-start justify-start">
         <a href="#" class="footer-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -67,9 +67,18 @@
   </footer>
 </template>
 
+
 <script>
+import { useTestLang } from "@/langTest/useTestLang";
 export default {
   name: "FooterLayout",
+  setup() {
+    // استدعاء اللغة
+    const { lang, texts, switchLang } = useTestLang();
+
+    // لازم نرجعهم عشان نستخدمهم في template أو داخل methods
+    return { lang, texts, switchLang };
+  },
 };
 </script>
 

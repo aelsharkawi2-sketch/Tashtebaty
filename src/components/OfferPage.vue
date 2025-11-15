@@ -9,21 +9,21 @@
           <div
             class="absolute top-4 right-4 rtl:right-auto rtl:left-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
           >
-            {{ $t('offersPage.banner1.tag') }}
+            {{ texts[lang].offersPage.banner1.tag }}
           </div>
-          <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ $t('offersPage.banner1.title') }}</h1>
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ texts[lang].offersPage.banner1.title }}</h1>
           <div
             class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border-2 border-white/30 inline-block"
           >
             <div class="text-4xl md:text-5xl font-black mb-2">150 EGP</div>
-            <div class="text-2xl font-semibold">{{ $t('offersPage.banner1.subtitle') }}</div>
+            <div class="text-2xl font-semibold">{{ texts[lang].offersPage.banner1.subtitle }}</div>
           </div>
-          <p class="mt-6 text-lg">{{ $t('offersPage.banner1.text') }}</p>
+          <p class="mt-6 text-lg">{{ texts[lang].offersPage.banner1.text }}</p>
           <router-link
             to="/signup"
             class="mt-6 bg-white text-accent-color w-fit px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 rtl:space-x-reverse"
           >
-            <span>{{ $t('offersPage.banner1.button') }}</span>
+            <span>{{ texts[lang].offersPage.banner1.button }}</span>
           </router-link>
         </div>
 
@@ -32,9 +32,9 @@
         >
           <div class="flex flex-col items-center justify-between gap-6">
             <div class="flex-1 text-center">
-              <h2 class="text-2xl md:text-3xl font-bold mb-2">{{ $t('offersPage.banner2.title') }}</h2>
+              <h2 class="text-2xl md:text-3xl font-bold mb-2">{{ texts[lang].offersPage.banner2.title }}</h2>
               <p class="text-lg opacity-90">
-                {{ $t('offersPage.banner2.text') }}
+                {{ texts[lang].offersPage.banner2.text }}
               </p>
             </div>
 
@@ -42,13 +42,13 @@
               class="bg-white/10 backdrop-blur-md rounded-2xl px-8 py-6 border-2 border-white/30"
             >
               <div class="text-3xl md:text-4xl font-black">100 EGP</div>
-              <div class="text-sm font-semibold mt-1">{{ $t('offersPage.banner2.subtitle') }}</div>
+              <div class="text-sm font-semibold mt-1">{{ texts[lang].offersPage.banner2.subtitle }}</div>
             </div>
 
             <button
               class="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 rtl:space-x-reverse whitespace-nowrap"
             >
-              <span>{{ $t('offersPage.banner2.button') }}</span>
+              <span>{{ texts[lang].offersPage.banner2.button }}</span>
             </button>
           </div>
         </div>
@@ -59,13 +59,13 @@
       
       <div v-if="isLoading" class="text-center py-20">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-color mx-auto"></div>
-        <p class="mt-3 text-(--text-muted)">{{ $t('offersPage.grid.loading') }}</p>
+        <p class="mt-3 text-(--text-muted)">{{ texts[lang].offersPage.grid.loading }}</p>
       </div>
 
       <div v-else-if="offers.length === 0" class="text-center py-20">
         <i class="fa-solid fa-tags text-4xl text-(--text-muted) mb-4"></i>
-        <h3 class="text-xl font-semibold text-(--text-primary)">{{ $t('offersPage.grid.emptyTitle') }}</h3>
-        <p class="text-(--text-muted) mt-2">{{ $t('offersPage.grid.emptyText') }}</p>
+        <h3 class="text-xl font-semibold text-(--text-primary)">{{ texts[lang].offersPage.grid.emptyTitle }}</h3>
+        <p class="text-(--text-muted) mt-2">{{ texts[lang].offersPage.grid.emptyText }}</p>
       </div>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
@@ -89,7 +89,7 @@
           />
 
           <div class="card-body mt-2 items-center text-center p-3">
-            <h2 class="text-(--accent) font-bold text-xl">{{ offer.title }} {{ $t('offersPage.grid.suffix') }}</h2>
+            <h2 class="text-(--accent) font-bold text-xl">{{ offer.title }} {{ texts[lang].offersPage.grid.suffix }}</h2>
             <p class="text-(--text-muted) text-sm">{{ offer.description }}</p>
             <div class="mt-4">
               <button
@@ -104,8 +104,8 @@
               >
                 {{ 
                   isClaiming === offer.id 
-                    ? $t('offersPage.grid.buttonClaiming') 
-                    : (claimedOfferIds.has(offer.id) ? $t('offersPage.grid.buttonClaimed') : $t('offersPage.grid.buttonClaim')) 
+                    ? texts[lang].offersPage.grid.buttonClaiming 
+                    : (claimedOfferIds.has(offer.id) ? texts[lang].offersPage.grid.buttonClaimed : texts[lang].offersPage.grid.buttonClaim) 
                 }}
               </button>
             </div>
@@ -117,6 +117,7 @@
 </template>
 
 <script setup>
+import { useTestLang } from "@/langTest/useTestLang";
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { db } from '@/firebase/firebase'; // Adjust this path based on your project structure
@@ -124,6 +125,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 
 // --- Reactive State ---
+const { lang, texts } = useTestLang();
 const offers = ref([]);
 const isLoading = ref(true);
 const userId = ref(null);
