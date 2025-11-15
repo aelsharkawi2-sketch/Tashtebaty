@@ -125,8 +125,8 @@ const technicianLocation = computed(() => technician.value?.address.city || "Not
 const technicianRating = computed(() => Math.round(technician.value?.ratingAverage || 0));
 const technicianReviews = computed(() => technician.value?.ratingCount || 0);
 const technicianProfileImage = computed(
-  () => technician.value?.profileImage || new URL("../images/Ellipse 56.png", import.meta.url).href
-);
+  () => (typeof technician.value?.profileImage === 'string' && technician.value?.profileImage) ? technician.value?.profileImage : "/images/engineerligt.png"
+); 
 const technicianMemberSince = computed(() => {
   const ca = technician.value?.createdAt;
   if (!ca) return "N/A";
@@ -666,7 +666,7 @@ watch(selectedDayInfo, () => {
         <div class="imgContainer flex flex-col items-center justify-center">
           <img
             :src="technicianProfileImage"
-            class="mt-3 w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-white shadow-md"
+            class="mt-3 w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4  shadow-md bg-[#fcfafa] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff]"
             alt="Technician Profile Photo"
           />
           <div class="nameContainer flex items-center mt-4">

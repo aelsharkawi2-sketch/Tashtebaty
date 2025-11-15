@@ -59,15 +59,15 @@
     </div>
 
     <!-- Monthly Revenue Chart + Top Rated Providers -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10 max-w-6xl">
-      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10 max-w-6xl">
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md lg:col-span-2">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">{{ $t('adminDashboard.dashboard.monthlyRevenue') }}</h2>
         <div class="w-full h-120">
           <canvas id="revenueChart" class="w-full h-full"></canvas>
         </div>
       </div>
 
-      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md">
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md lg:col-span-1">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.dashboard.topRatedProviders') }}</h2>
           <span class="text-sm text-gray-500 dark:text-gray-300">{{ $t('adminDashboard.dashboard.top5') }}</span>

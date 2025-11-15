@@ -7,7 +7,7 @@
       @mouseleave="isHovered = false"
     >
       <img
-        :src="profile.profileImage"
+        :src="profileImageSrc"
         alt="Profile photo"
         class="absolute w-full h-[60%] object-contain"
       />
@@ -92,7 +92,7 @@
       class="flex flex-col sm:flex-row items-start dark:bg-(--surface) rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
     >
       <img
-        src="../images/lamp-big-3.jpg"
+        :src="profileImageSrc"
         alt="Profile photo"
         class="w-full sm:w-32 sm:h-32 md:w-50 md:h-50 object-cover rounded-xl"
       />
@@ -156,6 +156,11 @@ export default {
     viewType: {
       type: String,
       default: "grid",
+    },
+  },
+  computed: {
+    profileImageSrc() {
+      return (typeof this.profile.profileImage === 'string' && this.profile.profileImage) ? this.profile.profileImage : "/images/engineer2.png";
     },
   },
   methods: {
