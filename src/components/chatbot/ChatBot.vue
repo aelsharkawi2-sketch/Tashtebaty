@@ -4,10 +4,10 @@
     
         <!-- Chat Window -->
         <transition name="slide-up">
-            <div v-if="isOpen" class="w-80 sm:w-96 h-[500px] mb-4 bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200">
+            <div v-if="isOpen" class="w-80 sm:w-96 h-[500px] mb-4 bg-white rounded-lg shadow-2xl flex flex-col border dark:border-0 border-gray-200">
                 
                 <!-- Header -->
-                <div class="bg-accent-color text-white p-4 rounded-t-lg flex justify-between items-center flex-shrink-0">
+                <div class="bg-accent-color dark:bg-[#16222b] text-white p-4 rounded-t-lg flex justify-between items-center flex-shrink-0">
                     <h3 class="font-bold text-lg">Chat with AI</h3>
                     <button @click="toggleChat" class="p-1 rounded-full hover:bg-accent-color transition-colors">
                         <!-- Close Icon -->
@@ -18,7 +18,7 @@
                 </div>
 
                 <!-- Message Body -->
-                <div ref="chatBody" class="flex-1 p-4 overflow-y-auto bg-gray-50 chat-body">
+                <div ref="chatBody" class="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-dark-blue chat-body">
                     
                     <!-- Loop through messages -->
                     <div v-for="(msg, index) in messages" :key="index" class="mb-3 flex" :class="msg.role === 'user' ? 'justify-end' : 'justify-start'">
@@ -39,14 +39,14 @@
                     <!-- Loading Indicator -->
                     <div v-if="isLoading" class="mb-3">
                         <div class="inline-block bg-gray-200 text-gray-500 p-3 rounded-lg rounded-bl-none">
-                            Bot is typing...
+                            thinking...
                         </div>
                     </div>
 
                 </div>
 
                 <!-- Input Footer -->
-                <div class="p-3 border-t bg-white rounded-b-lg flex-shrink-0">
+                <div class="p-3 border-t bg-white dark:bg-dark-blue dark:border-t-0 rounded-b-lg flex-shrink-0">
                     
                     <!-- Staged Image Preview -->
                     <div v-if="selectedImageBase64" class="relative w-20 h-20 mb-2 p-1 border border-gray-200 rounded-md">
