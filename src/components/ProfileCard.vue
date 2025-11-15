@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- ======== GRID VIEW ======== -->
     <div
       v-if="viewType === 'grid'"
       class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 dark:bg-linear-to-b dark:from-[#1f2937] dark:to-[#111827] w-full h-100 rounded-2xl overflow-hidden shadow-xl transition-all duration-200"
@@ -16,7 +17,6 @@
         class="absolute bottom-0 left-0 w-full z-10 transition-all duration-500"
         viewBox="0 0 1440 350"
         preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           class="transition-all duration-500"
@@ -40,9 +40,7 @@
         <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2" />
       </div>
 
-      <div
-        class="absolute bottom-0 w-full px-4 py-3 z-20 flex flex-col items-center text-center text-(--text-primary)"
-      >
+      <div class="absolute bottom-0 w-full px-4 py-3 z-20 flex flex-col items-center text-center">
         <h2
           class="text-2xl font-bold transition-colors duration-500"
           :class="isHovered ? 'text-white' : 'text-(--text-primary)'"
@@ -50,13 +48,21 @@
           {{ profile.name }}
         </h2>
 
-        <div class="text-m pt-4" :class="isHovered ? 'text-(--text-primary)' : 'text-accent-color'">
-          {{ $t("profilesPage.ordersCompleted") }}
-          <span class="font-semibold">{{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}</span>
+        <div
+          class="text-m pt-4"
+          :class="isHovered ? 'text-(--text-primary)' : 'text-accent-color'"
+        >
+          {{ texts[lang].profilesPage.ordersCompleted }}
+          <span class="font-semibold">
+            {{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}
+          </span>
         </div>
 
         <div class="flex items-center gap-1">
-          <span class="text-sm font-bold" :class="isHovered ? 'text-white' : 'text-(--text-primary)'">
+          <span
+            class="text-sm font-bold"
+            :class="isHovered ? 'text-white' : 'text-(--text-primary)'"
+          >
             {{ profile.rating.toFixed() }}
           </span>
           <i class="fa-solid fa-star text-[#FF9529]"></i>
@@ -68,7 +74,7 @@
             :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
             @click="goToProfile"
           >
-            {{ $t('profilesPage.viewProfile') }}
+            {{ texts[lang].profilesPage.viewProfile }}
           </button>
 
           <div class="flex items-center gap-1 mt-2">
@@ -84,7 +90,7 @@
       </div>
     </div>
 
-    <!-- ========== LIST VIEW ========== -->
+    <!-- ======== LIST VIEW ======== -->
     <div
       v-else
       @mouseenter="isHovered = true"
@@ -96,13 +102,19 @@
         alt="Profile photo"
         class="w-full sm:w-32 sm:h-32 md:w-50 md:h-50 object-cover rounded-xl"
       />
+
       <div class="flex flex-col flex-1 mt-4 sm:mt-0 text-left rtl:text-right">
-        <div>
-          <h2 class="text-lg md:text-xl font-bold text-(--text-primary)">{{ profile.name }}</h2>
-          <div class="flex items-center gap-2 text-sm text-(--text-muted)">
-            <span class="font-medium text-accent-color">{{ profile.service }}</span>
-          </div>
+
+        <h2 class="text-lg md:text-xl font-bold text-(--text-primary)">
+          {{ profile.name }}
+        </h2>
+
+        <div class="flex items-center gap-2 text-sm text-(--text-muted)">
+          <span class="font-medium text-accent-color">
+            {{ profile.service }}
+          </span>
         </div>
+
         <p class="text-sm md:text-base text-(--text-muted) mt-2">
           {{ profile.bio }}
         </p>
@@ -110,7 +122,7 @@
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 md:mt-20 gap-4"
         >
-          <div class="flex items-center gap-6 text-sm text-(--text-primary) space-x-6 rtl:space-x-reverse">
+          <div class="flex items-center gap-6 text-sm text-(--text-primary)">
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-star text-[#FF9529]"></i>
               <span class="font-bold">{{ profile.rating.toFixed() }}</span>
@@ -120,16 +132,20 @@
               <i class="fa-solid fa-location-dot text-accent-color"></i>
               <span class="font-semibold">{{ profile.location }}</span>
             </div>
+
             <div class="flex items-center gap-1">
-              <img src="../images/mechanical (1).png" class="w-5 h-5" alt="">
-              <span class="font-semibold">{{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}</span>
+              <img src="../images/mechanical (1).png" class="w-5 h-5" alt="" />
+              <span class="font-semibold">
+                {{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}
+              </span>
             </div>
           </div>
+
           <button
-            class="w-full sm:w-auto mx-auto sm:mx-0 text-white text-sm font-medium px-5 py-2 rounded-lg transition duration-300 bg-accent-color hover:bg-dark-blue"
             @click="goToProfile"
+            class="w-full sm:w-auto mx-auto sm:mx-0 text-white text-sm font-medium px-5 py-2 rounded-lg transition duration-300 bg-accent-color hover:bg-dark-blue"
           >
-            {{ $t('profilesPage.viewProfile') }}
+            {{ texts[lang].profilesPage.viewProfile }}
           </button>
         </div>
       </div>
@@ -139,10 +155,25 @@
 
 <script>
 import { auth, db } from "@/firebase/firebase";
-import { doc, getDoc, collection, query, where, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
+
+import { useTestLang } from "@/langTest/useTestLang";
 
 export default {
   name: "ProfileCard",
+
+  setup() {
+    const { lang, texts } = useTestLang();
+    return { lang, texts };
+  },
+
   data() {
     return {
       isHovered: false,
@@ -151,6 +182,7 @@ export default {
       ordersUnsub: null,
     };
   },
+
   props: {
     profile: Object,
     viewType: {
@@ -158,47 +190,52 @@ export default {
       default: "grid",
     },
   },
+
   computed: {
     profileImageSrc() {
-      return (typeof this.profile.profileImage === 'string' && this.profile.profileImage) ? this.profile.profileImage : "/images/engineer2.png";
+      return typeof this.profile.profileImage === "string" && this.profile.profileImage
+        ? this.profile.profileImage
+        : "/images/engineer2.png";
     },
   },
+
   methods: {
     goToProfile() {
-      // 👇 تحديد الوجهة حسب نوع الحساب
       if (this.profile.type === "technician") {
         this.$router.push(`/profile/${this.profile.id}`);
       } else if (this.profile.type === "company") {
         this.$router.push(`/company-profile/${this.profile.id}`);
       } else {
-        // fallback لو مفيش نوع
         this.$router.push(`/profile/${this.profile.id}`);
       }
     },
   },
+
   async mounted() {
     try {
       const profileId = this.profile?.id;
+
       if (profileId) {
         const userRef = doc(db, "technicians", profileId);
         const userSnap = await getDoc(userRef);
+
         if (userSnap.exists()) {
           const data = userSnap.data();
+
           if (data.createdAt?.seconds) {
             const date = new Date(data.createdAt.seconds * 1000);
             this.memberSince = date.getFullYear();
-          } else if (data.createdAt) {
+          } else {
             const d = new Date(data.createdAt);
             this.memberSince = isNaN(d.getTime())
-              ? this.$t("profilesPage.fallbackNA")
+              ? this.texts[this.lang].profilesPage.fallbackNA
               : d.getFullYear();
-          } else {
-            this.memberSince = this.$t("profilesPage.fallbackNA");
           }
         }
       }
 
       const pid = profileId || auth.currentUser?.uid;
+
       if (pid) {
         const ordersRef = collection(db, "orders");
         const q = query(
@@ -206,6 +243,7 @@ export default {
           where("technicianId", "==", pid),
           where("status", "==", "completed")
         );
+
         this.ordersUnsub = onSnapshot(q, (snap) => {
           this.ordersCompleted = snap.size;
         });
@@ -214,6 +252,7 @@ export default {
       console.error("ProfileCard mounted error:", e);
     }
   },
+
   beforeUnmount() {
     if (this.ordersUnsub) this.ordersUnsub();
   },
