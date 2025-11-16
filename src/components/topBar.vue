@@ -266,19 +266,20 @@ export default {
       this.ratingFilter = "";
       this.emitFilters();
     },
-    handleDocumentClick(e) {
-      const wrapper = this.$refs.wrapper;
-      if (wrapper && !wrapper.contains(e.target)) {
-        this.showDropdown = false;
-      }
-    },
+   handleDocumentClick(e) {
+    // const wrapper = this.$refs.wrapper;
+    const dropdown = this.$refs.dropdown;
+    if (dropdown && !dropdown.contains(e.target)) {
+      this.showDropdown = false;
+    }
   },
-  mounted() {
-    document.addEventListener("click", this.handleDocumentClick);
   },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleDocumentClick);
-  },
+ mounted() {
+  document.addEventListener("click", this.handleDocumentClick);
+},
+beforeUnmount() {
+  document.removeEventListener("click", this.handleDocumentClick);
+},
 };
 </script>
 
