@@ -1,9 +1,11 @@
+
 <template>
   <div
-    class="min-h-screen w-[90%] mx-auto items-center  flex flex-col md:flex-row mt-15"
+    class="min-h-screen w-[90%] mx-auto items-center flex flex-col md:flex-row mt-15"
   >
-    <main class="flex-1 p-4 sm:p-6 md:p-8 space-y-8 overflow-x-hidden items-center">
-      <!-- Header -->
+    <main
+      class="flex-1 p-4 sm:p-6 md:p-8 space-y-8 overflow-x-hidden items-center"
+    >
       <div class="flex justify-end" v-if="!isEditing">
         <button
           @click="isEditing = true"
@@ -12,7 +14,6 @@
           <i class="fa-solid fa-pen-to-square"></i> Edit Profile
         </button>
       </div>
-      <!-- Profile Picture -->
       <div class="flex items-center justify-center flex-col">
         <div class="relative group">
           <img
@@ -39,14 +40,16 @@
           />
         </div>
 
-        <!-- User Info -->
         <div class="mt-5 text-center wrap-break-word">
-          <h2 class="text-xl sm:text-2xl font-bold text-(--text-primary)">{{ tempClient.name }}</h2>
-          <p class="text-(--text-muted) text-sm break-all">{{ tempClient.email }}</p>
+          <h2 class="text-xl sm:text-2xl font-bold text-(--text-primary)">
+            {{ tempClient.name }}
+          </h2>
+          <p class="text-(--text-muted) text-sm break-all">
+            {{ tempClient.email }}
+          </p>
         </div>
       </div>
       <section class="space-y-6">
-        <!-- Personal Info Box -->
         <div
           class="dark:bg-(--surface) backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-(--border)"
         >
@@ -55,7 +58,9 @@
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base">
+              <label
+                class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base"
+              >
                 <i class="fa-solid fa-user mr-2 text-accent-color"></i> Name
               </label>
               <input
@@ -67,8 +72,11 @@
             </div>
 
             <div>
-              <label class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-envelope mr-2 text-accent-color"></i> Email
+              <label
+                class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base"
+              >
+                <i class="fa-solid fa-envelope mr-2 text-accent-color"></i>
+                Email
               </label>
               <input
                 v-model="tempClient.email"
@@ -79,7 +87,9 @@
             </div>
 
             <div>
-              <label class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base">
+              <label
+                class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base"
+              >
                 <i class="fa-solid fa-phone mr-2 text-accent-color"></i> Phone
               </label>
               <input
@@ -91,7 +101,9 @@
             </div>
 
             <div>
-              <label class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base">
+              <label
+                class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base"
+              >
                 <i class="fa-solid fa-lock mr-2 text-accent-color"></i> Password
               </label>
               <div class="relative">
@@ -104,14 +116,19 @@
                 <i
                   @click="togglePassword"
                   class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-(--text-muted)"
-                  :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"
+                  :class="
+                    showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'
+                  "
                 ></i>
               </div>
             </div>
 
             <div>
-              <label class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-lock mr-2 text-accent-color"></i> Confirm Password
+              <label
+                class="block text-(--text-primary) font-medium mb-1 text-sm sm:text-base"
+              >
+                <i class="fa-solid fa-lock mr-2 text-accent-color"></i> Confirm
+                Password
               </label>
               <div class="relative">
                 <input
@@ -123,7 +140,11 @@
                 <i
                   @click="toggleConfirmPassword"
                   class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-(--text-muted)"
-                  :class="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"
+                  :class="
+                    showConfirmPassword
+                      ? 'fa-solid fa-eye-slash'
+                      : 'fa-solid fa-eye'
+                  "
                 ></i>
               </div>
             </div>
@@ -142,7 +163,9 @@
 
             <div class="space-y-4">
               <div>
-                <label class="block text-(--text-primary) font-medium mb-2 text-sm sm:text-base">
+                <label
+                  class="block text-(--text-primary) font-medium mb-2 text-sm sm:text-base"
+                >
                   <i class="fa-solid fa-road text-accent-color mr-2"></i>Street
                 </label>
                 <input
@@ -155,7 +178,9 @@
               </div>
 
               <div>
-                <label class="block text-(--text-primary) font-medium mb-2 text-sm sm:text-base">
+                <label
+                  class="block text-(--text-primary) font-medium mb-2 text-sm sm:text-base"
+                >
                   <i class="fa-solid fa-city text-accent-color mr-2"></i>City
                 </label>
                 <input
@@ -168,7 +193,9 @@
               </div>
 
               <div>
-                <label class="block text-(--text-primary) font-medium mb-2 text-sm sm:text-base">
+                <label
+                  class="block text-(--text-primary) font-medium mb-2 text-sm sm:text-base"
+                >
                   <i class="fa-solid fa-globe text-accent-color mr-2"></i>Country
                 </label>
                 <input
@@ -185,12 +212,16 @@
             class="flex-1 h-56 sm:h-64 w-full rounded-2xl overflow-hidden border border-(--border) shadow-md relative"
           >
             <div
-              v-if="isUpdatingMap"
+              vf-if="isUpdatingMap"
               class="absolute inset-0 bg-(--bg)/80 flex items-center justify-center z-10"
             >
               <div class="text-accent-color flex flex-col items-center">
-                <i class="fa-solid fa-map-location-dot animate-bounce text-xl sm:text-2xl"></i>
-                <span class="mt-2 text-xs sm:text-sm font-medium">Updating map location...</span>
+                <i
+                  class="fa-solid fa-map-location-dot animate-bounce text-xl sm:text-2xl"
+                ></i>
+                <span class="mt-2 text-xs sm:text-sm font-medium"
+                  >Updating map location...</span
+                >
               </div>
             </div>
             <iframe
@@ -204,8 +235,10 @@
           </div>
         </div>
 
-        <!-- Save / Cancel Buttons -->
-        <div v-if="isEditing" class="flex flex-col sm:flex-row justify-center gap-4 mt-6">
+        <div
+          v-if="isEditing"
+          class="flex flex-col sm:flex-row justify-center gap-4 mt-6"
+        >
           <button
             @click="saveChanges"
             class="bg-green-500 text-white font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-green-600 transition duration-300 shadow-lg text-sm sm:text-base"
@@ -222,6 +255,44 @@
         </div>
       </section>
     </main>
+
+   <div
+      v-if="showPopup"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-sm text-center"
+      >
+        <div
+          v-if="popupType === 'error'"
+          class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+        </div>
+
+        <div
+          v-if="popupType === 'success'"
+          class="w-12 h-12 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fa-solid fa-check text-2xl"></i>
+        </div>
+
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          {{ popupType === 'success' ? 'Changed' : 'Notice' }}
+        </h3>
+        
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
+          {{ popupMessage }}
+        </p>
+
+        <button
+          @click="closePopup"
+          class="bg-accent-color text-white font-semibold py-2 px-6 rounded-lg hover:bg-opacity-80 transition duration-300 shadow-md"
+        >
+          OK
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -244,17 +315,26 @@ let geocodeTimeout = null;
 // NEW: Refs for custom popup
 const showPopup = ref(false);
 const popupMessage = ref("");
+// NEW: Refs for custom popup
 
+const popupType = ref("error"); // <-- ADD THIS LINE
 // NEW: Functions to control the custom popup
-const triggerPopup = (message) => {
+const triggerPopup = (message, type = "error") => {
   popupMessage.value = message;
+  popupType.value = type;
   showPopup.value = true;
 };
 
-// closePopup removed (unused)
+// NEW: Added closePopup function back
+const closePopup = () => {
+  showPopup.value = false;
+  popupMessage.value = "";
+  popupType.value = "error";
+};
 
 const togglePassword = () => (showPassword.value = !showPassword.value);
-const toggleConfirmPassword = () => (showConfirmPassword.value = !showConfirmPassword.value);
+const toggleConfirmPassword = () =>
+  (showConfirmPassword.value = !showConfirmPassword.value);
 // removed unused router and order state
 
 // Removed unused view togglers and navigation helpers
@@ -376,7 +456,7 @@ const saveChanges = async () => {
       });
       window.dispatchEvent(event);
       // UPDATED
-      triggerPopup("Changes saved successfully!");
+      triggerPopup("Changes saved successfully!", "success");
     }
   } catch (error) {
     console.error("Error saving changes:", error);
@@ -444,7 +524,8 @@ watch(
   async () => {
     if (isEditing.value) {
       // debounce geocoding to avoid too many requests while typing
-      if (typeof geocodeTimeout !== "undefined" && geocodeTimeout) clearTimeout(geocodeTimeout);
+      if (typeof geocodeTimeout !== "undefined" && geocodeTimeout)
+        clearTimeout(geocodeTimeout);
       geocodeTimeout = setTimeout(async () => {
         await updateMapCoordinates();
       }, 700);
@@ -517,3 +598,4 @@ const mapSrc = computed(() => {
   background-color: var(--accent);
 }
 </style>
+```

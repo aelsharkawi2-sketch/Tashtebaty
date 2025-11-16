@@ -17,6 +17,10 @@
     "login": "Login",
     "myOrders": "My Orders",
     "notifications": "Notifications",
+    "justnow": "Just now",
+    "minutesAgo": "{count} minutes ago",
+    "hoursAgo": "{count} hours ago",
+    "daysAgo": "{count} days ago",
     "noNotifications": "No notifications yet",
     "myOrdersTitle": "My Orders"
   },
@@ -411,7 +415,20 @@
       "imageSize": "Image size should be less than 5MB"
     }
   },
-    
+    "notifications": {
+      "orderConfirmed": "✅ The order '{serviceTitle}' has been confirmed.",
+      "orderCancelled": "⚠️ The client has cancelled the order '{description}'. Status changed to cancelled.",
+      "orderCancelledNoDesc": "⚠️ The client has cancelled the order. Status changed to cancelled.",
+      
+      "techAcceptedOrder": "✅ The technician has accepted your order '{serviceTitle}'. Please complete the payment to confirm.",
+      "paymentReceived": "✅ Payment received! Your order is confirmed.",
+      "orderCompleted": "🎉 Your order has been successfully completed! Thank you for using Tashtebaty.",
+      "techDeclinedWithReason": "❌ The technician has declined your order. Reason: \"{reason}\"",
+      "techDeclinedNoReason": "❌ The technician has declined your order.",
+      "techCancelledWithReason": "⚠️ The technician has cancelled your order. Reason: \"{reason}\"",
+      "techCancelledNoReason": "⚠️ The technician has cancelled your order.",
+      "statusUpdate": "Your order status has been updated to {status}."
+    },
   "adminDashboard": {
     "sidebar": {
       "title": "Tashtibaty Admin",

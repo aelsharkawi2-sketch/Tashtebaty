@@ -8,14 +8,12 @@
         borderColor: 'var(--nav-border)',
       }"
     >
-      <!-- START -->
       <div class="navbar-start items-center gap-2">
         <router-link to="/" class="flex items-center space-x-2 rtl:space-x-reverse">
           <img :src="logoSrc" alt="Logo" class="w-[180px] mt-3" />
         </router-link>
       </div>
 
-      <!-- CENTER (desktop only) -->
       <div class="navbar-center hidden lg:flex">
         <ul
           class="menu menu-horizontal px-1 text-lg space-x-4 rtl:space-x-reverse transition-colors"
@@ -52,12 +50,14 @@
         </ul>
       </div>
 
-      <!-- END -->
       <div class="navbar-end gap-x-3 min-w-[250px] flex justify-end items-center">
         <div class="flex items-center me-4 gap-x-3">
-          <!-- Notifications -->
           <div class="relative" v-if="user">
-            <button @click="toggleNotifications" class="relative cursor-pointer">
+            <button
+              @click="toggleNotifications"
+              class="relative cursor-pointer"
+              ref="notificationButton"
+            >
               <i class="fa-solid fa-bell text-xl" :style="{ color: 'var(--accent)' }"></i>
               <span
                 v-if="unreadCount > 0"
@@ -70,23 +70,25 @@
             <transition name="fade-slide">
               <div
                 v-if="showNotifications"
-                class="absolute right-0 mt-2 w-80 rounded-lg shadow-xl border z-50"
+                class="absolute right-0 rtl:-right-20 top-12 mt-2 w-80 rounded-lg shadow-xl border z-50"
                 :style="{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }"
+                ref="notificationDropdown"
               >
                 <div class="p-3 font-semibold border-b" :style="{ borderColor: 'var(--border)' }">
                   {{ texts[lang].navbar.notifications }}
                 </div>
                 <ul class="max-h-64 overflow-y-auto">
-                  <li
-                    v-for="n in notifications"
-                    :key="n.id"
-                    class="p-3 border-b last:border-none text-sm hover:bg-(--secondary-blue) transition"
-                    :style="{ borderColor: 'var(--border)' }"
-                  >
-                    <p class="text-muted">{{ n.message }}</p>
-                    <p class="text-xs text-gray-400 mt-1">
-                      {{ n.timestamp?.toDate?.().toLocaleString?.() || 'Just now' }}
-                    </p>
+                <li
+                  v-for="n in notifications"
+                  :key="n.id"
+                  class="p-3 border-b last:border-none text-sm hover:bg-(--secondary-blue) transition"
+                  :style="{ borderColor: 'var(--border)' }"
+                >
+                  <p class="text-muted">{{ getNotificationMessage(n) }}</p> 
+                  
+                  <p class="text-xs text-gray-400 mt-1">
+                    {{ n.timestamp?.toDate?.().toLocaleString?.(lang) || texts[lang].navbar.justNow }}
+                  </p>
                   </li>
                   <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
                     {{ texts[lang].navbar.noNotifications }}
@@ -100,20 +102,17 @@
             <i class="fa-solid fa-globe "></i>
           </button>
 
-          <!-- Dark Mode -->
           <button @click="toggleDarkMode" class="cursor-pointer" :title="isDark ? 'Light mode' : 'Dark mode'">
             <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
             <i v-else class="fa-solid fa-moon text-xl" :style="{ color: 'var(--accent)' }"></i>
           </button>
         </div>
 
-        <!-- Loading User -->
         <div v-if="loadingUser" class="flex items-center gap-x-3 animate-pulse">
           <div class="h-5 w-20 bg-gray-200 rounded"></div>
           <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
         </div>
 
-        <!-- User Menu -->
         <div v-else-if="user" class="relative flex items-center">
           <span class="font-medium text-black dark:text-white hidden sm:block me-5">{{ texts[lang].navbar.hello.replace('{name}', firstName) }}</span>
 
@@ -179,7 +178,6 @@
           </transition>
         </div>
 
-        <!-- Login/Signup -->
         <div v-else class="hidden lg:flex items-center gap-x-3">
           <router-link
             to="/signup"
@@ -197,7 +195,6 @@
           </router-link>
         </div>
 
-        <!-- Burger -->
         <button
           class="lg:hidden p-2 rounded-xl border hover:bg-(--secondary-blue) transition ml-2"
           @click="isSidebarOpen = true"
@@ -207,14 +204,12 @@
         </button>
       </div>
 
-      <!-- Overlay -->
       <div
         v-if="isSidebarOpen"
         class="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
         @click="isSidebarOpen = false"
       ></div>
 
-      <!-- Sidebar -->
       <transition name="slide-fade">
         <aside
           v-if="isSidebarOpen"
@@ -246,7 +241,6 @@
             <li><router-link to="/ContactUs" @click="isSidebarOpen = false" class="hover:text-(--nav-hover) transition">{{ texts[lang].navbar.contact }}</router-link></li>
           </ul>
 
-          <!-- Sidebar Login/Signup -->
           <div v-if="!user" class="flex flex-col items-center gap-3 mt-6">
             <router-link
               to="/signup"
@@ -379,10 +373,44 @@ export default {
       if (!this.user || !this.notifications.length) return;
       for (const n of this.notifications) {
         if (!n.isRead) {
+          // =============================================
+          //  ⬇️ *** ملحوظة: المسار ده ممكن يكون غلط *** ⬇️
+          //  (users) غالباً المفروض يكون (clients)
+          // =============================================
           const ref = doc(db, "users", this.user.uid, "notifications", n.id);
           await updateDoc(ref, { isRead: true });
         }
       }
+    },
+
+    // =============================================
+    //  ⬇️ *** NEW METHOD ADDED *** ⬇️
+    // =============================================
+    getNotificationMessage(notification) {
+      // Check if the notification uses the new { messageKey, messageParams } format
+      if (notification.messageKey) {
+        const lang = this.lang || 'en';
+        
+        // Ensure the texts and language structure exists
+        if (!this.texts[lang] || !this.texts[lang].notifications) {
+          console.warn("Notification translations not found for lang:", lang);
+          return notification.message; // Fallback to old message
+        }
+
+        let template = this.texts[lang].notifications[notification.messageKey];
+        
+        if (template) {
+          const params = notification.messageParams || {};
+          // Replace all placeholders like {serviceTitle} with their value
+          Object.keys(params).forEach(key => {
+            template = template.replace(`{${key}}`, params[key]);
+          });
+          return template;
+        }
+      }
+      
+      // Fallback for old notifications that just have a `message` string
+      return notification.message;
     },
   },
 
@@ -448,7 +476,11 @@ export default {
             break;
           }
         }
-
+        
+        // =============================================
+        //  ⬇️ *** ملحوظة: المسار ده ممكن يكون غلط *** ⬇️
+        //  (users) غالباً المفروض يكون (clients)
+        // =============================================
         const notifRef = collection(db, "users", currentUser.uid, "notifications");
         const q = query(notifRef, orderBy("timestamp", "desc"));
         onSnapshot(q, (snap) => {
@@ -462,18 +494,41 @@ export default {
       this.loadingUser = false;
     });
 
-    // close dropdowns if click outside
+    // =========================================================
+    //  UPDATED "click outside" listener (handles both dropdowns)
+    // =========================================================
     document.addEventListener("click", (e) => {
+      // Profile dropdown refs
       const profileButton = this.$refs.profileButton;
-      const dropdown = this.$refs.dropdown;
+      const profileDropdown = this.$refs.dropdown;
+
+      // Notification dropdown refs
+      const notificationButton = this.$refs.notificationButton;
+      const notificationDropdown = this.$refs.notificationDropdown;
+
+      // Check for Profile dropdown
       if (
         this.isUserMenuOpen &&
-        dropdown &&
-        !dropdown.contains(e.target) &&
+        profileDropdown &&
+        !profileDropdown.contains(e.target) &&
         profileButton &&
         !profileButton.contains(e.target)
       ) {
         this.isUserMenuOpen = false;
+      }
+
+      // Check for Notification dropdown
+      if (
+        this.showNotifications &&
+        notificationDropdown &&
+        // =============================================
+        //  ⬇️ *** TYPO FIX *** ⬇️
+        // =============================================
+        !notificationDropdown.contains(e.target) && // (كانت مكتوبة e.targt)
+        notificationButton &&
+        !notificationButton.contains(e.target)
+      ) {
+        this.showNotifications = false;
       }
     });
   },
