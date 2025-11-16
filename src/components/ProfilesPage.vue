@@ -53,7 +53,7 @@ import TopBar from "./topBar.vue";
 import { db } from "@/firebase/firebase";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import defaultAvatar from "@/images/defaultAvatar.jpeg";
+
 
 
 export default {
@@ -227,6 +227,11 @@ export default {
         for (const docSnap of snapshot.docs) {
           const data = docSnap.data();
 
+          // Skip if status is not active
+          if (data.status !== "active") {
+            continue;
+          }
+
           // Fetch completed orders count
           let completedOrders = 0;
           try {
@@ -249,7 +254,7 @@ export default {
             location: data.address?.city || this.$t("profilesPage.fallbackLocation"),
             rating: data.ratingAverage || data.rating || 0,
             bio: data.description || this.$t("profilesPage.fallbackBio"),
-            profileImage: data.profileImage || defaultAvatar,
+            profileImage: data.profileImage || "/images/engineer2.png",
             completedOrders: completedOrders,
             type: "technician", // add type to distinguish
           });
@@ -264,6 +269,12 @@ export default {
 
           for (const docSnap of companiesSnap.docs) {
             const data = docSnap.data();
+
+            // Skip if status is not active
+            if (data.status !== "active") {
+              continue;
+            }
+
             fetchedProfiles.push({
               id: docSnap.id,
               name: data.companyName, // ✅ fix name field
@@ -271,7 +282,7 @@ export default {
               location: data.city || data.address?.city || this.$t("profilesPage.fallbackLocation"),
               rating: data.ratingAverage || data.rating || 0,
               bio: data.description || this.$t("profilesPage.fallbackBio"),
-              profileImage: data.logoImage || data.logo || defaultAvatar,
+              profileImage: data.logoImage || data.logo || "/images/engineer2.png",
               completedOrders: data.completedProjects || 0,
               type: "company",
             });

@@ -6,7 +6,8 @@
       class="flex-shrink-0 w-64 bg-[#344767] text-white flex flex-col p-5 justify-between fixed lg:static lg:translate-x-0 z-40 transition-transform duration-300 ease-in-out h-screen"
       :class="{
         'translate-x-0': isSidebarOpen,
-        '-translate-x-full': !isSidebarOpen
+        '-translate-x-full': !isSidebarOpen && lang !== 'ar',
+        'translate-x-full': !isSidebarOpen && lang === 'ar'
       }"
     >
       <div>
@@ -26,7 +27,7 @@
           <router-link
             to="/dashboard"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-house"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.dashboard }}</span>
@@ -35,7 +36,7 @@
           <router-link
             to="/dashboard/users"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/users' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/users', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-people"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.users }}</span>
@@ -44,7 +45,7 @@
           <router-link
             to="/dashboard/services"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/services' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/services', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-briefcase"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.services }}</span>
@@ -53,7 +54,7 @@
           <router-link
             to="/dashboard/providers"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/providers' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/providers', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-building"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.providers }}</span>
@@ -62,7 +63,7 @@
           <router-link
             to="/dashboard/orders"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/orders' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/orders', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-receipt"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.orders }}</span>
@@ -128,34 +129,17 @@
         <!-- Controls Group -->
         <div class="flex items-center space-x-4">
           <!-- Language Switch -->
+      
           <button
             ref="langButton"
             @click="toggleLanguage"
-            class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200"
-            :title="lang === 'ar' ? texts[lang].adminDashboard.sidebar.switchToEnglish : texts[lang].adminDashboard.sidebar.switchToArabic"
+            class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 language-switch-button"
+            :title="texts[lang].adminDashboard.sidebar.switchToEnglish"
           >
-            <!-- English Icon (visible when in Arabic) -->
-            <span
-              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
-              :class="{
-                'rotate-0 scale-100 opacity-100': lang === 'ar',
-                'rotate-90 scale-0 opacity-0': lang !== 'ar'
-              }"
-            >
-              EN
-            </span>
-
-            <!-- Arabic Icon (visible when in English) -->
-            <span
-              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
-              :class="{
-                'rotate-0 scale-100 opacity-100': lang === 'en',
-                '-rotate-90 scale-0 opacity-0': lang !== 'en'
-              }"
-            >
-              عربي
-            </span>
-
+            <i
+              ref="langIcon"
+              class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
+            ></i>
             <span class="sr-only">Toggle language</span>
           </button>
 
@@ -287,7 +271,7 @@ import { db } from '../../firebase/firebase'
 
 export default {
   setup() {
-    // 🟩 الترجمة الجديدة
+   
     const { lang, texts, switchLang } = useTestLang()
 
     const router = useRouter()
@@ -296,6 +280,7 @@ export default {
     const isUserMenuOpen = ref(false)
     const dropdown = ref(null)
     const langButton = ref(null)
+    const langIcon = ref(null)
     const userEmail = ref('')
     const userName = ref('')
     const userPhoto = ref('')
@@ -445,8 +430,15 @@ export default {
     // 🌐 تغيير اللغة الجديدة
     const toggleLanguage = () => {
       isLanguageSwitching.value = true
-      
+
       const next = lang.value === "ar" ? "en" : "ar"
+      const isClockwise = next === "ar" // Clockwise for English to Arabic
+
+      // Add rotation class to icon
+      if (langIcon.value) {
+        langIcon.value.classList.add(isClockwise ? 'rotate-animate-clockwise' : 'rotate-animate-counterclockwise')
+      }
+
       switchLang(next)
 
       document.documentElement.lang = next
@@ -457,7 +449,11 @@ export default {
       // إنهاء الانيميشن بعد انتهاء الدوران
       setTimeout(() => {
         isLanguageSwitching.value = false
-      }, 500)
+        // Remove rotation class after animation
+        if (langIcon.value) {
+          langIcon.value.classList.remove('rotate-animate-clockwise', 'rotate-animate-counterclockwise')
+        }
+      }, 600) // Slightly longer than animation duration
     }
 
     // ⛔ صورة فاسدة
@@ -506,6 +502,7 @@ export default {
       isDark,
       toggleDarkMode,
       langButton,
+      langIcon,
       isSidebarOpen,
       toggleSidebar,
       closeSidebar,
@@ -518,6 +515,7 @@ export default {
 
 
 <style scoped>
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -533,42 +531,29 @@ export default {
   transition: transform 0.3s ease-in-out;
 }
 
-/* Clockwise rotation (English to Arabic) */
 .rotate-animate-clockwise {
-  animation: rotateClockwise 0.6s ease-in-out forwards;
+  animation: rotate-clockwise 0.5s ease-in-out;
 }
 
-@keyframes rotateClockwise {
-  0% {
-    transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
-  }
-  50% {
-    transform: translate(-50%, -50%) rotateZ(180deg) scale(1.15);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotateZ(360deg) scale(1);
-  }
-}
-
-/* Counter-clockwise rotation (Arabic to English) */
 .rotate-animate-counterclockwise {
-  animation: rotateCounterClockwise 0.6s ease-in-out forwards;
+  animation: rotate-counterclockwise 0.5s ease-in-out;
 }
 
-@keyframes rotateCounterClockwise {
-  0% {
-    transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
+@keyframes rotate-clockwise {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: translate(-50%, -50%) rotateZ(-180deg) scale(1.15);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotateZ(-360deg) scale(1);
+  to {
+    transform: rotate(360deg);
   }
 }
 
-.rotate-on-hover:hover {
-  animation: rotateClockwise 0.6s ease-in-out;
+@keyframes rotate-counterclockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }
-
 </style>
