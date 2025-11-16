@@ -3,7 +3,15 @@ import cors from "cors";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
 
-dotenv.config();
+// ⭐ FIX: Force dotenv to load the .env inside gemini-server
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, ".env") });
+// ⭐ END FIX
 
 const app = express();
 app.use(cors());
@@ -20,25 +28,25 @@ app.post("/gemini/analyze", async (req, res) => {
       console.error("❌ Missing GEMINI_API_KEY in .env file");
       return res.status(400).json({ error: "Missing API key" });
     }
+console.log("Loaded GEMINI_API_KEY =", process.env.GEMINI_API_KEY);
 
     const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: prompt || "صف الصورة بجملة قصيرة وواضحة بالعربية." },
-            { inlineData: { mimeType, data: base64 } },
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: prompt || "صف الصورة بجملة قصيرة وواضحة بالعربية." },
+                { inlineData: { mimeType, data: base64 } },
+              ],
+            },
           ],
-        },
-      ],
-    }),
-  }
-);
-
+        }),
+      }
+    );
 
     const data = await response.json();
 
@@ -54,5 +62,8 @@ app.post("/gemini/analyze", async (req, res) => {
   }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`✅ Gemini server running at http://localhost:${PORT}`));
+const PORT = 5001;
+app.listen(PORT, () =>
+  console.log(`✅ Gemini server running at http://localhost:${PORT}`)
+);
+
