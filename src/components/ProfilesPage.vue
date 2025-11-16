@@ -251,7 +251,7 @@ export default {
             id: docSnap.id,
             name: data.name,
             service: data.skill,
-            location: data.address?.city || this.$t("profilesPage.fallbackLocation"),
+            location: data.address?.city || ("not specified"),
             rating: data.ratingAverage || data.rating || 0,
             bio: data.description || this.$t("profilesPage.fallbackBio"),
             profileImage: data.profileImage || "/images/engineer2.png",
