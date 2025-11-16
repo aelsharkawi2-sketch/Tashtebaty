@@ -1,16 +1,185 @@
+أهلاً بك\! لقد فهمت طلبك تماماً.
+
+إنت محتاج تترجم كل النصوص الثابتة (static text) في صفحة `UserOrders.vue` باستخدام ملفات `json` ونظام `useTestLang` اللي عندك، بالإضافة لتعديلات الإشعارات اللي اتكلمنا فيها.
+
+لقد قمت بتجهيز 3 ملفات لك:
+
+1.  ملف `enTest.json` (مُعدّل).
+2.  ملف `arTest.json` (مُعدّل).
+3.  ملف `UserOrders.vue` (مُعدّل بالكامل).
+
+-----
+
+### 1\. ملف `enTest.json` (المُعدّل)
+
+أضفت قسم جديد اسمه `myOrdersPage` (وضعته بعد `userProfile` وقبل `notifications`). انسخ هذا القسم وأضفه لملف `enTest.json` عندك.
+
+```json
+  "userProfile": {
+    // ... (كل محتوى userProfile عندك) ...
+  },
+  
+  "myOrdersPage": {
+    "title": "My Orders",
+    "loading": "Loading your orders...",
+    "tabs": {
+      "all": "All",
+      "unconfirmed": "Unconfirmed",
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "declined": "Declined / Cancelled"
+    },
+    "card": {
+      "service": "Service",
+      "price": "Price:",
+      "date": "Date:",
+      "time": "Time:",
+      "location": "Location:",
+      "orderCode": "Order Code:",
+      "payNow": "Pay Now",
+      "cancelOrder": "Cancel Order",
+      "paymentCompleted": "Payment Completed",
+      "serviceCompleted": "Service Completed",
+      "orderWas": "This order was {status}.",
+      "rateProvider": "Rate {providerType}",
+      "youRated": "You rated: {rating}★",
+      "technician": "Technician",
+      "company": "Company",
+      "noProvider": "—"
+    },
+    "empty": "No orders found.",
+    "paymentPopup": {
+      "title": "Confirm Your Payment",
+      "service": "Service:",
+      "technician": "Technician:",
+      "total": "Total: {price} EGP",
+      "confirm": "Confirm & Pay",
+      "cancel": "Cancel"
+    },
+    "cancelPopup": {
+      "title": "Are you sure?",
+      "prompt": "Do you really want to cancel this order?",
+      "confirm": "Yes, Cancel",
+      "cancel": "No, Keep it"
+    },
+    "ratePopup": {
+      "title": "Rate {providerType}",
+      "commentPlaceholder": "Optional comment...",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "cancel": "Cancel"
+    },
+    "alerts": {
+      "paymentFailed": "Payment request failed.",
+      "paymentError": "Error while preparing payment.",
+      "cancelSuccess": "Order cancelled successfully.",
+      "cancelError": "Failed to cancel order.",
+      "rateDuplicate": "You have already rated this order.",
+      "rateSuccess": "Thank you! Your rating has been submitted.",
+      "rateError": "Failed to submit rating."
+    }
+  },
+
+  "notifications": {
+    // ... (محتوى notifications عندك) ...
+  },
+```
+
+-----
+
+### 2\. ملف `arTest.json` (المُعدّل)
+
+بنفس الطريقة، أضفت قسم `myOrdersPage` مترجم للغة العربية.
+
+```json
+  "userProfile": {
+    // ... (كل محتوى userProfile عندك) ...
+  },
+
+  "myOrdersPage": {
+    "title": "طلباتي",
+    "loading": "جار تحميل طلباتك...",
+    "tabs": {
+      "all": "الكل",
+      "unconfirmed": "غير مؤكد",
+      "upcoming": "القادمة",
+      "completed": "المكتملة",
+      "declined": "الملغاة / المرفوضة"
+    },
+    "card": {
+      "service": "خدمة",
+      "price": "السعر:",
+      "date": "التاريخ:",
+      "time": "الوقت:",
+      "location": "الموقع:",
+      "orderCode": "كود الطلب:",
+      "payNow": "ادفع الآن",
+      "cancelOrder": "إلغاء الطلب",
+      "paymentCompleted": "تم الدفع",
+      "serviceCompleted": "اكتملت الخدمة",
+      "orderWas": "هذا الطلب {status}.",
+      "rateProvider": "تقييم {providerType}",
+      "youRated": "لقد قيّمت: {rating}★",
+      "technician": "الفني",
+      "company": "الشركة",
+      "noProvider": "—"
+    },
+    "empty": "لا توجد طلبات.",
+    "paymentPopup": {
+      "title": "تأكيد الدفع",
+      "service": "الخدمة:",
+      "technician": "الفني:",
+      "total": "الإجمالي: {price} جنيه",
+      "confirm": "تأكيد والدفع",
+      "cancel": "إلغاء"
+    },
+    "cancelPopup": {
+      "title": "هل أنت متأكد؟",
+      "prompt": "هل تريد حقاً إلغاء هذا الطلب؟",
+      "confirm": "نعم، إلغاء",
+      "cancel": "لا، ابق عليه"
+    },
+    "ratePopup": {
+      "title": "تقييم {providerType}",
+      "commentPlaceholder": "تعليق اختياري...",
+      "submit": "إرسال",
+      "submitting": "جار الإرسال...",
+      "cancel": "إلغاء"
+    },
+    "alerts": {
+      "paymentFailed": "فشل طلب الدفع.",
+      "paymentError": "خطأ أثناء تحضير الدفع.",
+      "cancelSuccess": "تم إلغاء الطلب بنجاح.",
+      "cancelError": "فشل إلغاء الطلب.",
+      "rateDuplicate": "لقد قمت بتقييم هذا الطلب من قبل.",
+      "rateSuccess": "شكراً لك! تم إرسال تقييمك.",
+      "rateError": "فشل إرسال التقييم."
+    }
+  },
+
+  "notifications": {
+    // ... (محتوى notifications عندك) ...
+  },
+```
+
+-----
+
+### 3\. ملف `UserOrders.vue` (المُعدّل بالكامل)
+
+هذا هو الكود الكامل للملف بعد تطبيق كل التعديلات (ترجمة النصوص الثابتة + تعديل رسائل الإشعارات لـ `messageKey`).
+
+```vue
 <template>
   <div class="min-h-screen py-16 px-6">
     <div class="max-w-6xl mx-auto mt-10">
-      <h1 class="text-3xl font-bold text-accent-color mb-8 text-center">My Orders</h1>
+      <h1 class="text-3xl font-bold text-accent-color mb-8 text-center">{{ texts[lang].myOrdersPage.title }}</h1>
 
       <div v-if="loading" class="text-center text-gray-500 mt-10">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-color mx-auto mb-3"></div>
-        Loading your orders...
+        {{ texts[lang].myOrdersPage.loading }}
       </div>
 
-      <!-- TABS + CONTENT -->
       <div v-else-if="orders.length">
-        <!-- Tabs header -->
         <div class="flex flex-wrap justify-center gap-3 mb-8">
           <button
             v-for="tab in tabs"
@@ -24,21 +193,18 @@
           </button>
         </div>
 
-        <!-- Tab contents -->
         <div>
-          <!-- All -->
           <div v-show="activeTab === 'all'">
-            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">All Orders</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.all }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div
                 v-for="order in orders"
                 :key="order.id"
                 class="rounded-2xl p-6 relative transition hover:shadow-lg dark:bg-(--surface) border border-(--border)"
               >
-                <!-- card content (same as original) -->
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-accent-color">
-                    {{ getTranslatedName(order.serviceTitle) || 'Service' }}:
+                    {{ getTranslatedName(order.serviceTitle) || texts[lang].myOrdersPage.card.service }}:
                   </h3>
                   <span class="px-3 py-1 text-sm rounded-full font-medium" :class="statusColor(order.status)">
                     {{ order.status }}
@@ -50,11 +216,11 @@
                   <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
                   {{ getOrderProviderName(order) }}
                   </li>
-                  <li><span class="font-semibold text-(--text-primary)">Price:</span> {{ order.price }} EGP</li>
-                  <li><span class="font-semibold text-(--text-primary)">Date:</span> {{ order.date }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Time:</span> {{ order.time }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Location:</span> {{ formatLocation(order.location) }}</li>
-                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 Order Code: <span class="text-accent-color">{{ order.orderCode }}</span></li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.time }}</span> {{ order.time }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.location }}</span> {{ formatLocation(order.location) }}</li>
+                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 {{ texts[lang].myOrdersPage.card.orderCode }} <span class="text-accent-color">{{ order.orderCode }}</span></li>
                 </ul>
 
                 <div class="mt-5 text-center">
@@ -63,36 +229,35 @@
                     @click="openPaymentPopup(order)"
                     class="bg-accent-color hover:bg-(--accent) text-white px-6 py-2 rounded-lg font-semibold transition"
                   >
-                    Pay Now
+                    {{ texts[lang].myOrdersPage.card.payNow }}
                   </button>
                   <button
                     v-if="order.status === 'new' || order.status === 'unconfirmed'"
                     @click="openCancelPopup(order)"
                     class="bg-red-600 ml-2 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition"
                   >
-                    Cancel Order
+                    {{ texts[lang].myOrdersPage.card.cancelOrder }}
                   </button>
-                  <div v-else-if="order.status === 'upcoming'" class="text-green-600 font-semibold">Payment Completed</div>
-                  <div v-else-if="order.status === 'completed'" class="text-accent-color font-semibold">Service Completed</div>
-                  <div v-else-if="order.status === 'declined' || order.status === 'cancelled'" class="text-red-500 font-semibold">This order was {{ order.status }}.</div>
+                  <div v-else-if="order.status === 'upcoming'" class="text-green-600 font-semibold">{{ texts[lang].myOrdersPage.card.paymentCompleted }}</div>
+                  <div v-else-if="order.status === 'completed'" class="text-accent-color font-semibold">{{ texts[lang].myOrdersPage.card.serviceCompleted }}</div>
+                  <div v-else-if="order.status === 'declined' || order.status === 'cancelled'" class="text-red-500 font-semibold">{{ texts[lang].myOrdersPage.card.orderWas.replace('{status}', order.status) }}</div>
                   <div v-if="order.status === 'completed'" class="mt-3 text-center">
                   <button
                     v-if="!hasRated(order.id)"
                     @click="openRatePopup(order)"
                     class="bg-accent-color hover:bg-(--accent) text-white px-4 py-2 rounded-lg font-semibold transition"
                   >
-                    Rate Technician
+                    {{ texts[lang].myOrdersPage.card.rateProvider.replace('{providerType}', getOrderProviderLabel(order)) }}
                   </button>
-                  <div v-else class="text-(--text-muted)">You rated: {{ getExistingRating(order.id) }}★</div>
+                  <div v-else class="text-(--text-muted)">{{ texts[lang].myOrdersPage.card.youRated.replace('{rating}', getExistingRating(order.id)) }}</div>
                 </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Unconfirmed -->
           <div v-show="activeTab === 'unconfirmed'">
-            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">Unconfirmed</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.unconfirmed }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div
                 v-for="order in grouped.unconfirmed"
@@ -101,7 +266,7 @@
               >
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-accent-color">
-                    {{ getTranslatedName(order.serviceTitle) || 'Service' }}:
+                    {{ getTranslatedName(order.serviceTitle) || texts[lang].myOrdersPage.card.service }}:
                   </h3>
                   <span class="px-3 py-1 text-sm rounded-full font-medium" :class="statusColor(order.status)">
                     {{ order.status }}
@@ -113,23 +278,22 @@
                   <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
                   {{ getOrderProviderName(order) }}
                   </li>
-                  <li><span class="font-semibold text-(--text-primary)">Price:</span> {{ order.price }} EGP</li>
-                  <li><span class="font-semibold text-(--text-primary)">Date:</span> {{ order.date }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Time:</span> {{ order.time }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Location:</span> {{ formatLocation(order.location) }}</li>
-                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 Order Code: <span class="text-accent-color">{{ order.orderCode }}</span></li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.time }}</span> {{ order.time }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.location }}</span> {{ formatLocation(order.location) }}</li>
+                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 {{ texts[lang].myOrdersPage.card.orderCode }} <span class="text-accent-color">{{ order.orderCode }}</span></li>
                 </ul>
 
                 <div class="mt-5 text-center">
-                  <button @click="openPaymentPopup(order)" class="bg-accent-color hover:bg-(--accent) text-white px-6 py-2 rounded-lg font-semibold transition">Pay Now</button>
+                  <button @click="openPaymentPopup(order)" class="bg-accent-color hover:bg-(--accent) text-white px-6 py-2 rounded-lg font-semibold transition">{{ texts[lang].myOrdersPage.card.payNow }}</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Upcoming -->
           <div v-show="activeTab === 'upcoming'">
-            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">Upcoming</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.upcoming }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div
                 v-for="order in grouped.upcoming"
@@ -138,7 +302,7 @@
               >
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-accent-color">
-                    {{ getTranslatedName(order.serviceTitle) || 'Service' }}:
+                    {{ getTranslatedName(order.serviceTitle) || texts[lang].myOrdersPage.card.service }}:
                   </h3>
                   <span class="px-3 py-1 text-sm rounded-full font-medium" :class="statusColor(order.status)">
                     {{ order.status }}
@@ -150,21 +314,20 @@
                   <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
                   {{ getOrderProviderName(order) }}
                   </li>
-                  <li><span class="font-semibold text-(--text-primary)">Price:</span> {{ order.price }} EGP</li>
-                  <li><span class="font-semibold text-(--text-primary)">Date:</span> {{ order.date }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Time:</span> {{ order.time }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Location:</span> {{ formatLocation(order.location) }}</li>
-                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 Order Code: <span class="text-accent-color">{{ order.orderCode }}</span></li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.time }}</span> {{ order.time }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.location }}</span> {{ formatLocation(order.location) }}</li>
+                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 {{ texts[lang].myOrdersPage.card.orderCode }} <span class="text-accent-color">{{ order.orderCode }}</span></li>
                 </ul>
 
-                <div class="mt-5 text-center text-green-600 font-semibold">Payment Completed</div>
+                <div class="mt-5 text-center text-green-600 font-semibold">{{ texts[lang].myOrdersPage.card.paymentCompleted }}</div>
               </div>
             </div>
           </div>
 
-          <!-- Completed -->
           <div v-show="activeTab === 'completed'">
-            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">Completed</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.completed }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div
                 v-for="order in grouped.completed"
@@ -173,7 +336,7 @@
               >
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-accent-color">
-                    {{ getTranslatedName(order.serviceTitle) || 'Service' }}:
+                    {{ getTranslatedName(order.serviceTitle) || texts[lang].myOrdersPage.card.service }}:
                   </h3>
                   <span class="px-3 py-1 text-sm rounded-full font-medium" :class="statusColor(order.status)">
                     {{ order.status }}
@@ -184,31 +347,31 @@
                   <li>
                   <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
                   {{ getOrderProviderName(order) }}
-                  </li>                  <li><span class="font-semibold text-(--text-primary)">Price:</span> {{ order.price }} EGP</li>
-                  <li><span class="font-semibold text-(--text-primary)">Date:</span> {{ order.date }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Time:</span> {{ order.time }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Location:</span> {{ formatLocation(order.location) }}</li>
-                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 Order Code: <span class="text-accent-color">{{ order.orderCode }}</span></li>
+                  </li>                  
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.time }}</span> {{ order.time }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.location }}</span> {{ formatLocation(order.location) }}</li>
+                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 {{ texts[lang].myOrdersPage.card.orderCode }} <span class="text-accent-color">{{ order.orderCode }}</span></li>
                 </ul>
 
-                <div class="mt-5 text-center text-accent-color font-semibold">Service Completed</div>
+                <div class="mt-5 text-center text-accent-color font-semibold">{{ texts[lang].myOrdersPage.card.serviceCompleted }}</div>
                 <div class="mt-3 text-center">
                   <button
                     v-if="!hasRated(order.id)"
                     @click="openRatePopup(order)"
                     class="bg-accent-color hover:bg-(--accent) text-white px-4 py-2 rounded-lg font-semibold transition"
                   >
-                    Rate {{ getOrderProviderLabel(order) }}
+                    {{ texts[lang].myOrdersPage.card.rateProvider.replace('{providerType}', getOrderProviderLabel(order)) }}
                   </button>
-                  <div v-else class="text-(--text-muted)">You rated: {{ getExistingRating(order.id) }}★</div>
+                  <div v-else class="text-(--text-muted)">{{ texts[lang].myOrdersPage.card.youRated.replace('{rating}', getExistingRating(order.id)) }}</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Declined / Cancelled -->
           <div v-show="activeTab === 'declined'">
-            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">Declined / Cancelled</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.declined }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div
                 v-for="order in [...grouped.declined, ...grouped.cancelled]"
@@ -217,7 +380,7 @@
               >
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-accent-color">
-                    {{ getTranslatedName(order.serviceTitle) || 'Service' }}:
+                    {{ getTranslatedName(order.serviceTitle) || texts[lang].myOrdersPage.card.service }}:
                   </h3>
                   <span class="px-3 py-1 text-sm rounded-full font-medium" :class="statusColor(order.status)">
                     {{ order.status }}
@@ -225,22 +388,22 @@
                 </div>
 
                 <ul class="space-y-2 text-(--text-muted)">
-                  <li><span class="font-semibold text-(--text-primary)">Technician:</span> {{ getTranslatedName(order.technicianName) || '—' }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Price:</span> {{ order.price }} EGP</li>
-                  <li><span class="font-semibold text-(--text-primary)">Date:</span> {{ order.date }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Time:</span> {{ order.time }}</li>
-                  <li><span class="font-semibold text-(--text-primary)">Location:</span> {{ formatLocation(order.location) }}</li>
-                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 Order Code: <span class="text-accent-color">{{ order.orderCode }}</span></li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.technician }}:</span> {{ getTranslatedName(order.technicianName) || texts[lang].myOrdersPage.card.noProvider }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.time }}</span> {{ order.time }}</li>
+                  <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.location }}</span> {{ formatLocation(order.location) }}</li>
+                  <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 {{ texts[lang].myOrdersPage.card.orderCode }} <span class="text-accent-color">{{ order.orderCode }}</span></li>
                 </ul>
 
-                <div class="mt-5 text-center text-red-500 font-semibold">This order was {{ order.status }}.</div>
+                <div class="mt-5 text-center text-red-500 font-semibold">{{ texts[lang].myOrdersPage.card.orderWas.replace('{status}', order.status) }}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-else class="text-center text-gray-500 mt-10">No orders found.</div>
+      <div v-else class="text-center text-gray-500 mt-10">{{ texts[lang].myOrdersPage.empty }}</div>
     </div>
 
     <transition name="fade">
@@ -259,50 +422,48 @@
           <p class="text-(--accent) text-xl font-bold mb-6">Total: {{ selectedOrder?.price }} EGP</p>
 
           <div class="flex justify-center gap-4">
-            <button @click="confirmPayment" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition">Confirm & Pay</button>
-            <button @click="cancelPayment" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">Cancel</button>
+            <button @click="confirmPayment" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition">{{ texts[lang].myOrdersPage.paymentPopup.confirm }}</button>
+            <button @click="cancelPayment" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">{{ texts[lang].myOrdersPage.paymentPopup.cancel }}</button>
           </div>
         </div>
       </div>
     </transition>
 
-    <!-- 🟥 Cancel confirmation popup -->
     <transition name="fade">
       <div v-if="showCancelPopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Are you sure?</h2>
-          <p class="text-gray-700 mb-6">Do you really want to cancel this order?</p>
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">{{ texts[lang].myOrdersPage.cancelPopup.title }}</h2>
+          <p class="text-gray-700 mb-6">{{ texts[lang].myOrdersPage.cancelPopup.prompt }}</p>
           <div class="flex justify-center gap-4">
             <button
               @click="confirmCancelOrder"
               class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition"
             >
-              Yes, Cancel
+              {{ texts[lang].myOrdersPage.cancelPopup.confirm }}
             </button>
             <button
               @click="closeCancelPopup"
               class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition"
             >
-              No, Keep it
+              {{ texts[lang].myOrdersPage.cancelPopup.cancel }}
             </button>
           </div>
         </div>
       </div>
     </transition>
 
-    <!-- ⭐ Rating popup -->
     <transition name="fade">
       <div v-if="showRatePopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Rate {{ getOrderProviderLabel(ratingOrder) }}</h2>
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">{{ texts[lang].myOrdersPage.ratePopup.title.replace('{providerType}', getOrderProviderLabel(ratingOrder)) }}</h2>
 
           <p class="text-gray-700 mb-4">
             <span class="font-semibold">{{ getOrderProviderLabel(ratingOrder) }}:</span>
             {{ getOrderProviderName(ratingOrder) }}
           </p>
           <p class="text-gray-700 mb-4">
-            <span class="font-semibold">Service:</span>
-            {{ getTranslatedName(ratingOrder?.serviceTitle) || 'Service' }}
+            <span class="font-semibold">{{ texts[lang].myOrdersPage.paymentPopup.service }}</span>
+            {{ getTranslatedName(ratingOrder?.serviceTitle) || texts[lang].myOrdersPage.card.service }}
           </p>
 
           <div class="flex justify-center gap-2 mb-4 text-2xl text-yellow-400">
@@ -319,7 +480,7 @@
           <textarea
             v-model="ratingComment"
             rows="3"
-            placeholder="Optional comment..."
+            :placeholder="texts[lang].myOrdersPage.ratePopup.commentPlaceholder"
             class="w-full border border-(--border) rounded-lg p-3 text-sm mb-4 focus:outline-none"
           ></textarea>
 
@@ -331,9 +492,9 @@
               @click="submitRating"
               class="bg-[#133B5D] disabled:opacity-60 hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition"
             >
-              {{ submittingRating ? 'Submitting...' : 'Submit' }}
+              {{ submittingRating ? texts[lang].myOrdersPage.ratePopup.submitting : texts[lang].myOrdersPage.ratePopup.submit }}
             </button>
-            <button @click="closeRatePopup" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">Cancel</button>
+            <button @click="closeRatePopup" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">{{ texts[lang].myOrdersPage.ratePopup.cancel }}</button>
           </div>
         </div>
       </div>
@@ -361,10 +522,11 @@ import {
   getDocs,
   runTransaction,
 } from "firebase/firestore";
-// NEW: Import the custom alert popup
+// Import the custom alert popup
 import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path as needed
-// NEW: Added missing import for i18n
+// Import localization
 import { useI18n } from "vue-i18n";
+import { useTestLang } from "@/langTest/useTestLang"; // <-- 1. IMPORT
 
 const orders = ref([]);
 const loading = ref(true);
@@ -381,11 +543,11 @@ const ratingComment = ref("");
 const submittingRating = ref(false);
 const ratingsByOrderId = ref({}); // { [orderId]: number }
 
-// NEW: Refs for the custom alert popup
+// Refs for the custom alert popup
 const showPopupMessage = ref(false);
 const popupMessageContent = ref("");
 
-// NEW: Helper functions for custom alert popup
+// Helper functions for custom alert popup
 const triggerAlert = (message) => {
   popupMessageContent.value = message;
   showPopupMessage.value = true;
@@ -408,9 +570,10 @@ const formatLocation = (loc) => {
 };
 
 
-const { locale } = useI18n(); // *** 2. Initialize locale ***
+const { locale } = useI18n(); 
+const { lang, texts } = useTestLang(); // <-- 2. INITIALIZE
 
-// *** 3. Add the helper function ***
+// Helper function for translating object-based names
 const getTranslatedName = (nameObject) => {
   const currentLocale = locale.value || "en"; // Get current language
   if (typeof nameObject === "object" && nameObject !== null) {
@@ -421,6 +584,7 @@ const getTranslatedName = (nameObject) => {
 
 // 🟩 Open confirmation popup before redirecting
 const openPaymentPopup = (order) => {
+  window.dispatchEvent(new CustomEvent("close-all-dropdowns"));
   selectedOrder.value = order;
   showPopup.value = true;
 };
@@ -444,7 +608,12 @@ const confirmPayment = async () => {
       const notifCol = collection(db, "technicians", selectedOrder.value.technicianId, "notifications");
       await addDoc(notifCol, {
         orderId: selectedOrder.value.id,
-        message: `✅ The order "${getTranslatedName(selectedOrder.value.serviceTitle)}" has been confirmed.`,
+        // --- UPDATED ---
+        messageKey: "orderConfirmed", 
+        messageParams: { 
+          serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle)
+        },
+        // --- END UPDATE ---
         status: "upcoming",
         isRead: false,
         timestamp: serverTimestamp(),
@@ -458,8 +627,8 @@ const confirmPayment = async () => {
       body: JSON.stringify({
         amount: Number(selectedOrder.value.price) || 0,
         orderId: selectedOrder.value.id,
-        serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle), // <-- FIX
-        technicianName: getTranslatedName(selectedOrder.value.technicianName), // <-- FIX
+        serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle), 
+        technicianName: getTranslatedName(selectedOrder.value.technicianName), 
       }),
     });
 
@@ -467,18 +636,18 @@ const confirmPayment = async () => {
     if (data.url) {
       window.location.href = data.url; // 🚀 يروح على صفحة الدفع
     } else {
-      // UPDATED
-      triggerAlert("Payment request failed.");
+      triggerAlert(texts[lang].myOrdersPage.alerts.paymentFailed);
       console.error("Payment response:", data);
     }
   } catch (err) {
     console.error("Error updating order or connecting to payment:", err);
-    triggerAlert("Error while preparing payment.");
+    triggerAlert(texts[lang].myOrdersPage.alerts.paymentError);
   }
 };
 
 // 🟦 Open cancel confirmation
 const openCancelPopup = (order) => {
+  window.dispatchEvent(new CustomEvent("close-all-dropdowns"));
   orderToCancel.value = order;
   showCancelPopup.value = true;
 };
@@ -492,35 +661,31 @@ const confirmCancelOrder = async () => {
     const orderData = orderSnap.exists() ? orderSnap.data() : null;
 
     await updateDoc(orderRef, { status: "cancelled" });
+    
     // 🔔 Notify technician
     if (orderData?.technicianId) {
       const notifCol = collection(db, "technicians", orderData.technicianId, "notifications");
+      
+      // --- UPDATED (and removed duplicate) ---
+      const key = (orderData.descreption) ? "orderCancelled" : "orderCancelledNoDesc";
+      const params = { description: orderData.descreption || "" };
+
       await addDoc(notifCol, {
         orderId: orderToCancel.value.id,
-        message: `⚠️ The client has cancelled the order "${orderData.descreption || "No description"}". Status changed to cancelled.`,
+        messageKey: key,
+        messageParams: params,
         status: "cancelled",
         isRead: false,
         timestamp: serverTimestamp(),
       });
+      // --- END UPDATE ---
     }
 
-    // 🔔 Notify technician
-    if (orderData?.technicianId) {
-      const notifCol = collection(db, "technicians", orderData.technicianId, "notifications");
-      await addDoc(notifCol, {
-        orderId: orderToCancel.value.id,
-        message: `⚠️ The client has cancelled the order (${orderData.descreption || "No description"}).`,
-        status: "cancelled",
-        isRead: false,
-        timestamp: serverTimestamp(),
-      });
-    }
-
-    triggerAlert("Order cancelled successfully.");
+    triggerAlert(texts[lang].myOrdersPage.alerts.cancelSuccess);
     showCancelPopup.value = false;
   } catch (error) {
     console.error("Error cancelling order:", error);
-    triggerAlert("Failed to cancel order.");
+    triggerAlert(texts[lang].myOrdersPage.alerts.cancelError);
   }
 };
 
@@ -595,11 +760,11 @@ const grouped = computed(() => {
 // tabs control
 const activeTab = ref("all");
 const tabs = computed(() => [
-  { key: "all", label: "All", count: orders.value.length },
-  { key: "unconfirmed", label: "Unconfirmed", count: grouped.value.unconfirmed.length },
-  { key: "upcoming", label: "Upcoming", count: grouped.value.upcoming.length },
-  { key: "completed", label: "Completed", count: grouped.value.completed.length },
-  { key: "declined", label: "Declined / Cancelled", count: grouped.value.declined.length + grouped.value.cancelled.length },
+  { key: "all", label: texts[lang].myOrdersPage.tabs.all, count: orders.value.length },
+  { key: "unconfirmed", label: texts[lang].myOrdersPage.tabs.unconfirmed, count: grouped.value.unconfirmed.length },
+  { key: "upcoming", label: texts[lang].myOrdersPage.tabs.upcoming, count: grouped.value.upcoming.length },
+  { key: "completed", label: texts[lang].myOrdersPage.tabs.completed, count: grouped.value.completed.length },
+  { key: "declined", label: texts[lang].myOrdersPage.tabs.declined, count: grouped.value.declined.length + grouped.value.cancelled.length },
 ]);
 
 // ⭐ Rating helpers
@@ -612,6 +777,7 @@ const getExistingRating = (orderId) => {
 };
 
 const openRatePopup = (order) => {
+  window.dispatchEvent(new CustomEvent("close-all-dropdowns"));
   ratingOrder.value = order;
   ratingStars.value = 0;
   ratingComment.value = "";
@@ -641,7 +807,7 @@ const submitRating = async () => {
     );
     const existing = await getDocs(existingQ);
     if (!existing.empty) {
-      triggerAlert("You have already rated this order.");
+      triggerAlert(texts[lang].myOrdersPage.alerts.rateDuplicate);
       submittingRating.value = false;
       showRatePopup.value = false;
       return;
@@ -706,11 +872,11 @@ const submitRating = async () => {
       });
     });
 
-    triggerAlert("Thank you! Your rating has been submitted.");
+    triggerAlert(texts[lang].myOrdersPage.alerts.rateSuccess);
     showRatePopup.value = false;
   } catch (err) {
     console.error("Error submitting rating:", err);
-    triggerAlert("Failed to submit rating.");
+    triggerAlert(texts[lang].myOrdersPage.alerts.rateError);
   } finally {
     submittingRating.value = false;
   }
@@ -722,12 +888,12 @@ const getOrderProviderName = (order) => {
   } else if (order.technicianName) {
     return getTranslatedName(order.technicianName); // لو فني
   } else {
-    return "—";
+    return texts[lang].myOrdersPage.card.noProvider;
   }
 };
 
 const getOrderProviderLabel = (order) => {
-  return order.companyId ? "Company" : "Technician";
+  return order.companyId ? texts[lang].myOrdersPage.card.company : texts[lang].myOrdersPage.card.technician;
 };
 
 </script>
@@ -742,3 +908,4 @@ const getOrderProviderLabel = (order) => {
   opacity: 0;
 }
 </style>
+```

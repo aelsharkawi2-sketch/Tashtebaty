@@ -4,6 +4,7 @@ import Chart from "chart.js/auto";
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import ChatPage from "../ChatPage.vue";
+import { useTestLang } from "@/langTest/useTestLang";
 import {
   doc,
   getDoc,
@@ -33,7 +34,7 @@ import { useTechnicianNotifications } from "@/composables/useTechnicianNotificat
 // ✅ Shared notifications (sidebar + top navbar)
 const { notifications, unreadCount, showNotifications, toggleNotifications } =
   useTechnicianNotifications();
-
+const { lang, texts } = useTestLang();
 const isDark = ref(false);
 
 // 🟦 Refs & states
@@ -240,22 +241,41 @@ const updateOrderStatus = async (id, status, reason = "") => {
       const clientData = clientSnap.exists() ? clientSnap.data() : null;
       const clientEmail = clientData?.email;
 
-      const messages = {
-        unconfirmed: "تم قبول الأوردر ✅ الفني وافق على طلبك، برجاء إتمام الدفع لتأكيد الحجز.",
-        upcoming: "✅ تم استلام الدفع بنجاح! الأوردر الخاص بك تم تأكيده.",
-        completed: "🎉 تم إتمام الأوردر بنجاح! شكرًا لاستخدامك موقع Tashtebaty.",
-        declined: reason
-          ? `❌ الفني اعتذر عن تنفيذ الأوردر الخاص بك.\n\nالسبب: "${reason}"`
-          : "❌ الفني اعتذر عن تنفيذ الأوردر الخاص بك.",
-        cancelled: reason
-          ? `⚠️ تم إلغاء الأوردر من قبل الفني.\n\nالسبب: "${reason}"`
-          : "⚠️ تم إلغاء الأوردر من قبل الفني.",
-      };
+      // 1. جهّز الـ keys والـ params
+      let messageKey = "";
+      let messageParams = {};
 
+      switch (status) {
+        case "unconfirmed":
+          messageKey = "techAcceptedOrder"; // مفتاح جديد
+          messageParams = { serviceTitle: orderData.descreption || 'your order' };
+          break;
+        case "upcoming":
+          messageKey = "paymentReceived"; // مفتاح جديد
+          messageParams = {};
+          break;
+        case "completed":
+          messageKey = "orderCompleted"; // مفتاح جديد
+          messageParams = {};
+          break;
+        case "declined":
+          messageKey = reason ? "techDeclinedWithReason" : "techDeclinedNoReason"; // مفاتيح جديدة
+          messageParams = { reason: reason };
+          break;
+        case "cancelled":
+          messageKey = reason ? "techCancelledWithReason" : "techCancelledNoReason"; // مفاتيح جديدة
+          messageParams = { reason: reason };
+          break;
+        default:
+          messageKey = "statusUpdate"; // مفتاح افتراضي
+          messageParams = { status: status };
+      }
+
+      // 2. ابعت الإشعار بالـ keys
       await addDoc(notifCol, {
         orderId: id,
-        title: "Order Status Update",
-        message: messages[status] || `Order status updated to ${status}`,
+        messageKey: messageKey, // <-- التعديل هنا
+        messageParams: messageParams, // <-- التعديل هنا
         status,
         email: orderData?.clientEmail || clientEmail || "noemail@tashtebaty.com",
         isRead: false,
