@@ -25,7 +25,7 @@
                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2l-7 7v6l-4-2v-4L3 6V4z"
               />
             </svg>
-            {{ texts[lang].topBar.filterButton }}
+            {{ getText("topBar.filterButton") }}
           </button>
 
           <div
@@ -35,11 +35,11 @@
           >
             <div class="flex justify-between items-center mb-2 text-left rtl:text-right">
               <h6 class="text-sm font-medium text-(--text-primary)">
-                {{ texts[lang].topBar.filtersTitle }}
+                {{ getText("topBar.filtersTitle") }}
               </h6>
               <div class="flex gap-3 text-xs">
                 <button class="text-(--text-muted) hover:text-red-500 transition" @click="clearAll">
-                  {{ texts[lang].topBar.clearAll }}
+                  {{ getText("topBar.clearAll") }}
                 </button>
               </div>
             </div>
@@ -47,7 +47,7 @@
             <input
               v-model="searchKeyword"
               type="text"
-              :placeholder="texts[lang].topBar.searchPlaceholder"
+              :placeholder="getText('topBar.searchPlaceholder')"
               class="w-full px-3 py-2 mb-3 text-sm border border-(--border) rounded-md focus:outline-none focus:ring-1 focus:ring-(--accent) text-(--text-primary) bg-(--bg) rtl:text-right"
               @input="emitFilters"
             />
@@ -57,7 +57,7 @@
             >
               <details class="rounded-md p-2" open>
                 <summary class="cursor-pointer font-medium text-(--text-primary)">
-                  {{ texts[lang].topBar.categoryTitle }}
+                  {{ getText("topBar.categoryTitle") }}
                 </summary>
                 <ul class="mt-2 space-y-1 pl-2 rtl:pl-0 rtl:pr-2">
                   <li v-for="cat in categories" :key="cat.id" class="flex items-center gap-2">
@@ -70,7 +70,7 @@
                       class="rounded focus:ring-(--accent) rtl:ml-2 rtl:mr-0"
                     />
                     <label :for="cat.id" class="cursor-pointer text-(--text-primary)">
-                      {{ $t(cat.key) }}
+                      {{ getText(cat.key) }}
                     </label>
                   </li>
                 </ul>
@@ -79,7 +79,7 @@
               <!-- Projects Filter -->
               <details class="rounded-md p-2">
                 <summary class="cursor-pointer font-medium text-(--text-primary)">
-                  {{ texts[lang].topBar.projectsTitle }}
+                  {{ getText("topBar.projectsTitle") }}
                 </summary>
 
                 <div class="mt-2 space-y-1 pl-2">
@@ -91,14 +91,14 @@
                       class="text-(--accent) focus:ring-(--accent)"
                       @change="emitFilters"
                     />
-                    {{ $t(p.label) }}
+                    {{ getText(p.label) }}
                   </label>
                 </div>
               </details>
 
               <details class="rounded-md p-2">
                 <summary class="cursor-pointer font-medium text-(--text-primary)">
-                  {{ texts[lang].topBar.ratingTitle }}
+                  {{ getText("topBar.ratingTitle") }}
                 </summary>
                 <div class="mt-2 space-y-1 pl-2 rtl:pl-0 rtl:pr-2">
                   <label v-for="n in ratingOptions " :key="n.value" class="flex items-center gap-2">
@@ -109,7 +109,7 @@
                       class="mr-2 rtl:mr-0 rtl:ml-2 accent-(--accent)"
                       @change="emitFilters"
                     />
-                    {{ $t(n.label) }}
+                    {{ getText(n.label) }}
                   </label>
                 </div>
               </details>
@@ -118,7 +118,7 @@
         </div>
 
         <div class="text-(--text-primary) font-medium text-sm md:text-base whitespace-nowrap">
-          {{ $t("topBar.resultsText", { displayed: displayedCount, total: totalCount }) }}
+          {{ formatText("topBar.resultsText", { displayed: displayedCount, total: totalCount }) }}
         </div>
       </div>
 
@@ -130,17 +130,17 @@
           @change="emitSort"
           class="px-3 py-2 border rounded-lg border-(--border) text-(--text-primary) focus:outline-none text-sm md:text-base bg-(--bg) transition rtl:text-right"
         >
-          <option value="default">{{ texts[lang].topBar.sort.default }}</option>
-          <option value="rating-desc">{{ texts[lang].topBar.sort.ratingDesc }}</option>
+          <option value="default">{{ getText("topBar.sort.default") }}</option>
+          <option value="rating-desc">{{ getText("topBar.sort.ratingDesc") }}</option>
           <option value="rating-asc">
-            {{ texts[lang].topBar.sort.ratingAsc }}
+            {{ getText("topBar.sort.ratingAsc") }}
           </option>
-          <option value="location">{{ texts[lang].topBar.sort.locationClosest }}</option>
+          <option value="location">{{ getText("topBar.sort.locationClosest") }}</option>
         </select>
 
         <div
           @click="changeView('grid')"
-          :class="[
+          :class="[ 
             'border rounded-lg border-(--border) dark:hover:bg-(--surface) active:bg-(--surface) w-10 h-10 flex items-center justify-center cursor-pointer transition',
             currentView === 'grid' ? 'bg-[#DAECF6]/40 dark:bg-(--surface) border-(--accent)' : '',
           ]"
@@ -267,21 +267,48 @@ export default {
       this.ratingFilter = "";
       this.emitFilters();
     },
-   handleDocumentClick(e) {
-    // const wrapper = this.$refs.wrapper;
-    const dropdown = this.$refs.dropdown;
-    if (dropdown && !dropdown.contains(e.target)) {
-      this.showDropdown = false;
-    }
+    handleDocumentClick(e) {
+      // const wrapper = this.$refs.wrapper;
+      const dropdown = this.$refs.dropdown;
+      if (dropdown && !dropdown.contains(e.target)) {
+        this.showDropdown = false;
+      }
+    },
+
+    // --- New helper: resolve nested keys like "topBar.foo.bar" from texts[lang]
+    getText(path) {
+      try {
+        if (!path || !this.texts || this.lang === undefined) return path;
+        const parts = path.split(".");
+        let obj = this.texts[this.lang];
+        for (let i = 0; i < parts.length; i++) {
+          if (obj === undefined || obj === null) return path;
+          obj = obj[parts[i]];
+        }
+        // If final value is undefined/null, return original path to help debugging
+        return obj !== undefined && obj !== null ? obj : path;
+      } catch (err) {
+        return path;
+      }
+    },
+
+    // --- New helper: format a template string from texts[lang] replacing {key} with params.key
+    formatText(path, params = {}) {
+      const template = this.getText(path);
+      if (typeof template !== "string") return template;
+      return template.replace(/{\s*([^}]+)\s*}/g, (match, p1) => {
+        if (params[p1] === undefined || params[p1] === null) return "";
+        return params[p1];
+      });
+    },
   },
+  mounted() {
+    document.addEventListener("click", this.handleDocumentClick);
   },
- mounted() {
-  document.addEventListener("click", this.handleDocumentClick);
-},
-beforeUnmount() {
-  document.removeEventListener("click", this.handleDocumentClick);
-},
-setup() {
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleDocumentClick);
+  },
+  setup() {
     // استدعاء اللغة
     const { lang, texts, switchLang } = useTestLang();
 
