@@ -407,19 +407,19 @@
     </div>
 
     <transition name="fade">
-      <div v-if="showPopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
-        <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">{{ texts[lang].myOrdersPage.paymentPopup.title }}</h2>
+      <div v-if="showPopup" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-(--surface) rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
+          <h2 class="text-2xl font-semibold text-(--accent) mb-4">Confirm Your Payment</h2>
 
-          <p class="text-gray-700 mb-4">
-            <span class="font-semibold">{{ texts[lang].myOrdersPage.paymentPopup.service }}</span>
+          <p class="text-(--text-muted) mb-4">
+            <span class="font-semibold">Service:</span>
             {{ getTranslatedName(selectedOrder?.serviceTitle) }}
           </p>
-          <p class="text-gray-700 mb-4">
-            <span class="font-semibold">{{ texts[lang].myOrdersPage.paymentPopup.technician }}</span>
+          <p class="text-(--text-muted) mb-4">
+            <span class="font-semibold">Technician:</span>
             {{ getTranslatedName(selectedOrder?.technicianName) }}
           </p>
-          <p class="text-gray-900 text-xl font-bold mb-6">{{ texts[lang].myOrdersPage.paymentPopup.total.replace('{price}', selectedOrder?.price) }}</p>
+          <p class="text-(--accent) text-xl font-bold mb-6">Total: {{ selectedOrder?.price }} EGP</p>
 
           <div class="flex justify-center gap-4">
             <button @click="confirmPayment" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition">{{ texts[lang].myOrdersPage.paymentPopup.confirm }}</button>

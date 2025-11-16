@@ -69,6 +69,7 @@
 
             <transition name="fade-slide">
               <div
+                ref="notificationsDropdown"
                 v-if="showNotifications"
                 class="absolute right-0 rtl:-right-20 top-12 mt-2 w-80 rounded-lg shadow-xl border z-50"
                 :style="{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }"
@@ -517,19 +518,18 @@ export default {
         this.isUserMenuOpen = false;
       }
 
-      // Check for Notification dropdown
+      const notificationsButton = this.$refs.notificationsButton;
+      const notificationsDropdown = this.$refs.notificationsDropdown;
       if (
-        this.showNotifications &&
-        notificationDropdown &&
-        // =============================================
-        //  ⬇️ *** TYPO FIX *** ⬇️
-        // =============================================
-        !notificationDropdown.contains(e.target) && // (كانت مكتوبة e.targt)
-        notificationButton &&
-        !notificationButton.contains(e.target)
-      ) {
-        this.showNotifications = false;
-      }
+      this.showNotifications &&
+      notificationsDropdown &&
+      !notificationsDropdown.contains(e.target) &&
+      notificationsButton &&
+      !notificationsButton.contains(e.target)
+    ) {
+      this.showNotifications = false;
+}
+
     });
   },
 

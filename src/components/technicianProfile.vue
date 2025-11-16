@@ -170,10 +170,7 @@ const analyzeImageWithAI = async () => {
       return;
     }
 
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY; // ✳️ تأكد إنك ضايفها في .env
-    if (!apiKey) throw new Error("Missing Gemini API key");
-
-    // 🔹 حوّل الصورة Base64
+    // 🔹 Convert image to Base64
     const reader = new FileReader();
     const base64Image = await new Promise((resolve, reject) => {
       reader.onload = () => resolve(reader.result.split(",")[1]);
@@ -183,8 +180,8 @@ const analyzeImageWithAI = async () => {
 
     triggerAlert("Analyzing image, please wait...");
 
-    // 🔹 استدعاء Gemini API
-    const response = await fetch("http://localhost:5000/gemini/analyze", {
+    // 🔹 Call backend Gemini proxy
+    const response = await fetch("https://tashtebaty.vercel.app/api/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -194,8 +191,6 @@ const analyzeImageWithAI = async () => {
       }),
     });
 
-
-
     if (!response.ok) {
       throw new Error(`Gemini API error: ${response.status}`);
     }
@@ -204,6 +199,7 @@ const analyzeImageWithAI = async () => {
     const aiText =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "تعذر تحليل الصورة، حاول مرة أخرى.";
+
     orderDescription.value = aiText;
     triggerAlert("AI description generated successfully!");
   } catch (err) {
