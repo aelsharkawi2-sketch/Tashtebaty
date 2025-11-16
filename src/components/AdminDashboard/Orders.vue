@@ -67,19 +67,19 @@
         {{ texts[lang].adminDashboard.orders.loading }}
       </div>
 
-      <!-- Orders Table -->
-      <div v-else>
+      <!-- Orders Table - Desktop -->
+      <div v-else class="hidden md:block">
         <table class="min-w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200">
           <thead class="bg-[#5984C6] text-white">
             <tr>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.orderId }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.customer }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.service }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.provider }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.amount }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.date }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.status }}</th>
-              <th class="py-3 px-4">{{ texts[lang].adminDashboard.orders.actions }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.orderId }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.customer }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.service }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.provider }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.amount }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.date }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.status }}</th>
+              <th class="py-3 px-8" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.orders.actions }}</th>
             </tr>
           </thead>
 
@@ -89,23 +89,23 @@
               :key="order.id"
               class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-500 transition"
             >
-              <td class="py-3 px-4">{{ order.id }}</td>
-              <td class="py-3 px-4">{{ order.customer }}</td>
-              <td class="py-3 px-4">{{ order.service }}</td>
-              <td class="py-3 px-4">{{ order.provider }}</td>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ order.id }}</td>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ order.customer }}</td>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ order.service }}</td>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ order.provider }}</td>
 
-              <td class="py-3 px-4 font-semibold">
+              <td class="py-3 px-4 font-semibold" :class="lang === 'ar' ? 'text-right' : 'text-left'">
                 {{ order.amount }} EGP
               </td>
 
-              <td class="py-3 px-4">
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
                 <div class="flex flex-col">
                   <span class="font-medium">{{ order.date }}</span>
                   <span class="text-xs text-gray-500 dark:text-gray-400">{{ order.time }}</span>
                 </div>
               </td>
 
-              <td class="py-3 px-4">
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
                 <span
                   :class="[
                     'px-3 py-1 rounded-full text-xs font-semibold',
@@ -124,7 +124,7 @@
                 </span>
               </td>
 
-              <td class="py-3 px-4 flex space-x-2">
+              <td class="py-3 px-4 flex space-x-2" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
                 <button @click="openModal('view', order)" class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg">
                   <i class="bi bi-eye"></i>
                 </button>
@@ -140,13 +140,80 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Orders Cards - Mobile -->
+          <div class="md:hidden space-y-4">
+        <div
+          v-for="order in filteredOrders"
+          :key="order.id"
+          class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm"
+        >
+          <div class="flex justify-between items-start mb-3" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+            <div :class="lang === 'ar' ? 'text-right' : ''">
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ order.id }}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{{ order.customer }}</p>
+            </div>
+            <span
+              :class="[
+                'px-2 py-1 rounded-full text-xs font-semibold',
+                order.status === 'completed'
+                  ? 'bg-green-100 text-green-700'
+                  : order.status === 'unconfirmed'
+                  ? 'bg-amber-100 text-amber-700'
+                  : order.status === 'upcoming'
+                  ? 'bg-sky-100 text-sky-700'
+                  : order.status === 'new'
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'bg-rose-100 text-rose-700'
+              ]"
+            >
+              {{ texts[lang].adminDashboard.orders[order.status] }}
+            </span>
+          </div>
+
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.orders.service }}:</span>
+              <span class="font-medium">{{ order.service }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.orders.provider }}:</span>
+              <span class="font-medium">{{ order.provider }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.orders.amount }}:</span>
+              <span class="font-semibold text-[#5984C6]">{{ order.amount }} EGP</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.orders.date }}:</span>
+              <div :class="lang === 'ar' ? 'text-left' : 'text-right'">
+                <div class="font-medium">{{ order.date }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">{{ order.time }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <button @click="openModal('view', order)" class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button @click="openModal('edit', order)" class="p-2 text-yellow-500 hover:bg-yellow-100 rounded-lg">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button @click="openModal('delete', order)" class="p-2 text-red-500 hover:bg-red-100 rounded-lg">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
         <!-- Modal -->
         <div
           v-if="showModal"
-          class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50"
+          class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50 p-4"
         >
-          <div class="bg-white dark:bg-[#111827] dark:text-gray-100 w-full max-w-md mx-4 sm:mx-auto rounded-xl shadow-xl p-4 sm:p-6 relative">
+          <div class="bg-white dark:bg-[#111827] dark:text-gray-100 w-full max-w-md mx-auto rounded-xl shadow-xl p-4 sm:p-6 relative">
             <button @click="closeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
               <i class="bi bi-x-lg"></i>
             </button>
@@ -277,7 +344,7 @@
                 <select v-model="selectedOrder.status"
                   class="w-full p-2 border rounded-lg text-sm bg-white dark:bg-gray-800 dark:border-gray-600"
                 >
-                  <option v-for="s in statusOptions" :value="s.toLowerCase()">
+                  <option v-for="s in statusOptions" :key="s" :value="s.toLowerCase()">
                     {{ s === 'All'
                         ? texts[lang].adminDashboard.orders.allOrders
                         : texts[lang].adminDashboard.orders[s]
@@ -320,7 +387,7 @@
         </div>
       </div>
     </div>
-  </div>
+  
 </template>
 
 
@@ -378,12 +445,22 @@ export default {
     onMounted(fetchOrders);
 
     const filteredOrders = computed(() => {
+      const searchTerm = searchQuery.value.toLowerCase().trim();
+      
       return orders.value.filter((order) => {
-        const matchesSearch =
-          order.customer.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          order.service.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          order.provider.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          order.id.toLowerCase().includes(searchQuery.value.toLowerCase());
+        let matchesSearch = true;
+        
+        if (searchTerm) {
+          matchesSearch =
+            order.id.toLowerCase().includes(searchTerm) ||
+            order.customer.toLowerCase().includes(searchTerm) ||
+            order.service.toLowerCase().includes(searchTerm) ||
+            order.provider.toLowerCase().includes(searchTerm) ||
+            order.amount.toString().includes(searchTerm) ||
+            order.date.toLowerCase().includes(searchTerm) ||
+            order.time.toLowerCase().includes(searchTerm) ||
+            order.status.toLowerCase().includes(searchTerm);
+        }
 
         const matchesStatus =
           filterStatus.value === "All" || order.status === filterStatus.value;

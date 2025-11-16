@@ -1,25 +1,34 @@
 <template>
-  <div class="p-6 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 min-h-screen">
+  <div class="min-h-screen bg-linear-to-br bg-white dark:from-[#0f172a] dark:to-[#1a2332] text-gray-900 dark:text-gray-100 shadow-lg rounded-2xl p-6 sm:p-6 lg:p-8">
 
-    <h1 class="text-3xl font-bold text-[#133B5D] dark:text-[#8db4ff] mb-6">
-      {{ texts[lang].adminDashboard.offers.title }}
-    </h1>
+    <!-- Header Section -->
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#5984C6] dark:text-[#7ba3d9] mb-1">
+        {{ texts[lang].adminDashboard.offers.title }}
+      </h1>
+    
+    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Responsive Grid: 1 col mobile, split on tablet/desktop -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-8 md:gap-6 lg:gap-8">
 
-      <!-- ADD NEW OFFER -->
-      <div class="lg:col-span-1">
-        <div
-          class="bg-white dark:bg-[#1f2937] dark:text-gray-100 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
-        >
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-            {{ texts[lang].adminDashboard.offers.addNewOffer }}
-          </h2>
+      <!-- ADD NEW OFFER FORM -->
+      <div class="md:col-span-1">
+        <div class="sticky top-4 bg-white dark:bg-[#1f2937] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <!-- Header -->
+          <div class="bg-linear-to-r from-[#5984C6] to-[#7ba3d9] px-4 sm:px-6 py-4 sm:py-5">
+            <h2 class="text-lg sm:text-xl font-bold text-white">
+              {{ texts[lang].adminDashboard.offers.addNewOffer }}
+            </h2>
+            <p class="text-xs sm:text-sm text-blue-100 mt-1">Create new promotional offer</p>
+          </div>
 
-          <form @submit.prevent="addOffer" class="space-y-4">
+          <!-- Form Content -->
+          <form @submit.prevent="addOffer" class="p-4 sm:p-6 space-y-4">
 
+            <!-- Title Input -->
             <div>
-              <label class="block font-medium mb-1">
+              <label :class="['block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300', lang === 'ar' ? 'text-right' : 'text-left']">
                 {{ texts[lang].adminDashboard.offers.titleLabel }}
               </label>
               <input
@@ -27,12 +36,13 @@
                 type="text"
                 required
                 placeholder="e.g., 20% OFF"
-                class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                :class="['w-full px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-[#5984C6] focus:ring-2 focus:ring-[#5984C6]/20 transition', lang === 'ar' ? 'text-right' : 'text-left']"
               />
             </div>
 
+            <!-- Description Input -->
             <div>
-              <label class="block font-medium mb-1">
+              <label :class="['block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300', lang === 'ar' ? 'text-right' : 'text-left']">
                 {{ texts[lang].adminDashboard.offers.descriptionLabel }}
               </label>
               <input
@@ -40,26 +50,42 @@
                 type="text"
                 required
                 placeholder="e.g., On all plumbing services"
-                class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                :class="['w-full px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-[#5984C6] focus:ring-2 focus:ring-[#5984C6]/20 transition', lang === 'ar' ? 'text-right' : 'text-left']"
               />
             </div>
 
+            <!-- Image Upload -->
             <div>
-              <label class="block font-medium mb-1">
+              <label :class="['block text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300', lang === 'ar' ? 'text-right' : 'text-left']">
                 {{ texts[lang].adminDashboard.offers.uploadImage }}
               </label>
               <input
                 type="file"
                 accept="image/*"
                 @change="handleFileChange"
-                class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                class="w-full px-4 py-2 text-sm rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 cursor-pointer hover:border-[#5984C6] hover:bg-blue-50 dark:hover:bg-gray-800/50 transition file:mr-3 file:px-3 file:py-1 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#5984C6] file:text-white file:cursor-pointer"
               />
             </div>
 
+            <!-- Image Preview -->
+            <div v-if="selectedFile" class="pt-2">
+              <div class="relative w-full h-32 sm:h-40 rounded-lg overflow-hidden border-2 border-[#5984C6]/30 bg-gray-100 dark:bg-gray-800">
+                <img :src="imagePreview" class="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  @click="clearPreview"
+                  class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 w-8 h-8 flex items-center justify-center transition shadow-lg"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
             <button
               type="submit"
-              :disabled="isSaving"
-              class="w-full bg-accent-color text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#1b5383] disabled:opacity-50 flex items-center justify-center gap-2"
+              :disabled="isSaving || !selectedFile"
+              class="w-full bg-linear-to-r from-[#5984C6] to-[#7ba3d9] hover:shadow-lg text-white font-semibold py-3 sm:py-4 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all duration-300"
             >
               <svg
                 v-if="isSaving"
@@ -83,72 +109,124 @@
                    7.938l3-2.647z"
                 ></path>
               </svg>
-
-              {{
-                isSaving
-                  ? texts[lang].adminDashboard.offers.saving
-                  : texts[lang].adminDashboard.offers.addOffer
-              }}
+              <span>
+                {{
+                  isSaving
+                    ? texts[lang].adminDashboard.offers.saving
+                    : texts[lang].adminDashboard.offers.addOffer
+                }}
+              </span>
             </button>
           </form>
         </div>
       </div>
 
-      <!-- EXISTING OFFERS -->
-      <div class="lg:col-span-2">
-        <div
-          class="bg-white dark:bg-[#1f2937] dark:text-gray-100 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700"
-        >
-          <h2 class="text-xl font-semibold mb-4">
-            {{ texts[lang].adminDashboard.offers.currentOffers }}
-          </h2>
-
-          <!-- Loading -->
-          <div v-if="isLoading" class="text-center py-10">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
-            {{ texts[lang].adminDashboard.offers.loading }}
+      <!-- EXISTING OFFERS SECTION -->
+      <div class="md:col-span-1">
+        <div class="bg-white dark:bg-[#1f2937] rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <!-- Header -->
+          <div class="bg-linear-to-r from-[#5984C6] to-[#7ba3d9] px-4 sm:px-6 py-4 sm:py-5">
+            <h2 class="text-lg sm:text-xl font-bold text-white">
+              {{ texts[lang].adminDashboard.offers.currentOffers }}
+            </h2>
+            <p class="text-xs sm:text-sm text-blue-100 mt-1">{{ offers.length }} active offers</p>
           </div>
 
-          <!-- Empty -->
-          <div v-else-if="offers.length === 0" class="text-center py-10 text-gray-500">
-            <i class="fa-solid fa-tags text-3xl mb-3"></i>
-            <p>{{ texts[lang].adminDashboard.offers.noOffers }}</p>
-          </div>
+          <!-- Content -->
+          <div class="p-4 sm:p-6">
+       
+            <!-- Loading State -->
+            <div v-if="isLoading" class="text-center py-12">
+              <div class="animate-spin rounded-full h-10 w-10 border-4 border-[#5984C6] border-t-[#7ba3d9] mx-auto mb-4"></div>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">{{ texts[lang].adminDashboard.offers.loading }}</p>
+            </div>
 
-          <!-- Offers List -->
-          <div v-else class="space-y-4">
-            <div
-              v-for="offer in offers"
-              :key="offer.id"
-              class="flex items-center justify-between p-4 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm bg-white dark:bg-gray-800"
-            >
-              <div class="flex items-center gap-4">
-                <img
-                  :src="offer.image"
-                  class="w-16 h-16 rounded-lg object-cover"
-                />
-                <div>
-                  <h3 class="font-semibold">{{ offer.title }}</h3>
-                  <p class="text-sm text-gray-600 dark:text-gray-300">
+            <!-- Empty State -->
+            <div v-else-if="offers.length === 0" class="text-center py-12">
+              <div class="text-4xl mb-3">📦</div>
+              <p class="text-gray-600 dark:text-gray-400 font-medium">{{ texts[lang].adminDashboard.offers.noOffers }}</p>
+              <p class="text-gray-500 dark:text-gray-500 text-sm mt-1">Create your first offer to get started</p>
+            </div>
+
+            <!-- Offers Grid -->
+            <div v-else class="space-y-4">
+              <div
+                v-for="offer in offers"
+                :key="offer.id"
+                class="bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow flex flex-row items-center gap-3 p-3 sm:gap-4 sm:p-4"
+              >
+                <!-- Image Container -->
+                <div class="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0 overflow-hidden bg-gray-200 dark:bg-gray-900 rounded-lg">
+                  <img
+                    :src="offer.image"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+
+                <!-- Content -->
+                <div class="flex flex-col grow min-w-0">
+                  <h3 :class="['text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate', lang === 'ar' ? 'text-right' : 'text-left']">
+                    {{ offer.title }}
+                  </h3>
+                  <p :class="['text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2', lang === 'ar' ? 'text-right' : 'text-left']">
                     {{ offer.description }}
                   </p>
                 </div>
-              </div>
 
-              <button
-                @click="deleteOffer(offer.id)"
-                class="text-red-500 hover:text-red-700 transition"
-                :title="texts[lang].adminDashboard.offers.delete"
-              >
-                <i class="fa-solid fa-trash-can text-lg"></i>
-              </button>
+                <!-- Delete Button -->
+                <button
+                  @click="deleteOffer(offer.id, offer.title)"
+                  class="shrink-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-2 sm:px-3 rounded-lg transition-colors flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10"
+                  :title="texts[lang].adminDashboard.offers.delete"
+                >
+                  <i class="fa-solid fa-trash-can text-sm"></i>
+                </button>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
 
     </div>
+
+    <!-- Delete Modal Overlay -->
+    <Teleport to="body">
+      <transition name="modal">
+        <div
+          v-if="showDeleteModal"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+          @click.self="closeDeleteModal"
+        >
+          <!-- Delete Modal -->
+          <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <h3 class="text-xl font-semibold text-red-600 mb-4">
+              {{ texts[lang].adminDashboard.offers.deleteConfirm }}
+            </h3>
+
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              Are you sure you want to delete the offer "<strong>{{ offerToDelete?.title }}</strong>"?<br/>
+              <span class="text-sm text-gray-500">This action cannot be undone.</span>
+            </p>
+
+            <div class="flex justify-center gap-4">
+              <button
+                @click="confirmDelete"
+                class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition"
+              >
+                Delete
+              </button>
+
+              <button
+                @click="closeDeleteModal"
+                class="px-6 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold rounded-lg transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </Teleport>
   </div>
 </template>
 
@@ -173,6 +251,9 @@ const offers = ref([]);
 const isLoading = ref(true);
 const isSaving = ref(false);
 const selectedFile = ref(null);
+const imagePreview = ref(null);
+const showDeleteModal = ref(false);
+const offerToDelete = ref(null);
 
 const newOffer = ref({
   title: "",
@@ -184,6 +265,17 @@ const offersCollection = collection(db, "offers");
 
 const handleFileChange = (event) => {
   selectedFile.value = event.target.files[0];
+  if (selectedFile.value) {
+    imagePreview.value = URL.createObjectURL(selectedFile.value);
+  }
+};
+
+const clearPreview = () => {
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value);
+  }
+  imagePreview.value = null;
+  selectedFile.value = null;
 };
 
 const fetchOffers = async () => {
@@ -229,20 +321,83 @@ const addOffer = async () => {
   }
 };
 
-const deleteOffer = async (id) => {
-  if (!confirm(texts[lang].adminDashboard.offers.deleteConfirm)) return;
+const deleteOffer = (id, title) => {
+  console.log("Delete clicked for:", id, title);
+  offerToDelete.value = { id, title };
+  showDeleteModal.value = true;
+  console.log("Modal should show:", showDeleteModal.value);
+};
 
+const confirmDelete = async () => {
   try {
-    await deleteDoc(doc(db, "offers", id));
+    console.log("Starting deletion for offer:", offerToDelete.value.id);
+    await deleteDoc(doc(db, "offers", offerToDelete.value.id));
+    console.log("Offer deleted successfully from database");
+    
     await fetchOffers();
+    console.log("Offers refreshed after deletion");
+    
+    showDeleteModal.value = false;
+    offerToDelete.value = null;
   } catch (error) {
     console.error("Error deleting offer:", error);
+    alert("❌ Failed to delete offer:\n" + error.message);
+    showDeleteModal.value = false;
   }
+};
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false;
+  offerToDelete.value = null;
 };
 
 onMounted(fetchOffers);
 </script>
 
 <style scoped>
-/* نفس الـ CSS بدون تغيير */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Modal Transition */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-enter-from .bg-white,
+.modal-leave-to .bg-white {
+  transform: scale(0.95);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  :deep(.sticky) {
+    position: relative;
+  }
+}
+
+/* Input focus glow effect */
+input:focus {
+  box-shadow: 0 0 0 3px rgba(89, 132, 198, 0.1);
+}
 </style>
+
+           

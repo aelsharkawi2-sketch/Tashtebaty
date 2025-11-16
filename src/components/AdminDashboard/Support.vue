@@ -2,7 +2,7 @@
   <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
 
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
+     <div class="flex justify-between items-center mb-6">
       <div>
         <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">
           {{ texts[lang].adminDashboard.support.title }}
@@ -20,7 +20,7 @@
             v-model="searchTerm"
             type="text"
             :placeholder="texts[lang].adminDashboard.support.searchPlaceholder"
-            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
+            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
           />
 
           <svg
@@ -42,30 +42,30 @@
       {{ texts[lang].adminDashboard.support.loadingTickets }}
     </div>
 
-    <!-- Tickets Table -->
+    <!-- Tickets Table - Desktop -->
     <div
       v-else
-      class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
+      class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4">
+            <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ texts[lang].adminDashboard.support.name }}
             </th>
-            <th class="py-3 px-4">
+            <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ texts[lang].adminDashboard.support.email }}
             </th>
-            <th class="py-3 px-4">
+            <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ texts[lang].adminDashboard.support.phone }}
             </th>
-            <th class="py-3 px-4">
+            <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ texts[lang].adminDashboard.support.subject }}
             </th>
-            <th class="py-3 px-4">
+            <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ texts[lang].adminDashboard.support.ticketDate }}
             </th>
-            <th class="py-3 px-4">
+            <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ texts[lang].adminDashboard.support.actions }}
             </th>
           </tr>
@@ -77,12 +77,12 @@
             :key="ticket.id"
             class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-500 transition"
           >
-            <td class="py-3 px-4">{{ ticket.name }}</td>
-            <td class="py-3 px-4">{{ ticket.email }}</td>
-            <td class="py-3 px-4">{{ ticket.phone }}</td>
-            <td class="py-3 px-4">{{ ticket.subject }}</td>
+            <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ ticket.name }}</td>
+            <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ ticket.email }}</td>
+            <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ ticket.phone }}</td>
+            <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ ticket.subject }}</td>
 
-            <td class="py-3 px-4">
+            <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
               {{ ticket.createdAt?.toDate().toLocaleString() }}
             </td>
 
@@ -102,10 +102,50 @@
       </table>
     </div>
 
+    <!-- Tickets Cards - Mobile -->
+    <div class="md:hidden space-y-4">
+      <div
+        v-for="ticket in filteredTickets"
+        :key="ticket.id"
+        class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm"
+      >
+        <div class="flex justify-between items-start mb-3" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+          <div :class="lang === 'ar' ? 'text-right' : ''">
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ ticket.name }}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">{{ ticket.email }}</p>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.support.phone }}:</span>
+            <span class="font-medium">{{ ticket.phone || "-" }}</span>
+          </div>
+          <div class="flex justify-between" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.support.subject }}:</span>
+            <span class="font-medium">{{ ticket.subject }}</span>
+          </div>
+          <div class="flex justify-between" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.support.ticketDate }}:</span>
+            <span class="font-medium">{{ ticket.createdAt?.toDate().toLocaleString() }}</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+          <button
+            @click="viewMessage(ticket)"
+            class="p-2 text-green-500 hover:bg-green-100 rounded-lg"
+          >
+            <i class="bi bi-chat-dots"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- VIEW MESSAGE MODAL -->
     <div
       v-if="showMessageModal"
-      class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
     >
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn relative">
 

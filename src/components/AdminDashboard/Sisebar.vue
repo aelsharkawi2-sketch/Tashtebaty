@@ -131,12 +131,31 @@
           <button
             ref="langButton"
             @click="toggleLanguage"
-            class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 language-switch-button"
-            :title="texts[lang].adminDashboard.sidebar.switchToEnglish"
+            class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200"
+            :title="lang === 'ar' ? texts[lang].adminDashboard.sidebar.switchToEnglish : texts[lang].adminDashboard.sidebar.switchToArabic"
           >
-            <i
-              class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
-            ></i>
+            <!-- English Icon (visible when in Arabic) -->
+            <span
+              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
+              :class="{
+                'rotate-0 scale-100 opacity-100': lang === 'ar',
+                'rotate-90 scale-0 opacity-0': lang !== 'ar'
+              }"
+            >
+              EN
+            </span>
+
+            <!-- Arabic Icon (visible when in English) -->
+            <span
+              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
+              :class="{
+                'rotate-0 scale-100 opacity-100': lang === 'en',
+                '-rotate-90 scale-0 opacity-0': lang !== 'en'
+              }"
+            >
+              عربي
+            </span>
+
             <span class="sr-only">Toggle language</span>
           </button>
 
@@ -187,35 +206,58 @@
         </div>
 
         <!-- Dropdown -->
-        <transition name="fade-slide">
+             <transition name="fade-slide">
           <div
             v-if="isUserMenuOpen"
             ref="dropdown"
             :class="[
               'absolute top-16 bg-white dark:bg-[#1f2937] w-60 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50',
-              lang === 'ar' ? 'left-4' : 'right-4'
+              $i18n.locale === 'ar' ? 'left-4' : 'right-4'
             ]"
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
               <div
                 class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-300 dark:border-gray-600 overflow-hidden"
               >
-                <img
-                  v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')"
-                  :src="userPhoto"
-                  alt="profile"
+                <img 
+                  v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
+                  :src="userPhoto" 
+                  alt="profile" 
                   class="w-full h-full object-cover"
-                  @error="handleImageError"
+                  @error="handleImageError" 
                 />
                 <i v-else class="bi bi-person text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-gray-800 dark:text-gray-100 font-medium mt-2">{{ userName || 'Admin' }}</h3>
               <p class="text-gray-500 dark:text-gray-300 text-sm">{{ userEmail }}</p>
+
             </div>
 
+            <div class="flex flex-col py-2">
+            <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
+  <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
+  <span>{{ $t('adminDashboard.sidebar.profileSettings') }}</span>
+</div>
+
+
+              <div
+                @click="switchAccount"
+                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-repeat text-[#5984C6]"></i>
+                <span>{{ $t('adminDashboard.sidebar.switchAccount') }}</span>
+              </div>
+
+              <div
+                @click="handleLogout"
+                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-arrow-right-from-bracket text-[#5984C6]"></i>
+                <span>{{ $t('adminDashboard.sidebar.logout') }}</span>
+              </div>
+            </div>
           </div>
         </transition>
-
       </header>
 
       <!-- Page content -->
@@ -260,6 +302,7 @@ export default {
     const isDark = ref(false)
     const isSidebarOpen = ref(false)
     const windowWidth = ref(window.innerWidth)
+    const isLanguageSwitching = ref(false)
     const auth = getAuth()
 
     // 🟦 تحميل بيانات المستخدم
@@ -401,6 +444,8 @@ export default {
 
     // 🌐 تغيير اللغة الجديدة
     const toggleLanguage = () => {
+      isLanguageSwitching.value = true
+      
       const next = lang.value === "ar" ? "en" : "ar"
       switchLang(next)
 
@@ -408,6 +453,11 @@ export default {
       document.documentElement.dir = next === "ar" ? "rtl" : "ltr"
 
       localStorage.setItem("lang", next)
+
+      // إنهاء الانيميشن بعد انتهاء الدوران
+      setTimeout(() => {
+        isLanguageSwitching.value = false
+      }, 500)
     }
 
     // ⛔ صورة فاسدة
@@ -460,6 +510,7 @@ export default {
       toggleSidebar,
       closeSidebar,
       windowWidth,
+      isLanguageSwitching,
     }
   }
 }
@@ -482,17 +533,42 @@ export default {
   transition: transform 0.3s ease-in-out;
 }
 
-.rotate-animation {
-  animation: rotate 0.5s ease-in-out;
+/* Clockwise rotation (English to Arabic) */
+.rotate-animate-clockwise {
+  animation: rotateClockwise 0.6s ease-in-out forwards;
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
+@keyframes rotateClockwise {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    transform: translate(-50%, -50%) rotateZ(180deg) scale(1.15);
   }
+  100% {
+    transform: translate(-50%, -50%) rotateZ(360deg) scale(1);
+  }
+}
+
+/* Counter-clockwise rotation (Arabic to English) */
+.rotate-animate-counterclockwise {
+  animation: rotateCounterClockwise 0.6s ease-in-out forwards;
+}
+
+@keyframes rotateCounterClockwise {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotateZ(-180deg) scale(1.15);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotateZ(-360deg) scale(1);
+  }
+}
+
+.rotate-on-hover:hover {
+  animation: rotateClockwise 0.6s ease-in-out;
 }
 
 </style>

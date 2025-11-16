@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
+  <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-4 sm:p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">
@@ -7,13 +7,13 @@
       </h2>
 
       <!-- Search -->
-      <div class="flex items-center space-x-4">
-        <div class="relative">
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        <div class="relative w-full sm:w-auto">
           <input
             v-model="searchTerm"
             type="text"
             :placeholder="texts[lang].adminDashboard.providers.searchPlaceholder"
-            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
+            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
           />
           <svg
             class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
@@ -29,11 +29,11 @@
     </div>
 
     <!-- Tabs -->
-    <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+    <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4 sm:mb-6 overflow-x-auto">
       <button
         @click="activeTab = 'company'"
         :class="[
-          'px-6 py-3 text-lg font-medium border-b-2',
+          'px-4 sm:px-6 py-3 text-sm sm:text-lg font-medium border-b-2 whitespace-nowrap',
           activeTab === 'company'
             ? 'border-[#5984C6] text-[#5984C6]'
             : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'
@@ -45,7 +45,7 @@
       <button
         @click="activeTab = 'craftsmen'"
         :class="[
-          'px-6 py-3 text-lg font-medium border-b-2',
+          'px-4 sm:px-6 py-3 text-sm sm:text-lg font-medium border-b-2 whitespace-nowrap',
           activeTab === 'craftsmen'
             ? 'border-[#5984C6] text-[#5984C6]'
             : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'
@@ -67,16 +67,16 @@
     <!-- Companies Table -->
     <div
       v-else-if="activeTab === 'company'"
-      class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
+      class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
     >
-      <div class="flex justify-between items-center mb-4 p-4">
-        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 p-2 sm:p-4 gap-2">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">
           {{ texts[lang].adminDashboard.providers.allCompanies }}
         </h3>
 
         <button
           @click="toggleSort('createdAt')"
-          class="flex items-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition"
+          class="flex items-center justify-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition w-full sm:w-auto"
         >
           {{ texts[lang].adminDashboard.providers.sortByCreated }}
           <svg
@@ -90,37 +90,37 @@
         </button>
       </div>
 
-      <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
+      <table class="min-w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm whitespace-nowrap w-12 sm:w-16">
               {{ texts[lang].adminDashboard.providers.profile }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.companyName }}
             </th>
-            <th class="py-3 px-10 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.email }}
             </th>
-            <th class="py-3 px-8 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.phone }}
             </th>
-            <th class="py-3 px-8 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.address }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap min-w-14 sm:min-w-16">
               {{ texts[lang].adminDashboard.providers.rating }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap min-w-16 sm:min-w-20">
               {{ texts[lang].adminDashboard.providers.viewModal.teamSize }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap min-w-14 sm:min-w-16">
               {{ texts[lang].adminDashboard.providers.orders }}
             </th>
-            <th class="py-3 px-6 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-center text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.status }}
             </th>
-            <th class="py-3 px-16 text-left">
+            <th class="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.actions }}
             </th>
           </tr>
@@ -132,9 +132,9 @@
             :key="company.id"
             class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-500 transition"
           >
-            <td class="py-3 px-4">
+            <td class="py-2 sm:py-3 px-1 sm:px-2">
               <div
-                class="h-10 w-10 rounded-full bg-[#dedede] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff] overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold hover:scale-110 transition-transform duration-200"
+                class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-[#dedede] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff] overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold hover:scale-110 transition-transform duration-200"
               >
                 <img
                   :src="company.logoImage || getProviderImage(company) || defaultAvatar"
@@ -145,26 +145,26 @@
               </div>
             </td>
 
-            <td class="py-3 px-4">{{ company.name }}</td>
-            <td class="py-3 px-4">{{ company.email }}</td>
-            <td class="py-3 px-4">{{ company.phone || '-' }}</td>
-            <td class="py-3 px-10">{{ formatAddress(company) }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ company.name }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ company.email }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ company.phone || '-' }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ formatCity(company) }}</td>
 
-            <td class="py-3 px-4 flex items-center space-x-1">
-              <span>{{ company.rating ?? 0 }}</span>
-              <i class="bi bi-star-fill text-yellow-400"></i>
+            <td class="py-2 sm:py-3 px-2 sm:px-3 flex items-center justify-center whitespace-nowrap">
+              <span class="text-xs sm:text-sm">{{ company.rating ?? 0 }}</span>
+              <i class="bi bi-star-fill text-yellow-400 text-sm ml-1"></i>
             </td>
 
-            <td class="py-3 px-4 text-center">
+            <td class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap">
               {{ company.teamSize ?? 0 }}
             </td>
 
-            <td class="py-3 px-8">{{ company.orderCount ?? 0 }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap">{{ company.orderCount ?? 0 }}</td>
 
-            <td class="py-3 px-6">
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-center">
               <span
                 :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
+                  'px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap inline-block',
                   company.status === 'banned'
                     ? 'bg-red-100 text-red-600'
                     : company.status === 'pending'
@@ -182,53 +182,53 @@
               </span>
             </td>
 
-            <td class="py-3 px-6 flex space-x-2">
+            <td class="py-2 sm:py-3 px-1 sm:px-2 flex justify-center space-x-1">
               <button
                 @click="viewProvider(company)"
-                class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition"
+                class="p-1 sm:p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition"
                 :title="texts[lang].adminDashboard.providers.view"
               >
-                <i class="bi bi-eye"></i>
+                <i class="bi bi-eye text-sm sm:text-base"></i>
               </button>
 
-              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <div class="h-5 border-l border-gray-300 dark:border-gray-600 mt-1 sm:mt-3"></div>
 
               <button
                 @click="openEditModal(company)"
-                class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.edit"
               >
-                <i class="bi bi-pencil"></i>
+                <i class="bi bi-pencil text-sm sm:text-base"></i>
               </button>
 
-              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <div class="h-5 border-l border-gray-300 dark:border-gray-600 mt-1 sm:mt-3"></div>
 
               <button
                 v-if="company.status !== 'banned'"
                 @click="openSuspendModal(company)"
-                class="p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.suspend"
               >
-                <i class="bi bi-slash-circle"></i>
+                <i class="bi bi-slash-circle text-sm sm:text-base"></i>
               </button>
 
               <button
                 v-else
                 @click="openReactivateModal(company)"
-                class="p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.reactivate"
               >
-                <i class="bi bi-check-circle"></i>
+                <i class="bi bi-check-circle text-sm sm:text-base"></i>
               </button>
 
-              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <div class="h-5 border-l border-gray-300 dark:border-gray-600 mt-1 sm:mt-3"></div>
 
               <button
                 @click="openDeleteModal(company)"
-                class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.delete"
               >
-                <i class="bi bi-trash"></i>
+                <i class="bi bi-trash text-sm sm:text-base"></i>
               </button>
             </td>
           </tr>
@@ -236,20 +236,123 @@
       </table>
     </div>
 
+    <!-- Companies Cards - Mobile -->
+    <div v-if="activeTab === 'company'" class="md:hidden space-y-4">
+      <div
+        v-for="company in filteredCompanies"
+        :key="company.id"
+        class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm"
+      >
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center space-x-3">
+            <div
+              class="h-12 w-12 rounded-full bg-[#dedede] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff] overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold"
+            >
+              <img
+                :src="company.logoImage || getProviderImage(company) || defaultAvatar"
+                alt="logo"
+                class="h-full w-full object-contain"
+                @error="onImgError"
+              />
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ company.name }}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{{ company.email }}</p>
+            </div>
+          </div>
+          <span
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-semibold',
+              company.status === 'banned'
+                ? 'bg-red-100 text-red-600'
+                : company.status === 'pending'
+                ? 'bg-yellow-100 text-yellow-600'
+                : 'bg-green-100 text-green-600'
+            ]"
+          >
+            {{
+              company.status === 'banned'
+                ? texts[lang].adminDashboard.providers.banned
+                : company.status === 'pending'
+                ? texts[lang].adminDashboard.providers.pending
+                : texts[lang].adminDashboard.providers.active
+            }}
+          </span>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.phone }}:</span>
+            <span class="font-medium">{{ company.phone || '-' }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.address }}:</span>
+            <span class="font-medium">{{ formatCity(company) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.rating }}:</span>
+            <span class="font-medium flex items-center gap-1">{{ company.rating ?? 0 }} <i class="bi bi-star-fill text-yellow-400"></i></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.viewModal.teamSize }}:</span>
+            <span class="font-medium">{{ company.teamSize ?? 0 }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.orders }}:</span>
+            <span class="font-medium">{{ company.orderCount ?? 0 }}</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <button
+            @click="viewProvider(company)"
+            class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
+          >
+            <i class="bi bi-eye"></i>
+          </button>
+          <button
+            @click="openEditModal(company)"
+            class="p-2 text-yellow-500 hover:bg-yellow-100 rounded-lg"
+          >
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button
+            v-if="company.status !== 'banned'"
+            @click="openSuspendModal(company)"
+            class="p-2 text-red-500 hover:bg-orange-100 rounded-lg"
+          >
+            <i class="bi bi-slash-circle"></i>
+          </button>
+          <button
+            v-else
+            @click="openReactivateModal(company)"
+            class="p-2 text-green-500 hover:bg-green-100 rounded-lg"
+          >
+            <i class="bi bi-check-circle"></i>
+          </button>
+          <button
+            @click="openDeleteModal(company)"
+            class="p-2 text-red-500 hover:bg-red-100 rounded-lg"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
 
         <!-- Craftsmen Table -->
     <div
       v-else
-      class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
+      class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
     >
-      <div class="flex justify-between items-center mb-4 p-4">
-        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 p-2 sm:p-4 gap-2">
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">
           {{ texts[lang].adminDashboard.providers.allCraftsmen }}
         </h3>
 
         <button
           @click="toggleSort('createdAt')"
-          class="flex items-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition"
+          class="flex items-center justify-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition w-full sm:w-auto"
         >
           {{ texts[lang].adminDashboard.providers.sortByCreated }}
           <svg
@@ -263,37 +366,37 @@
         </button>
       </div>
 
-      <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
+      <table class="min-w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm whitespace-nowrap w-12 sm:w-16">
               {{ texts[lang].adminDashboard.providers.profile }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.name }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.email }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.phone }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.address }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-left text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.skill }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap min-w-14 sm:min-w-16">
               {{ texts[lang].adminDashboard.providers.rating }}
             </th>
-            <th class="py-3 px-4 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap min-w-14 sm:min-w-16">
               {{ texts[lang].adminDashboard.providers.orders }}
             </th>
-            <th class="py-3 px-8 text-left">
+            <th class="py-2 sm:py-3 px-2 sm:px-4 text-center text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.status }}
             </th>
-            <th class="py-3 px-16 text-left">
+            <th class="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm whitespace-nowrap">
               {{ texts[lang].adminDashboard.providers.actions }}
             </th>
           </tr>
@@ -305,9 +408,9 @@
             :key="craft.id"
             class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-500 transition"
           >
-            <td class="py-2 px-3">
+            <td class="py-2 sm:py-3 px-1 sm:px-2">
               <div
-                class="h-10 w-10 rounded-full bg-[#e8f0fe] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff] overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold hover:scale-110 transition-transform duration-200"
+                class="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-[#e8f0fe] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff] overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold hover:scale-110 transition-transform duration-200"
               >
                 <img
                   :src="getProviderImage(craft) || defaultAvatar"
@@ -318,23 +421,23 @@
               </div>
             </td>
 
-            <td class="py-2 px-3">{{ craft.name }}</td>
-            <td class="py-2 px-3">{{ craft.email }}</td>
-            <td class="py-2 px-3">{{ craft.phone || '-' }}</td>
-            <td class="py-2 px-3">{{ formatAddress(craft) }}</td>
-            <td class="py-2 px-3">{{ craft.skill || '-' }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ craft.name }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ craft.email }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ craft.phone || '-' }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ formatCity(craft) }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm">{{ craft.skill || '-' }}</td>
 
-            <td class="py-2 px-3 flex items-center space-x-1">
-              <span>{{ craft.rating ?? 0 }}</span>
-              <i class="bi bi-star-fill text-yellow-400"></i>
+            <td class="py-2 sm:py-3 px-2 sm:px-3 flex items-center justify-center whitespace-nowrap">
+              <span class="text-xs sm:text-sm">{{ craft.rating ?? 0 }}</span>
+              <i class="bi bi-star-fill text-yellow-400 text-sm ml-1"></i>
             </td>
 
-            <td class="py-2 px-8">{{ craft.orderCount ?? 0 }}</td>
+            <td class="py-2 sm:py-3 px-2 sm:px-3 text-center text-xs sm:text-sm whitespace-nowrap">{{ craft.orderCount ?? 0 }}</td>
 
-            <td class="py-3 px-8">
+            <td class="py-2 sm:py-3 px-2 sm:px-4 text-center">
               <span
                 :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
+                  'px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap inline-block',
                   craft.status === 'banned'
                     ? 'bg-red-100 text-red-600'
                     : craft.status === 'pending'
@@ -352,58 +455,162 @@
               </span>
             </td>
 
-            <td class="py-3 px-4 flex space-x-2">
+            <td class="py-2 sm:py-3 px-1 sm:px-2 flex justify-center space-x-1">
               <button
                 @click="viewProvider(craft)"
-                class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition"
+                class="p-1 sm:p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition"
                 :title="texts[lang].adminDashboard.providers.view"
               >
-                <i class="bi bi-eye"></i>
+                <i class="bi bi-eye text-sm sm:text-base"></i>
               </button>
 
-              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <div class="h-5 border-l border-gray-300 dark:border-gray-600 mt-1 sm:mt-3"></div>
 
               <button
                 @click="openEditModal(craft)"
-                class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.edit"
               >
-                <i class="bi bi-pencil"></i>
+                <i class="bi bi-pencil text-sm sm:text-base"></i>
               </button>
 
-              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <div class="h-5 border-l border-gray-300 dark:border-gray-600 mt-1 sm:mt-3"></div>
 
               <button
                 v-if="craft.status !== 'banned'"
                 @click="openSuspendModal(craft)"
-                class="p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.suspend"
               >
-                <i class="bi bi-slash-circle"></i>
+                <i class="bi bi-slash-circle text-sm sm:text-base"></i>
               </button>
 
               <button
                 v-else
                 @click="openReactivateModal(craft)"
-                class="p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.reactivate"
               >
-                <i class="bi bi-check-circle"></i>
+                <i class="bi bi-check-circle text-sm sm:text-base"></i>
               </button>
 
-              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <div class="h-5 border-l border-gray-300 dark:border-gray-600 mt-1 sm:mt-3"></div>
 
               <button
                 @click="openDeleteModal(craft)"
-                class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
+                class="p-1 sm:p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
                 :title="texts[lang].adminDashboard.providers.delete"
               >
-                <i class="bi bi-trash"></i>
+                <i class="bi bi-trash text-sm sm:text-base"></i>
               </button>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Craftsmen Cards - Mobile -->
+    <div v-if="activeTab === 'craftsmen'" class="md:hidden space-y-4">
+      <div
+        v-for="craft in filteredCraftsmen"
+        :key="craft.id"
+        class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm"
+      >
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center space-x-3">
+            <div
+              class="h-12 w-12 rounded-full bg-[#e8f0fe] dark:bg-gray-800 border-2 border-[#5984C6] dark:border-[#8db4ff] overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold"
+            >
+              <img
+                :src="getProviderImage(craft) || defaultAvatar"
+                alt="avatar"
+                class="h-full w-full object-cover"
+                @error="onImgError"
+              />
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ craft.name }}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{{ craft.email }}</p>
+            </div>
+          </div>
+          <span
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-semibold',
+              craft.status === 'banned'
+                ? 'bg-red-100 text-red-600'
+                : craft.status === 'pending'
+                ? 'bg-yellow-100 text-yellow-600'
+                : 'bg-green-100 text-green-600'
+            ]"
+          >
+            {{
+              craft.status === 'banned'
+                ? texts[lang].adminDashboard.providers.banned
+                : craft.status === 'pending'
+                ? texts[lang].adminDashboard.providers.pending
+                : texts[lang].adminDashboard.providers.active
+            }}
+          </span>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.phone }}:</span>
+            <span class="font-medium">{{ craft.phone || '-' }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.address }}:</span>
+            <span class="font-medium truncate max-w-[60%]" :title="formatAddressShort(craft)">{{ formatAddressShort(craft) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.skill }}:</span>
+            <span class="font-medium">{{ craft.skill || '-' }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.rating }}:</span>
+            <span class="font-medium flex items-center gap-1">{{ craft.rating ?? 0 }} <i class="bi bi-star-fill text-yellow-400"></i></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.providers.orders }}:</span>
+            <span class="font-medium">{{ craft.orderCount ?? 0 }}</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <button
+            @click="viewProvider(craft)"
+            class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
+          >
+            <i class="bi bi-eye"></i>
+          </button>
+          <button
+            @click="openEditModal(craft)"
+            class="p-2 text-yellow-500 hover:bg-yellow-100 rounded-lg"
+          >
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button
+            v-if="craft.status !== 'banned'"
+            @click="openSuspendModal(craft)"
+            class="p-2 text-red-500 hover:bg-orange-100 rounded-lg"
+          >
+            <i class="bi bi-slash-circle"></i>
+          </button>
+          <button
+            v-else
+            @click="openReactivateModal(craft)"
+            class="p-2 text-green-500 hover:bg-green-100 rounded-lg"
+          >
+            <i class="bi bi-check-circle"></i>
+          </button>
+          <button
+            @click="openDeleteModal(craft)"
+            class="p-2 text-red-500 hover:bg-red-100 rounded-lg"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- CONFIRMATION MODALS -->
@@ -1220,6 +1427,51 @@ const formatAddress = (p) => {
 
   if (p.city && !parts.includes(p.city)) parts.push(p.city);
   return parts.length ? parts.join(", ") : "-";
+};
+
+/* Extract just the city for compact table display */
+const formatCity = (p) => {
+  if (!p) return "-";
+  const addr = p.address;
+  
+  if (addr && typeof addr === "object") {
+    if (addr.city) return addr.city;
+  } else if (typeof addr === "string" && addr.trim()) {
+    const parts = addr.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 0) return parts[parts.length - 2] || parts[0];
+  }
+  
+  if (p.city) return p.city;
+  return "-";
+};
+
+/* Short address: prefer city + country for compact display */
+const formatAddressShort = (p) => {
+  if (!p) return "-";
+  const addr = p.address;
+  let city = "";
+  let country = "";
+
+  if (addr && typeof addr === "object") {
+    if (addr.city) city = addr.city;
+    if (addr.country) country = addr.country;
+  } else if (typeof addr === "string" && addr.trim()) {
+    const parts = addr.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      country = parts[parts.length - 1];
+      city = parts[parts.length - 2];
+    } else if (parts.length === 1) {
+      city = parts[0];
+    }
+  }
+
+  if (!city && p.city) city = p.city;
+  if (!country && p.country) country = p.country;
+
+  const out = [];
+  if (city) out.push(city);
+  if (country) out.push(country);
+  return out.length ? out.join(", ") : "-";
 };
 
 const defaultAvatar =
