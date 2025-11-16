@@ -589,4 +589,3 @@ const mapSrc = computed(() => {
   background-color: var(--accent);
 }
 </style>
-```
