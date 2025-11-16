@@ -8,26 +8,28 @@
       </h2>
 
       <!-- Search -->
-      <div class="relative">
-        <input
-          v-model="searchTerm"
-          type="text"
-          :placeholder="texts[lang].adminDashboard.users.searchPlaceholder"
-          class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
-        />
-        <svg
-          class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        <div class="relative w-full sm:w-auto">
+          <input
+            v-model="searchTerm"
+            type="text"
+            :placeholder="texts[lang].adminDashboard.users.searchPlaceholder"
+            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
           />
-        </svg>
+          <svg
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -36,8 +38,8 @@
       {{ texts[lang].adminDashboard.users.loading }}
     </div>
 
-    <!-- Table -->
-    <div v-else class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+    <!-- Table - Desktop -->
+    <div v-else class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
@@ -198,12 +200,101 @@
       </div>
     </div>
 
+    <!-- Cards - Mobile -->
+    <div class="md:hidden space-y-4">
+      <div
+        v-for="client in filteredClients"
+        :key="client.uid"
+        class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm"
+      >
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex items-center space-x-3">
+            <div class="h-12 w-12 rounded-full overflow-hidden bg-[#e8f0fe] dark:bg-gray-700">
+              <img
+                :src="getUserImage(client) || defaultAvatar"
+                alt="avatar"
+                class="h-full w-full object-cover"
+                @error="onUserImgError"
+              />
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ client.name || texts[lang].adminDashboard.users.noName }}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{{ client.email }}</p>
+            </div>
+          </div>
+          <span
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-semibold',
+              client.status === 'banned'
+                ? 'bg-red-100 text-red-600'
+                : client.status === 'pending'
+                ? 'bg-yellow-100 text-yellow-600'
+                : 'bg-green-100 text-green-600'
+            ]"
+          >
+            {{ texts[lang].adminDashboard.users[client.status || 'active'] }}
+          </span>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.users.phone }}:</span>
+            <span class="font-medium">{{ client.phone || "-" }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.users.address }}:</span>
+            <span class="font-medium">{{ formatClientAddress(client) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.users.created }}:</span>
+            <span class="font-medium">{{ client.createdAt ? new Date(client.createdAt).toLocaleDateString() : "-" }}</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <button
+            @click="openModal('view', client)"
+            class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
+          >
+            <i class="bi bi-eye"></i>
+          </button>
+          <button
+            v-if="client.status !== 'banned'"
+            @click="openModal('ban', client)"
+            class="p-2 text-red-500 hover:bg-orange-100 rounded-lg"
+          >
+            <i class="bi bi-slash-circle"></i>
+          </button>
+          <button
+            v-else
+            @click="openModal('reactivate', client)"
+            class="p-2 text-green-500 hover:bg-green-100 rounded-lg"
+          >
+            <i class="bi bi-check-circle"></i>
+          </button>
+          <button
+            @click="openModal('delete', client)"
+            class="p-2 text-red-500 hover:bg-red-100 rounded-lg"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-if="filteredClients.length === 0"
+        class="text-center py-6 text-gray-500 dark:text-gray-300"
+      >
+        {{ texts[lang].adminDashboard.users.noClientsYet }}
+      </div>
+    </div>
+
     <!-- 📌 MODALS -->
 
     <!-- Overlay -->
     <div
       v-if="showModal"
-      class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
     >
 
       <!-- DELETE -->
@@ -428,17 +519,13 @@ const filteredClients = computed(() => {
 
   if (term) {
     filtered = clients.value.filter((c) => {
-      const haystack = [
-        c.name,
-        c.email,
-        c.phone,
-        formatClientAddress(c),
-        c.status,
-      ]
-        .map((v) => (v ?? "").toString().toLowerCase())
-        .join(" ");
-
-      return haystack.includes(term);
+      return (
+        c.name?.toLowerCase().includes(term) ||
+        c.email?.toLowerCase().includes(term) ||
+        c.phone?.toLowerCase().includes(term) ||
+        formatClientAddress(c)?.toLowerCase().includes(term) ||
+        c.status?.toLowerCase().includes(term)
+      );
     });
   }
 

@@ -69,82 +69,150 @@
         {{ texts[lang].adminDashboard.payments.loading }}
       </div>
 
-      <!-- TABLE -->
-      <table v-else class="min-w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200">
-        <thead class="bg-[#5984C6] text-white">
-          <tr>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.paymentId }}</th>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.customer }}</th>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.orderId }}</th>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.amount }}</th>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.date }}</th>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.status }}</th>
-            <th class="py-3 px-4">{{ texts[lang].adminDashboard.payments.actions }}</th>
-          </tr>
-        </thead>
+      <!-- TABLE - Desktop -->
+      <div v-else class="hidden md:block">
+        <table class="min-w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200">
+          <thead class="bg-[#5984C6] text-white">
+            <tr>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.paymentId }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.customer }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.orderId }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.amount }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.date }}</th>
+              <th class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.status }}</th>
+              <th class="py-3 px-8" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ texts[lang].adminDashboard.payments.actions }}</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr
-            v-for="payment in filteredPayments"
-            :key="payment.id"
-            class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-500 transition"
-          >
-            <td class="py-3 px-4">{{ payment.id }}</td>
-            <td class="py-3 px-4">{{ payment.customer }}</td>
-            <td class="py-3 px-4">{{ payment.orderId }}</td>
+          <tbody>
+            <tr
+              v-for="payment in filteredPayments"
+              :key="payment.id"
+              class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-500 transition"
+            >
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ payment.id }}</td>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ payment.customer }}</td>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ payment.orderId }}</td>
 
-            <td class="py-3 px-4 font-semibold">{{ payment.amount }} EGP</td>
+              <td class="py-3 px-4 font-semibold" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ payment.amount }} EGP</td>
 
-            <td class="py-3 px-4">
-              <div class="flex flex-col">
-                <span class="font-medium">{{ payment.date }}</span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">{{ payment.time }}</span>
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ payment.date }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ payment.time }}</span>
+                </div>
+              </td>
+
+              <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
+                <span
+                  :class="[
+                    'px-3 py-1 rounded-full text-xs font-semibold',
+                    payment.status === 'completed'
+                      ? 'bg-green-100 text-green-700'
+                      : payment.status === 'unconfirmed'
+                      ? 'bg-amber-100 text-amber-700'
+                      : payment.status === 'upcoming'
+                      ? 'bg-sky-100 text-sky-700'
+                      : payment.status === 'new'
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'bg-rose-100 text-rose-700'
+                  ]"
+                >
+                  {{ texts[lang].adminDashboard.payments.statuses[payment.status] }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="py-3 px-4 flex space-x-2" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+                <button @click="openModal('view', payment)" class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg">
+                  <i class="bi bi-eye"></i>
+                </button>
+                      <div class="h-3 border-l border-gray-300 mt-3"></div>
+                <button @click="openModal('edit', payment)" class="p-2 text-yellow-500 hover:bg-yellow-100 rounded-lg">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                      <div class="h-3 border-l border-gray-300 mt-3"></div>
+                <button @click="openModal('delete', payment)" class="p-2 text-red-500 hover:bg-red-100 rounded-lg">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARDS - Mobile -->
+          <div class="md:hidden space-y-4">
+        <div
+          v-for="payment in filteredPayments"
+          :key="payment.id"
+          class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm"
+        >
+          <div class="flex justify-between items-start mb-3" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+            <div :class="lang === 'ar' ? 'text-right' : ''">
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ payment.id }}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300">{{ payment.customer }}</p>
+            </div>
+            <span
+              :class="[
+                'px-2 py-1 rounded-full text-xs font-semibold',
+                payment.status === 'completed'
+                  ? 'bg-green-100 text-green-700'
+                  : payment.status === 'unconfirmed'
+                  ? 'bg-amber-100 text-amber-700'
+                  : payment.status === 'upcoming'
+                  ? 'bg-sky-100 text-sky-700'
+                  : payment.status === 'new'
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'bg-rose-100 text-rose-700'
+              ]"
+            >
+              {{ texts[lang].adminDashboard.payments.statuses[payment.status] }}
+            </span>
+          </div>
+
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.payments.orderId }}:</span>
+              <span class="font-medium">{{ payment.orderId }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.payments.amount }}:</span>
+              <span class="font-semibold text-[#5984C6]">{{ payment.amount }} EGP</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.payments.method }}:</span>
+              <span class="font-medium">{{ payment.method }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.payments.date }}:</span>
+              <div :class="lang === 'ar' ? 'text-left' : 'text-right'">
+                <div class="font-medium">{{ payment.date }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">{{ payment.time }}</div>
               </div>
-            </td>
+            </div>
+          </div>
 
-            <td class="py-3 px-4">
-              <span
-                :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
-                  payment.status === 'completed'
-                    ? 'bg-green-100 text-green-700'
-                    : payment.status === 'unconfirmed'
-                    ? 'bg-amber-100 text-amber-700'
-                    : payment.status === 'upcoming'
-                    ? 'bg-sky-100 text-sky-700'
-                    : payment.status === 'new'
-                    ? 'bg-indigo-100 text-indigo-700'
-                    : 'bg-rose-100 text-rose-700'
-                ]"
-              >
-                {{ texts[lang].adminDashboard.payments.statuses[payment.status] }}
-              </span>
-            </td>
-
-            <!-- Actions -->
-            <td class="py-3 px-4 flex space-x-2">
-              <button @click="openModal('view', payment)" class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg">
-                <i class="bi bi-eye"></i>
-              </button>
-                    <div class="h-3 border-l border-gray-300 mt-3"></div>
-              <button @click="openModal('edit', payment)" class="p-2 text-yellow-500 hover:bg-yellow-100 rounded-lg">
-                <i class="bi bi-pencil"></i>
-              </button>
-                    <div class="h-3 border-l border-gray-300 mt-3"></div>
-              <button @click="openModal('delete', payment)" class="p-2 text-red-500 hover:bg-red-100 rounded-lg">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <button @click="openModal('view', payment)" class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button @click="openModal('edit', payment)" class="p-2 text-yellow-500 hover:bg-yellow-100 rounded-lg">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button @click="openModal('delete', payment)" class="p-2 text-red-500 hover:bg-red-100 rounded-lg">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- Modal -->
       <div
         v-if="showModal"
-        class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50"
+        class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50 p-4"
       >
-        <div class="bg-white dark:bg-[#111827] dark:text-gray-100 w-full max-w-md mx-4 sm:mx-auto rounded-xl shadow-xl p-4 sm:p-6 relative">
+        <div class="bg-white dark:bg-[#111827] dark:text-gray-100 w-full max-w-md mx-auto rounded-xl shadow-xl p-4 sm:p-6 relative">
           <button @click="closeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
             <i class="bi bi-x-lg"></i>
           </button>
