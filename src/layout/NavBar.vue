@@ -73,7 +73,6 @@
                 v-if="showNotifications"
                 class="absolute right-0 rtl:-right-20 top-12 mt-2 w-80 rounded-lg shadow-xl border z-50"
                 :style="{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }"
-                ref="notificationDropdown"
               >
                 <div class="p-3 font-semibold border-b" :style="{ borderColor: 'var(--border)' }">
                   {{ texts[lang].navbar.notifications }}
