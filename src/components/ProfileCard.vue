@@ -130,7 +130,7 @@
 
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-accent-color"></i>
-              <span class="font-semibold">{{ profile.location }}</span>
+              <span class="font-semibold">{{ profile.location || texts[lang].profilesPage.fallbackLocation }}</span>
             </div>
 
             <div class="flex items-center gap-1">
