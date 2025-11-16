@@ -255,9 +255,6 @@ export default {
           });
         }
 
-        // --- Fetch companies only if serviceName is finishing ---
-        // --- Fetch companies only if serviceName is finishing ---
-        if (this.serviceName === "finishing") {
           const companiesCol = collection(db, "companies");
           // console.log("companiesCol:", companiesCol);
           const companiesSnap = await getDocs(companiesCol);
@@ -276,7 +273,6 @@ export default {
               type: "company",
             });
           }
-        }
 
         this.profiles = fetchedProfiles;
       } catch (error) {
@@ -314,6 +310,7 @@ export default {
   watch: {
     $route(to) {
       this.serviceName = (to.params.service || "all").toLowerCase();
+      // this.fetchProfiles();
     },
   },
 };
