@@ -19,3 +19,5 @@ gemini-server/.env
 *.local
 *.cache
 tmp/
+# Ignore env inside api folder
+api/.env
