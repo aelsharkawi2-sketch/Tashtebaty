@@ -6,7 +6,8 @@
       class="flex-shrink-0 w-64 bg-[#344767] text-white flex flex-col p-5 justify-between fixed lg:static lg:translate-x-0 z-40 transition-transform duration-300 ease-in-out h-screen"
       :class="{
         'translate-x-0': isSidebarOpen,
-        '-translate-x-full': !isSidebarOpen
+        '-translate-x-full': !isSidebarOpen && lang !== 'ar',
+        'translate-x-full': !isSidebarOpen && lang === 'ar'
       }"
     >
       <div>
@@ -26,7 +27,7 @@
           <router-link
             to="/dashboard"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-house"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.dashboard }}</span>
@@ -35,7 +36,7 @@
           <router-link
             to="/dashboard/users"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/users' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/users', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-people"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.users }}</span>
@@ -44,7 +45,7 @@
           <router-link
             to="/dashboard/services"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/services' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/services', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-briefcase"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.services }}</span>
@@ -53,7 +54,7 @@
           <router-link
             to="/dashboard/providers"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/providers' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/providers', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-building"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.providers }}</span>
@@ -62,7 +63,7 @@
           <router-link
             to="/dashboard/orders"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
-            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/orders' }"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/orders', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-receipt"></i>
             <span>{{ texts[lang].adminDashboard.sidebar.orders }}</span>
@@ -128,6 +129,7 @@
         <!-- Controls Group -->
         <div class="flex items-center space-x-4">
           <!-- Language Switch -->
+      
           <button
             ref="langButton"
             @click="toggleLanguage"
@@ -135,6 +137,7 @@
             :title="texts[lang].adminDashboard.sidebar.switchToEnglish"
           >
             <i
+              ref="langIcon"
               class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
             ></i>
             <span class="sr-only">Toggle language</span>
@@ -187,35 +190,58 @@
         </div>
 
         <!-- Dropdown -->
-        <transition name="fade-slide">
+             <transition name="fade-slide">
           <div
             v-if="isUserMenuOpen"
             ref="dropdown"
             :class="[
               'absolute top-16 bg-white dark:bg-[#1f2937] w-60 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50',
-              lang === 'ar' ? 'left-4' : 'right-4'
+              $i18n.locale === 'ar' ? 'left-4' : 'right-4'
             ]"
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
               <div
                 class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-300 dark:border-gray-600 overflow-hidden"
               >
-                <img
-                  v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')"
-                  :src="userPhoto"
-                  alt="profile"
+                <img 
+                  v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
+                  :src="userPhoto" 
+                  alt="profile" 
                   class="w-full h-full object-cover"
-                  @error="handleImageError"
+                  @error="handleImageError" 
                 />
                 <i v-else class="bi bi-person text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-gray-800 dark:text-gray-100 font-medium mt-2">{{ userName || 'Admin' }}</h3>
               <p class="text-gray-500 dark:text-gray-300 text-sm">{{ userEmail }}</p>
+
             </div>
 
+            <div class="flex flex-col py-2">
+            <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
+  <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
+  <span>{{ $t('adminDashboard.sidebar.profileSettings') }}</span>
+</div>
+
+
+              <div
+                @click="switchAccount"
+                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-repeat text-[#5984C6]"></i>
+                <span>{{ $t('adminDashboard.sidebar.switchAccount') }}</span>
+              </div>
+
+              <div
+                @click="handleLogout"
+                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-arrow-right-from-bracket text-[#5984C6]"></i>
+                <span>{{ $t('adminDashboard.sidebar.logout') }}</span>
+              </div>
+            </div>
           </div>
         </transition>
-
       </header>
 
       <!-- Page content -->
@@ -245,7 +271,7 @@ import { db } from '../../firebase/firebase'
 
 export default {
   setup() {
-    // 🟩 الترجمة الجديدة
+   
     const { lang, texts, switchLang } = useTestLang()
 
     const router = useRouter()
@@ -254,12 +280,14 @@ export default {
     const isUserMenuOpen = ref(false)
     const dropdown = ref(null)
     const langButton = ref(null)
+    const langIcon = ref(null)
     const userEmail = ref('')
     const userName = ref('')
     const userPhoto = ref('')
     const isDark = ref(false)
     const isSidebarOpen = ref(false)
     const windowWidth = ref(window.innerWidth)
+    const isLanguageSwitching = ref(false)
     const auth = getAuth()
 
     // 🟦 تحميل بيانات المستخدم
@@ -401,13 +429,31 @@ export default {
 
     // 🌐 تغيير اللغة الجديدة
     const toggleLanguage = () => {
+      isLanguageSwitching.value = true
+
       const next = lang.value === "ar" ? "en" : "ar"
+      const isClockwise = next === "ar" // Clockwise for English to Arabic
+
+      // Add rotation class to icon
+      if (langIcon.value) {
+        langIcon.value.classList.add(isClockwise ? 'rotate-animate-clockwise' : 'rotate-animate-counterclockwise')
+      }
+
       switchLang(next)
 
       document.documentElement.lang = next
       document.documentElement.dir = next === "ar" ? "rtl" : "ltr"
 
       localStorage.setItem("lang", next)
+
+      // إنهاء الانيميشن بعد انتهاء الدوران
+      setTimeout(() => {
+        isLanguageSwitching.value = false
+        // Remove rotation class after animation
+        if (langIcon.value) {
+          langIcon.value.classList.remove('rotate-animate-clockwise', 'rotate-animate-counterclockwise')
+        }
+      }, 600) // Slightly longer than animation duration
     }
 
     // ⛔ صورة فاسدة
@@ -456,10 +502,12 @@ export default {
       isDark,
       toggleDarkMode,
       langButton,
+      langIcon,
       isSidebarOpen,
       toggleSidebar,
       closeSidebar,
       windowWidth,
+      isLanguageSwitching,
     }
   }
 }
@@ -467,6 +515,7 @@ export default {
 
 
 <style scoped>
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -482,11 +531,15 @@ export default {
   transition: transform 0.3s ease-in-out;
 }
 
-.rotate-animation {
-  animation: rotate 0.5s ease-in-out;
+.rotate-animate-clockwise {
+  animation: rotate-clockwise 0.5s ease-in-out;
 }
 
-@keyframes rotate {
+.rotate-animate-counterclockwise {
+  animation: rotate-counterclockwise 0.5s ease-in-out;
+}
+
+@keyframes rotate-clockwise {
   from {
     transform: rotate(0deg);
   }
@@ -495,4 +548,12 @@ export default {
   }
 }
 
+@keyframes rotate-counterclockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
 </style>

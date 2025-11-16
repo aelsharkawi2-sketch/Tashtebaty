@@ -16,12 +16,25 @@
       </div>
       <div class="flex items-center justify-center flex-col">
         <div class="relative group">
-          <img
-            :src="tempClient.image"
-            class="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full object-cover border-4 border-accent-color shadow-xl transition-transform duration-300"
+          <div
+            v-if="tempClient.image"
+            class="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full border-4 border-accent-color shadow-xl transition-transform duration-300 overflow-hidden"
             :class="{ 'group-hover:scale-105 cursor-pointer': isEditing }"
             @click="isEditing && triggerImageUpload"
-          />
+          >
+            <img
+              :src="tempClient.image"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div
+            v-else
+            class="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full border-4 border-accent-color shadow-xl transition-transform duration-300 flex items-center justify-center bg-gray-100"
+            :class="{ 'group-hover:scale-105 cursor-pointer': isEditing }"
+            @click="isEditing && triggerImageUpload"
+          >
+            <i class="bi bi-person text-gray-500 text-6xl"></i>
+          </div>
 
           <div
             v-if="isEditing"
@@ -476,7 +489,7 @@ const defaultClient = {
   name: "",
   email: "",
   phone: "",
-  image: "https://via.placeholder.com/150",
+  image: "",
   address: {
     street: "",
     city: "",
