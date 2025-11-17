@@ -289,7 +289,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged , updatePassword, updateEmail,} from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 // NEW: Import the new component
@@ -409,6 +409,28 @@ const saveChanges = async () => {
     const user = auth.currentUser;
 
     if (user) {
+
+      const newPassword = tempClient.value.password;
+      if (newPassword && newPassword.trim() !== "") {
+        if (newPassword.length < 6) {
+          triggerPopup("Password must be at least 6 characters long.");
+          return;
+        }
+        // This is a sensitive operation and might fail if login is not recent
+        await updatePassword(user, newPassword);
+        console.log("Firebase Auth password updated successfully.");
+        // Clear password fields from temp state
+        tempClient.value.password = "";
+        tempClient.value.confirmPassword = "";
+      }
+
+      // --- 3. Update Auth Email (if changed) ---
+      const newEmail = tempClient.value.email;
+      if (newEmail !== client.value.email) {
+        // This is also sensitive
+        await updateEmail(user, newEmail);
+        console.log("Firebase Auth email updated successfully.");
+      }
       const docRef = doc(db, "clients", user.uid);
 
       // ensure coordinates are updated from address before saving
@@ -453,7 +475,17 @@ const saveChanges = async () => {
     console.error("Error saving changes:", error);
     console.error("Error details:", error.message);
     // UPDATED
-    triggerPopup("Failed to save changes. Please try again.");
+    if (error.code === "auth/requires-recent-login") {
+      triggerPopup(
+        "This change is sensitive and requires a recent login. Please log out and log back in to try again."
+      );
+    } else if (error.code === "auth/weak-password") {
+      triggerPopup("Password is too weak. It must be at least 6 characters.");
+    } else if (error.code === "auth/email-already-in-use") {
+      triggerPopup("This email address is already in use by another account.");
+    } else {
+      triggerPopup("Failed to save changes. Please try again.");
+    }
   }
 };
 
