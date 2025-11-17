@@ -81,7 +81,30 @@
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
-        
+        <div>
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-lock mr-2 text-[#133B5D] dark:text-white"></i> Password
+          </label>
+          <input
+            v-model="tempTechnician.password"
+            type="text"
+            :disabled="!isEditing"
+            placeholder="Enter your password"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
+          />
+        </div>
+        <div>
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-lock mr-2 text-[#133B5D] dark:text-white"></i> Confirm Password
+          </label>
+          <input
+            v-model="tempTechnician.confirmPassword"
+            type="text"
+            :disabled="!isEditing"
+            placeholder="Confirm your password"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
+          />
+        </div>
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
             <i class="fa-solid fa-star mr-2 text-[#133B5D] dark:text-white"></i> Years of Experience
@@ -188,7 +211,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { auth, db } from "@/firebase/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged , updatePassword, updateEmail, } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uploadImageOnly } from "@/composables/useImageUpload";
@@ -210,6 +233,8 @@ const defaultProfile = () => ({
   phone: "",
   experience: 0,
   bio: "",
+  password:"",
+  confirmPassword:"",
   profileImage: "",
   address: { street: "", city: "", country: "", lat: 30.0444, lng: 31.2357 }
 });
@@ -270,18 +295,53 @@ const loadProfile = async () => {
 // 3. Save changes (without overwriting email)
 const saveChanges = async () => {
   if (!technicianId.value) return;
-  isSaving.value = true;
 
+  if (tempTechnician.value.password !== tempTechnician.value.confirmPassword) {
+    emit('showNotification', 'Passwords do not match!', 'error');
+    return;
+  }
+  isSaving.value = true;
+  const user = auth.currentUser;
+  if (!user) {
+    emit('showNotification', 'No user logged in.', 'error');
+    isSaving.value = false;
+    return;
+  }
   try {
     if (newImageFile.value) {
   const imageUrl = await uploadImageOnly(newImageFile.value);
   tempTechnician.value.profileImage = imageUrl;
 }
 
+const newPassword = tempTechnician.value.password;
+    if (newPassword && newPassword.trim() !== "") {
+      if (newPassword.length < 6) {
+        emit('showNotification', 'Password must be at least 6 characters.', 'error');
+        isSaving.value = false;
+        return;
+      }
+      await updatePassword(user, newPassword);
+      console.log("Firebase Auth password updated.");
+      tempTechnician.value.password = ""; // Clear from temp state
+      tempTechnician.value.confirmPassword = ""; // Clear from temp state
+    }
 
+    // --- 3. Update Auth Email (if changed) ---
+    const newEmail = tempTechnician.value.email;
+    if (newEmail !== originalTechnician.value.email) {
+      await updateEmail(user, newEmail);
+      console.log("Firebase Auth email updated.");
+    }
+
+    // --- 4. Upload Image (if new one) ---
+    if (newImageFile.value) {
+      const imageUrl = await uploadImageOnly(newImageFile.value);
+      tempTechnician.value.profileImage = imageUrl;
+    }
     const docRef = doc(db, "technicians", technicianId.value);
     await updateDoc(docRef, {
       name: tempTechnician.value.name,
+      email: tempTechnician.value.email,
       phone: tempTechnician.value.phone,
       experience: tempTechnician.value.experience,
       bio: tempTechnician.value.bio,
@@ -300,7 +360,17 @@ const saveChanges = async () => {
     newImageFile.value = null;
   } catch (error) {
     console.error("Error saving profile:", error);
-    emit('showNotification', 'Failed to save profile.', 'error');
+    tempTechnician.value = JSON.parse(JSON.stringify(originalTechnician.value));
+    
+    if (error.code === "auth/requires-recent-login") {
+      emit('showNotification', 'Please log out and log back in to change sensitive info.', 'error');
+    } else if (error.code === "auth/weak-password") {
+      emit('showNotification', 'Password is too weak (min 6 characters).', 'error');
+    } else if (error.code === "auth/email-already-in-use") {
+      emit('showNotification', 'Email is already in use by another account.', 'error');
+    } else {
+      emit('showNotification', 'Failed to save profile.', 'error');
+    }
   }
   isSaving.value = false;
 };
