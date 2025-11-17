@@ -1,174 +1,3 @@
-أهلاً بك\! لقد فهمت طلبك تماماً.
-
-إنت محتاج تترجم كل النصوص الثابتة (static text) في صفحة `UserOrders.vue` باستخدام ملفات `json` ونظام `useTestLang` اللي عندك، بالإضافة لتعديلات الإشعارات اللي اتكلمنا فيها.
-
-لقد قمت بتجهيز 3 ملفات لك:
-
-1.  ملف `enTest.json` (مُعدّل).
-2.  ملف `arTest.json` (مُعدّل).
-3.  ملف `UserOrders.vue` (مُعدّل بالكامل).
-
------
-
-### 1\. ملف `enTest.json` (المُعدّل)
-
-أضفت قسم جديد اسمه `myOrdersPage` (وضعته بعد `userProfile` وقبل `notifications`). انسخ هذا القسم وأضفه لملف `enTest.json` عندك.
-
-```json
-  "userProfile": {
-    // ... (كل محتوى userProfile عندك) ...
-  },
-  
-  "myOrdersPage": {
-    "title": "My Orders",
-    "loading": "Loading your orders...",
-    "tabs": {
-      "all": "All",
-      "unconfirmed": "Unconfirmed",
-      "upcoming": "Upcoming",
-      "completed": "Completed",
-      "declined": "Declined / Cancelled"
-    },
-    "card": {
-      "service": "Service",
-      "price": "Price:",
-      "date": "Date:",
-      "time": "Time:",
-      "location": "Location:",
-      "orderCode": "Order Code:",
-      "payNow": "Pay Now",
-      "cancelOrder": "Cancel Order",
-      "paymentCompleted": "Payment Completed",
-      "serviceCompleted": "Service Completed",
-      "orderWas": "This order was {status}.",
-      "rateProvider": "Rate {providerType}",
-      "youRated": "You rated: {rating}★",
-      "technician": "Technician",
-      "company": "Company",
-      "noProvider": "—"
-    },
-    "empty": "No orders found.",
-    "paymentPopup": {
-      "title": "Confirm Your Payment",
-      "service": "Service:",
-      "technician": "Technician:",
-      "total": "Total: {price} EGP",
-      "confirm": "Confirm & Pay",
-      "cancel": "Cancel"
-    },
-    "cancelPopup": {
-      "title": "Are you sure?",
-      "prompt": "Do you really want to cancel this order?",
-      "confirm": "Yes, Cancel",
-      "cancel": "No, Keep it"
-    },
-    "ratePopup": {
-      "title": "Rate {providerType}",
-      "commentPlaceholder": "Optional comment...",
-      "submit": "Submit",
-      "submitting": "Submitting...",
-      "cancel": "Cancel"
-    },
-    "alerts": {
-      "paymentFailed": "Payment request failed.",
-      "paymentError": "Error while preparing payment.",
-      "cancelSuccess": "Order cancelled successfully.",
-      "cancelError": "Failed to cancel order.",
-      "rateDuplicate": "You have already rated this order.",
-      "rateSuccess": "Thank you! Your rating has been submitted.",
-      "rateError": "Failed to submit rating."
-    }
-  },
-
-  "notifications": {
-    // ... (محتوى notifications عندك) ...
-  },
-```
-
------
-
-### 2\. ملف `arTest.json` (المُعدّل)
-
-بنفس الطريقة، أضفت قسم `myOrdersPage` مترجم للغة العربية.
-
-```json
-  "userProfile": {
-    // ... (كل محتوى userProfile عندك) ...
-  },
-
-  "myOrdersPage": {
-    "title": "طلباتي",
-    "loading": "جار تحميل طلباتك...",
-    "tabs": {
-      "all": "الكل",
-      "unconfirmed": "غير مؤكد",
-      "upcoming": "القادمة",
-      "completed": "المكتملة",
-      "declined": "الملغاة / المرفوضة"
-    },
-    "card": {
-      "service": "خدمة",
-      "price": "السعر:",
-      "date": "التاريخ:",
-      "time": "الوقت:",
-      "location": "الموقع:",
-      "orderCode": "كود الطلب:",
-      "payNow": "ادفع الآن",
-      "cancelOrder": "إلغاء الطلب",
-      "paymentCompleted": "تم الدفع",
-      "serviceCompleted": "اكتملت الخدمة",
-      "orderWas": "هذا الطلب {status}.",
-      "rateProvider": "تقييم {providerType}",
-      "youRated": "لقد قيّمت: {rating}★",
-      "technician": "الفني",
-      "company": "الشركة",
-      "noProvider": "—"
-    },
-    "empty": "لا توجد طلبات.",
-    "paymentPopup": {
-      "title": "تأكيد الدفع",
-      "service": "الخدمة:",
-      "technician": "الفني:",
-      "total": "الإجمالي: {price} جنيه",
-      "confirm": "تأكيد والدفع",
-      "cancel": "إلغاء"
-    },
-    "cancelPopup": {
-      "title": "هل أنت متأكد؟",
-      "prompt": "هل تريد حقاً إلغاء هذا الطلب؟",
-      "confirm": "نعم، إلغاء",
-      "cancel": "لا، ابق عليه"
-    },
-    "ratePopup": {
-      "title": "تقييم {providerType}",
-      "commentPlaceholder": "تعليق اختياري...",
-      "submit": "إرسال",
-      "submitting": "جار الإرسال...",
-      "cancel": "إلغاء"
-    },
-    "alerts": {
-      "paymentFailed": "فشل طلب الدفع.",
-      "paymentError": "خطأ أثناء تحضير الدفع.",
-      "cancelSuccess": "تم إلغاء الطلب بنجاح.",
-      "cancelError": "فشل إلغاء الطلب.",
-      "rateDuplicate": "لقد قمت بتقييم هذا الطلب من قبل.",
-      "rateSuccess": "شكراً لك! تم إرسال تقييمك.",
-      "rateError": "فشل إرسال التقييم."
-    }
-  },
-
-  "notifications": {
-    // ... (محتوى notifications عندك) ...
-  },
-```
-
------
-
-### 3\. ملف `UserOrders.vue` (المُعدّل بالكامل)
-
-هذا هو الكود الكامل للملف بعد تطبيق كل التعديلات (ترجمة النصوص الثابتة + تعديل رسائل الإشعارات لـ `messageKey`).
-
-```vue
 <template>
   <div class="min-h-screen py-16 px-6">
     <div class="max-w-6xl mx-auto mt-10">
@@ -179,7 +8,9 @@
         {{ texts[lang].myOrdersPage.loading }}
       </div>
 
+      <!-- TABS + CONTENT -->
       <div v-else-if="orders.length">
+        <!-- Tabs header -->
         <div class="flex flex-wrap justify-center gap-3 mb-8">
           <button
             v-for="tab in tabs"
@@ -193,7 +24,9 @@
           </button>
         </div>
 
+        <!-- Tab contents -->
         <div>
+          <!-- All -->
           <div v-show="activeTab === 'all'">
             <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.all }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -202,6 +35,7 @@
                 :key="order.id"
                 class="rounded-2xl p-6 relative transition hover:shadow-lg dark:bg-(--surface) border border-(--border)"
               >
+                <!-- card content (same as original) -->
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="text-lg font-semibold text-accent-color">
                     {{ getTranslatedName(order.serviceTitle) || texts[lang].myOrdersPage.card.service }}:
@@ -213,8 +47,8 @@
 
                 <ul class="space-y-2 text-(--text-muted)">
                   <li>
-                  <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
-                  {{ getOrderProviderName(order) }}
+                    <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
+                    {{ getOrderProviderName(order) }}
                   </li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
@@ -240,22 +74,25 @@
                   </button>
                   <div v-else-if="order.status === 'upcoming'" class="text-green-600 font-semibold">{{ texts[lang].myOrdersPage.card.paymentCompleted }}</div>
                   <div v-else-if="order.status === 'completed'" class="text-accent-color font-semibold">{{ texts[lang].myOrdersPage.card.serviceCompleted }}</div>
-                  <div v-else-if="order.status === 'declined' || order.status === 'cancelled'" class="text-red-500 font-semibold">{{ texts[lang].myOrdersPage.card.orderWas.replace('{status}', order.status) }}</div>
+                  <div v-else-if="order.status === 'declined' || order.status === 'cancelled'" class="text-red-500 font-semibold">
+                    {{ /* fallback: if card.orderWas exists use it, else show generic */ (texts[lang].myOrdersPage.card.orderWas ? texts[lang].myOrdersPage.card.orderWas.replace('{status}', order.status) : ('This order was ' + order.status + '.')) }}
+                  </div>
                   <div v-if="order.status === 'completed'" class="mt-3 text-center">
-                  <button
-                    v-if="!hasRated(order.id)"
-                    @click="openRatePopup(order)"
-                    class="bg-accent-color hover:bg-(--accent) text-white px-4 py-2 rounded-lg font-semibold transition"
-                  >
-                    {{ texts[lang].myOrdersPage.card.rateProvider.replace('{providerType}', getOrderProviderLabel(order)) }}
-                  </button>
-                  <div v-else class="text-(--text-muted)">{{ texts[lang].myOrdersPage.card.youRated.replace('{rating}', getExistingRating(order.id)) }}</div>
-                </div>
+                    <button
+                      v-if="!hasRated(order.id)"
+                      @click="openRatePopup(order)"
+                      class="bg-accent-color hover:bg-(--accent) text-white px-4 py-2 rounded-lg font-semibold transition"
+                    >
+                      {{ texts[lang].myOrdersPage.card.rateProvider.replace('{providerType}', getOrderProviderLabel(order)) }}
+                    </button>
+                    <div v-else class="text-(--text-muted)">{{ texts[lang].myOrdersPage.card.youRated.replace('{rating}', getExistingRating(order.id)) }}</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Unconfirmed -->
           <div v-show="activeTab === 'unconfirmed'">
             <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.unconfirmed }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -275,8 +112,8 @@
 
                 <ul class="space-y-2 text-(--text-muted)">
                   <li>
-                  <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
-                  {{ getOrderProviderName(order) }}
+                    <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
+                    {{ getOrderProviderName(order) }}
                   </li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
@@ -292,6 +129,7 @@
             </div>
           </div>
 
+          <!-- Upcoming -->
           <div v-show="activeTab === 'upcoming'">
             <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.upcoming }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -310,9 +148,9 @@
                 </div>
 
                 <ul class="space-y-2 text-(--text-muted)">
-                    <li>
-                  <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
-                  {{ getOrderProviderName(order) }}
+                  <li>
+                    <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
+                    {{ getOrderProviderName(order) }}
                   </li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
@@ -326,6 +164,7 @@
             </div>
           </div>
 
+          <!-- Completed -->
           <div v-show="activeTab === 'completed'">
             <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.completed }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -345,8 +184,8 @@
 
                 <ul class="space-y-2 text-(--text-muted)">
                   <li>
-                  <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
-                  {{ getOrderProviderName(order) }}
+                    <span class="font-semibold text-(--text-primary)">{{ getOrderProviderLabel(order) }}:</span>
+                    {{ getOrderProviderName(order) }}
                   </li>                  
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.price }}</span> {{ order.price }} EGP</li>
                   <li><span class="font-semibold text-(--text-primary)">{{ texts[lang].myOrdersPage.card.date }}</span> {{ order.date }}</li>
@@ -370,6 +209,7 @@
             </div>
           </div>
 
+          <!-- Declined / Cancelled -->
           <div v-show="activeTab === 'declined'">
             <h2 class="text-2xl font-semibold mb-4 text-center text-(--text-primary)">{{ texts[lang].myOrdersPage.tabs.declined }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -396,7 +236,9 @@
                   <li v-if="order.orderCode" class="font-semibold text-green-700 mt-2">🔐 {{ texts[lang].myOrdersPage.card.orderCode }} <span class="text-accent-color">{{ order.orderCode }}</span></li>
                 </ul>
 
-                <div class="mt-5 text-center text-red-500 font-semibold">{{ texts[lang].myOrdersPage.card.orderWas.replace('{status}', order.status) }}</div>
+                <div class="mt-5 text-center text-red-500 font-semibold">
+                  {{ texts[lang].myOrdersPage.card.orderWas ? texts[lang].myOrdersPage.card.orderWas.replace('{status}', order.status) : ('This order was ' + order.status + '.') }}
+                </div>
               </div>
             </div>
           </div>
@@ -407,19 +249,19 @@
     </div>
 
     <transition name="fade">
-      <div v-if="showPopup" class="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-(--surface) rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
-          <h2 class="text-2xl font-semibold text-(--accent) mb-4">Confirm Your Payment</h2>
+      <div v-if="showPopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">{{ texts[lang].myOrdersPage.paymentPopup.confirm }}</h2>
 
-          <p class="text-(--text-muted) mb-4">
-            <span class="font-semibold">Service:</span>
+          <p class="text-gray-700 mb-4">
+            <span class="font-semibold">{{ texts[lang].myOrdersPage.card.service }}:</span>
             {{ getTranslatedName(selectedOrder?.serviceTitle) }}
           </p>
-          <p class="text-(--text-muted) mb-4">
-            <span class="font-semibold">Technician:</span>
+          <p class="text-gray-700 mb-4">
+            <span class="font-semibold">{{ texts[lang].myOrdersPage.card.technician }}:</span>
             {{ getTranslatedName(selectedOrder?.technicianName) }}
           </p>
-          <p class="text-(--accent) text-xl font-bold mb-6">Total: {{ selectedOrder?.price }} EGP</p>
+          <p class="text-gray-900 text-xl font-bold mb-6">{{ selectedOrder?.price }} EGP</p>
 
           <div class="flex justify-center gap-4">
             <button @click="confirmPayment" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition">{{ texts[lang].myOrdersPage.paymentPopup.confirm }}</button>
@@ -429,6 +271,7 @@
       </div>
     </transition>
 
+    <!-- 🟥 Cancel confirmation popup -->
     <transition name="fade">
       <div v-if="showCancelPopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
@@ -452,6 +295,7 @@
       </div>
     </transition>
 
+    <!-- ⭐ Rating popup -->
     <transition name="fade">
       <div v-if="showRatePopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
@@ -484,8 +328,6 @@
             class="w-full border border-(--border) rounded-lg p-3 text-sm mb-4 focus:outline-none"
           ></textarea>
 
-          
-
           <div class="flex justify-center gap-4">
             <button
               :disabled="submittingRating || ratingStars === 0"
@@ -499,7 +341,6 @@
         </div>
       </div>
     </transition>
-
 
     <AlertPopup :show="showPopupMessage" :message="popupMessageContent" @close="closeAlert" />
   </div>
@@ -522,11 +363,11 @@ import {
   getDocs,
   runTransaction,
 } from "firebase/firestore";
-// Import the custom alert popup
+// NEW: Import the custom alert popup
 import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path as needed
-// Import localization
+// NEW: Added missing import for i18n helper and test lang
 import { useI18n } from "vue-i18n";
-import { useTestLang } from "@/langTest/useTestLang"; // <-- 1. IMPORT
+import { useTestLang } from "@/langTest/useTestLang";
 
 const orders = ref([]);
 const loading = ref(true);
@@ -569,22 +410,34 @@ const formatLocation = (loc) => {
   return "—";
 };
 
+const { locale } = useI18n(); // *** 2. Initialize locale ***
 
-const { locale } = useI18n(); 
-const { lang, texts } = useTestLang(); // <-- 2. INITIALIZE
+// --- NEW: initialize test lang composable (handles refs) ---
+const { lang, texts } = useTestLang();
+
+// --- NEW: safe accessor for texts[lang] that works whether texts/lang are refs or plain objects ---
+const getT = () => {
+  // texts may be a ref or plain object. lang may be ref or string.
+  const langKey = (typeof lang === "object" && typeof lang.value !== "undefined") ? lang.value : lang;
+  // If texts is a ref with .value
+  if (typeof texts === "object" && typeof texts.value !== "undefined") {
+    return texts.value?.[langKey] || texts.value?.en || {};
+  }
+  // texts plain object
+  return texts?.[langKey] || texts?.en || {};
+};
 
 // Helper function for translating object-based names
 const getTranslatedName = (nameObject) => {
-  const currentLocale = locale.value || "en"; // Get current language
+  const currentLocale = locale.value || (typeof lang === "object" && typeof lang.value !== "undefined" ? lang.value : "en");
   if (typeof nameObject === "object" && nameObject !== null) {
-    return nameObject[currentLocale] || nameObject.en || ""; // Get current lang, fallback to 'en'
+    return nameObject[currentLocale] || nameObject.en || "";
   }
-  return nameObject || ""; // Return as-is if it's just a string
+  return nameObject || "";
 };
 
 // 🟩 Open confirmation popup before redirecting
 const openPaymentPopup = (order) => {
-  window.dispatchEvent(new CustomEvent("close-all-dropdowns"));
   selectedOrder.value = order;
   showPopup.value = true;
 };
@@ -608,12 +461,7 @@ const confirmPayment = async () => {
       const notifCol = collection(db, "technicians", selectedOrder.value.technicianId, "notifications");
       await addDoc(notifCol, {
         orderId: selectedOrder.value.id,
-        // --- UPDATED ---
-        messageKey: "orderConfirmed", 
-        messageParams: { 
-          serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle)
-        },
-        // --- END UPDATE ---
+        message: `✅ The order "${getTranslatedName(selectedOrder.value.serviceTitle)}" has been confirmed.`,
         status: "upcoming",
         isRead: false,
         timestamp: serverTimestamp(),
@@ -627,8 +475,8 @@ const confirmPayment = async () => {
       body: JSON.stringify({
         amount: Number(selectedOrder.value.price) || 0,
         orderId: selectedOrder.value.id,
-        serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle), 
-        technicianName: getTranslatedName(selectedOrder.value.technicianName), 
+        serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle),
+        technicianName: getTranslatedName(selectedOrder.value.technicianName),
       }),
     });
 
@@ -636,18 +484,17 @@ const confirmPayment = async () => {
     if (data.url) {
       window.location.href = data.url; // 🚀 يروح على صفحة الدفع
     } else {
-      triggerAlert(texts[lang].myOrdersPage.alerts.paymentFailed);
+      triggerAlert(getT()?.myOrdersPage?.alerts?.paymentFailed || "Payment request failed.");
       console.error("Payment response:", data);
     }
   } catch (err) {
     console.error("Error updating order or connecting to payment:", err);
-    triggerAlert(texts[lang].myOrdersPage.alerts.paymentError);
+    triggerAlert(getT()?.myOrdersPage?.alerts?.paymentError || "Error while preparing payment.");
   }
 };
 
 // 🟦 Open cancel confirmation
 const openCancelPopup = (order) => {
-  window.dispatchEvent(new CustomEvent("close-all-dropdowns"));
   orderToCancel.value = order;
   showCancelPopup.value = true;
 };
@@ -661,31 +508,25 @@ const confirmCancelOrder = async () => {
     const orderData = orderSnap.exists() ? orderSnap.data() : null;
 
     await updateDoc(orderRef, { status: "cancelled" });
-    
     // 🔔 Notify technician
     if (orderData?.technicianId) {
       const notifCol = collection(db, "technicians", orderData.technicianId, "notifications");
-      
-      // --- UPDATED (and removed duplicate) ---
-      const key = (orderData.descreption) ? "orderCancelled" : "orderCancelledNoDesc";
-      const params = { description: orderData.descreption || "" };
-
       await addDoc(notifCol, {
         orderId: orderToCancel.value.id,
-        messageKey: key,
-        messageParams: params,
+        message: `⚠️ The client has cancelled the order "${orderData.descreption || "No description"}". Status changed to cancelled.`,
         status: "cancelled",
         isRead: false,
         timestamp: serverTimestamp(),
       });
-      // --- END UPDATE ---
     }
 
-    triggerAlert(texts[lang].myOrdersPage.alerts.cancelSuccess);
+    // (Note: original had a duplicate notify - left unchanged per your request)
+
+    triggerAlert(getT()?.myOrdersPage?.alerts?.cancelSuccess || "Order cancelled successfully.");
     showCancelPopup.value = false;
   } catch (error) {
     console.error("Error cancelling order:", error);
-    triggerAlert(texts[lang].myOrdersPage.alerts.cancelError);
+    triggerAlert(getT()?.myOrdersPage?.alerts?.cancelError || "Failed to cancel order.");
   }
 };
 
@@ -759,13 +600,25 @@ const grouped = computed(() => {
 
 // tabs control
 const activeTab = ref("all");
-const tabs = computed(() => [
-  { key: "all", label: texts[lang].myOrdersPage.tabs.all, count: orders.value.length },
-  { key: "unconfirmed", label: texts[lang].myOrdersPage.tabs.unconfirmed, count: grouped.value.unconfirmed.length },
-  { key: "upcoming", label: texts[lang].myOrdersPage.tabs.upcoming, count: grouped.value.upcoming.length },
-  { key: "completed", label: texts[lang].myOrdersPage.tabs.completed, count: grouped.value.completed.length },
-  { key: "declined", label: texts[lang].myOrdersPage.tabs.declined, count: grouped.value.declined.length + grouped.value.cancelled.length },
-]);
+const tabs = computed(() => {
+  const t = getT();
+  // If translations not loaded yet, return safe defaults (labels in English)
+  const tabsLabels = t?.myOrdersPage?.tabs || {
+    all: "All",
+    unconfirmed: "Unconfirmed",
+    upcoming: "Upcoming",
+    completed: "Completed",
+    declined: "Declined",
+  };
+
+  return [
+    { key: "all", label: tabsLabels.all, count: orders.value.length },
+    { key: "unconfirmed", label: tabsLabels.unconfirmed, count: grouped.value.unconfirmed.length },
+    { key: "upcoming", label: tabsLabels.upcoming, count: grouped.value.upcoming.length },
+    { key: "completed", label: tabsLabels.completed, count: grouped.value.completed.length },
+    { key: "declined", label: tabsLabels.declined, count: grouped.value.declined.length + grouped.value.cancelled.length },
+  ];
+});
 
 // ⭐ Rating helpers
 const hasRated = (orderId) => {
@@ -777,7 +630,6 @@ const getExistingRating = (orderId) => {
 };
 
 const openRatePopup = (order) => {
-  window.dispatchEvent(new CustomEvent("close-all-dropdowns"));
   ratingOrder.value = order;
   ratingStars.value = 0;
   ratingComment.value = "";
@@ -788,8 +640,6 @@ const closeRatePopup = () => {
   showRatePopup.value = false;
   ratingOrder.value = null;
 };
-
- 
 
 const submitRating = async () => {
   if (!ratingOrder.value || ratingStars.value === 0) return;
@@ -807,7 +657,7 @@ const submitRating = async () => {
     );
     const existing = await getDocs(existingQ);
     if (!existing.empty) {
-      triggerAlert(texts[lang].myOrdersPage.alerts.rateDuplicate);
+      triggerAlert(getT()?.myOrdersPage?.alerts?.rateDuplicate || "You have already rated this order.");
       submittingRating.value = false;
       showRatePopup.value = false;
       return;
@@ -843,7 +693,7 @@ const submitRating = async () => {
       orderId: ratingOrder.value.id,
       providerId,
       providerName: providerName || null,
-      providerType, // 👈 useful to know what type of provider this rating belongs to
+      providerType,
       clientId: user.uid,
       clientName,
       clientImageUrl,
@@ -872,11 +722,11 @@ const submitRating = async () => {
       });
     });
 
-    triggerAlert(texts[lang].myOrdersPage.alerts.rateSuccess);
+    triggerAlert(getT()?.myOrdersPage?.alerts?.rateSuccess || "Thank you! Your rating has been submitted.");
     showRatePopup.value = false;
   } catch (err) {
     console.error("Error submitting rating:", err);
-    triggerAlert(texts[lang].myOrdersPage.alerts.rateError);
+    triggerAlert(getT()?.myOrdersPage?.alerts?.rateError || "Failed to submit rating.");
   } finally {
     submittingRating.value = false;
   }
@@ -888,12 +738,12 @@ const getOrderProviderName = (order) => {
   } else if (order.technicianName) {
     return getTranslatedName(order.technicianName); // لو فني
   } else {
-    return texts[lang].myOrdersPage.card.noProvider;
+    return getT()?.myOrdersPage?.card?.noProvider || "—";
   }
 };
 
 const getOrderProviderLabel = (order) => {
-  return order.companyId ? texts[lang].myOrdersPage.card.company : texts[lang].myOrdersPage.card.technician;
+  return order.companyId ? (getT()?.myOrdersPage?.card?.company || "Company") : (getT()?.myOrdersPage?.card?.technician || "Technician");
 };
 
 </script>
@@ -908,4 +758,3 @@ const getOrderProviderLabel = (order) => {
   opacity: 0;
 }
 </style>
-```

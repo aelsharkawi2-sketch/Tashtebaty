@@ -1,4 +1,61 @@
 {
+  "myOrdersPage": {
+  "title": "My Orders",
+  "loading": "Loading orders...",
+  "empty": "No orders yet",
+  "tabs": {
+    "all": "All",
+    "unconfirmed": "Unconfirmed",
+    "upcoming": "Upcoming",
+    "completed": "Completed",
+    "declined": "Declined"
+  },
+  "card": {
+    "service": "Service",
+    "price": "Price",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location",
+    "orderCode": "Order Code",
+    "payNow": "Pay Now",
+    "cancelOrder": "Cancel Order",
+    "paymentCompleted": "Payment completed",
+    "serviceCompleted": "Service completed",
+    "technician": "Technician",
+    "noProvider": "No provider",
+    "company": "Company",
+    "rateProvider": "Rate {providerType}",
+    "youRated": "You rated {rating} stars"
+  },
+  "paymentPopup": {
+    "confirm": "Confirm Payment",
+    "cancel": "Cancel",
+    "service": "Service"
+  },
+  "cancelPopup": {
+    "title": "Cancel Order",
+    "prompt": "Are you sure you want to cancel this order?",
+    "confirm": "Yes, cancel",
+    "cancel": "No"
+  },
+  "ratePopup": {
+    "title": "Rate {providerType}",
+    "commentPlaceholder": "Add a comment (optional)",
+    "submit": "Submit Rating",
+    "submitting": "Submitting...",
+    "cancel": "Cancel"
+  },
+  "alerts": {
+    "paymentFailed": "Failed to get payment link.",
+    "paymentError": "Error processing payment. Please try again.",
+    "cancelSuccess": "Order cancelled successfully.",
+    "cancelError": "Failed to cancel order.",
+    "rateDuplicate": "You have already rated this order.",
+    "rateSuccess": "Rating submitted. Thank you!",
+    "rateError": "Failed to submit rating. Try again later."
+  }
+},
+
   "navbar": {
     "home": "Home",
     "services": "Services",

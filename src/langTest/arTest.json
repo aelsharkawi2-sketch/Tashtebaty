@@ -1,4 +1,60 @@
 {
+  "myOrdersPage": {
+  "title": "طلباتي",
+  "loading": "جارٍ تحميل الطلبات...",
+  "empty": "لا توجد طلبات بعد",
+  "tabs": {
+    "all": "الكل",
+    "unconfirmed": "غير مؤكد",
+    "upcoming": "قادم",
+    "completed": "مكتمل",
+    "declined": "مرفوض"
+  },
+  "card": {
+    "service": "الخدمة",
+    "price": "السعر",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "location": "الموقع",
+    "orderCode": "كود الطلب",
+    "payNow": "ادفع الآن",
+    "cancelOrder": "إلغاء الطلب",
+    "paymentCompleted": "تم إتمام الدفع",
+    "serviceCompleted": "تم إنجاز الخدمة",
+    "technician": "الفني",
+    "noProvider": "لا يوجد مقدم خدمة",
+    "company": "شركة",
+    "rateProvider": "قيّم {providerType}",
+    "youRated": "لقد قيّمت {rating} نجوم"
+  },
+  "paymentPopup": {
+    "confirm": "تأكيد الدفع",
+    "cancel": "إلغاء",
+    "service": "الخدمة"
+  },
+  "cancelPopup": {
+    "title": "إلغاء الطلب",
+    "prompt": "هل أنت متأكد من إلغاء هذا الطلب؟",
+    "confirm": "نعم، إلغاء",
+    "cancel": "لا"
+  },
+  "ratePopup": {
+    "title": "تقييم {providerType}",
+    "commentPlaceholder": "أضف تعليقًا (اختياري)",
+    "submit": "إرسال التقييم",
+    "submitting": "جاري الإرسال...",
+    "cancel": "إلغاء"
+  },
+  "alerts": {
+    "paymentFailed": "فشل في إنشاء رابط الدفع.",
+    "paymentError": "حدث خطأ أثناء المحاولة. حاول مرة أخرى.",
+    "cancelSuccess": "تم إلغاء الطلب بنجاح.",
+    "cancelError": "فشل إلغاء الطلب.",
+    "rateDuplicate": "لقد قمت بالفعل بتقييم هذا الطلب.",
+    "rateSuccess": "تم إرسال التقييم. شكرًا لك!",
+    "rateError": "فشل إرسال التقييم. حاول لاحقًا."
+  }
+},
   "navbar": {
     "home": "الرئيسية",
     "services": "الخدمات",
