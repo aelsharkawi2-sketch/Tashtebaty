@@ -26,7 +26,7 @@ const { notifications, unreadCount, showNotifications, toggleNotifications } =
 const totalEarnings = computed(() => {
   return orders.value
     .filter((o) => o.status === "completed")
-    .reduce((sum, o) => sum + (parseFloat(o.price) || 0), 0);
+    .reduce((sum, o) => sum + (parseFloat(o.price) * 0.9 || 0), 0);
 });
 
 const isDark = ref(false);
