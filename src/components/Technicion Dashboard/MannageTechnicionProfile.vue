@@ -1,7 +1,7 @@
 <template>
   <div v-if="isLoading" class="text-center text-gray-500 dark:text-white mt-20">
     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
-    Loading Profile...
+    {{ texts[lang].technicianDashboard.profile?.loading || "Loading Profile..." }}
   </div>
 
   <section v-else class="space-y-6">
@@ -10,12 +10,15 @@
         @click="isEditing = true"
         class="bg-[#133B5D] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#1b5383] transition duration-300 flex items-center justify-center gap-2 shadow-md"
       >
-        <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+        <i class="fa-solid fa-pen-to-square"></i>
+        {{ texts[lang].technicianDashboard.profile?.editProfile || "Edit Profile" }}
       </button>
     </div>
 
     <div class="bg-white dark:bg-[#16222B] p-6 rounded-2xl shadow-md border border-gray-200">
-      <h3 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-5">Personal Information</h3>
+      <h3 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-5">
+        {{ texts[lang].technicianDashboard.profile?.personalInfo || "Personal Information" }}
+      </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         
         <div class="md:col-span-2 flex flex-col items-center gap-3 mb-4">
@@ -25,6 +28,7 @@
               class="w-40 h-40 rounded-full object-cover border-4 border-[#133B5D] shadow-lg"
               :class="{ 'group-hover:opacity-70 cursor-pointer': isEditing }"
               @click="isEditing && triggerImageUpload"
+              :alt="texts[lang].technicianDashboard.profile?.profileImageAlt || 'Profile image'"
             />
             <div
               v-if="isEditing"
@@ -45,75 +49,81 @@
 
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-user mr-2 text-[#133B5D] dark:text-white"></i> Name
+            <i class="fa-solid fa-user mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.nameLabel || "Name" }}
           </label>
           <input
             v-model="tempTechnician.name"
             type="text"
             :disabled="!isEditing"
-            placeholder="Enter your name"
+            :placeholder="texts[lang].technicianDashboard.profile?.namePlaceholder || 'Enter your name'"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
 
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-envelope mr-2 text-[#133B5D] dark:text-white"></i> Email
+            <i class="fa-solid fa-envelope mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.emailLabel || "Email" }}
           </label>
           <input
             v-model="tempTechnician.email"
             type="email"
             :disabled="!isEditing"
-            placeholder="Email address"
+            :placeholder="texts[lang].technicianDashboard.profile?.emailPlaceholder || 'Email address'"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 text-gray-500 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
 
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-phone mr-2 text-[#133B5D] dark:text-white"></i> Phone
+            <i class="fa-solid fa-phone mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.phoneLabel || "Phone" }}
           </label>
           <input
             v-model="tempTechnician.phone"
             type="text"
             :disabled="!isEditing"
-            placeholder="Enter phone number"
+            :placeholder="texts[lang].technicianDashboard.profile?.phonePlaceholder || 'Enter phone number'"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-lock mr-2 text-[#133B5D] dark:text-white"></i> Password
+            <i class="fa-solid fa-lock mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.passwordLabel || "Password" }}
           </label>
           <input
             v-model="tempTechnician.password"
             type="text"
             :disabled="!isEditing"
-            placeholder="Enter your password"
+            :placeholder="texts[lang].technicianDashboard.profile?.passwordPlaceholder || 'Enter your password'"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-lock mr-2 text-[#133B5D] dark:text-white"></i> Confirm Password
+            <i class="fa-solid fa-lock mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.confirmPasswordLabel || "Confirm Password" }}
           </label>
           <input
             v-model="tempTechnician.confirmPassword"
             type="text"
             :disabled="!isEditing"
-            placeholder="Confirm your password"
+            :placeholder="texts[lang].technicianDashboard.profile?.confirmPasswordPlaceholder || 'Confirm your password'"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
         <div>
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-star mr-2 text-[#133B5D] dark:text-white"></i> Years of Experience
+            <i class="fa-solid fa-star mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.experienceLabel || "Years of Experience" }}
           </label>
           <input
             v-model.number="tempTechnician.experience"
             type="number"
             min="0"
-            placeholder="e.g., 5"
+            :placeholder="texts[lang].technicianDashboard.profile?.experiencePlaceholder || 'e.g., 5'"
             :disabled="!isEditing"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
@@ -121,13 +131,14 @@
 
         <div class="md:col-span-2">
           <label class="block text-gray-700 dark:text-white font-medium mb-1">
-            <i class="fa-solid fa-book-open mr-2 text-[#133B5D] dark:text-white"></i> Bio 
+            <i class="fa-solid fa-book-open mr-2 text-[#133B5D] dark:text-white"></i>
+            {{ texts[lang].technicianDashboard.profile?.bioLabel || "Bio" }}
           </label>
           <textarea
             v-model="tempTechnician.bio"
             rows="4"
             :disabled="!isEditing"
-            placeholder="Tell clients a bit about yourself and your skills..."
+            :placeholder="texts[lang].technicianDashboard.profile?.bioPlaceholder || 'Tell clients a bit about yourself and your skills...'"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           ></textarea>
         </div>
@@ -139,34 +150,42 @@
       class="bg-white dark:bg-[#16222B] p-6 rounded-2xl shadow-md border border-gray-200 flex flex-col md:flex-row gap-6"
     >
       <div class="flex-1 space-y-4">
-        <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white">Address</h3>
+        <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.profile?.addressLabel || "Address" }}
+        </h3>
         <div>
-            <label class="block text-gray-700 dark:text-white font-medium mb-1">Street</label>
+            <label class="block text-gray-700 dark:text-white font-medium mb-1">
+              {{ texts[lang].technicianDashboard.profile?.streetLabel || "Street" }}
+            </label>
             <input
               v-model="tempTechnician.address.street"
               type="text"
               :disabled="!isEditing"
-              placeholder="Street name"
+              :placeholder="texts[lang].technicianDashboard.profile?.streetPlaceholder || 'Street name'"
               class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
             />
         </div>
         <div>
-            <label class="block text-gray-700 dark:text-white font-medium mb-1">City</label>
+            <label class="block text-gray-700 dark:text-white font-medium mb-1">
+              {{ texts[lang].technicianDashboard.profile?.cityLabel || "City" }}
+            </label>
             <input
               v-model="tempTechnician.address.city"
               type="text"
               :disabled="!isEditing"
-              placeholder="City"
+              :placeholder="texts[lang].technicianDashboard.profile?.cityPlaceholder || 'City'"
               class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
             />
         </div>
         <div>
-            <label class="block text-gray-700 dark:text-white font-medium mb-1">Country</label>
+            <label class="block text-gray-700 dark:text-white font-medium mb-1">
+              {{ texts[lang].technicianDashboard.profile?.countryLabel || "Country" }}
+            </label>
             <input
               v-model="tempTechnician.address.country"
               type="text"
               :disabled="!isEditing"
-              placeholder="Country"
+              :placeholder="texts[lang].technicianDashboard.profile?.countryPlaceholder || 'Country'"
               class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
             />
         </div>
@@ -192,29 +211,29 @@
         class="cursor-pointer bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 shadow-lg disabled:opacity-50 flex items-center gap-2"
       >
         <svg v-if="isSaving" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        {{ isSaving ? (texts[lang].technicianDashboard.saving || 'Saving...') : (texts[lang].technicianDashboard.buttons?.saveChanges || 'Save Changes') }}
       </button>
 
       <button
         @click="cancelEdit"
         class="bg-red-500 cursor-pointer text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-600 transition duration-300 shadow-lg"
       >
-        <i class="fa-solid fa-xmark"></i> Cancel
+        <i class="fa-solid fa-xmark"></i>
+        {{ texts[lang].technicianDashboard.buttons?.cancel || 'Cancel' }}
       </button>
     </div>
   </section>
 </template>
-
-
-
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged , updatePassword, updateEmail, } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uploadImageOnly } from "@/composables/useImageUpload";
+import { useTestLang } from "@/langTest/useTestLang";
+
+const { lang, texts } = useTestLang();
 
 const emit = defineEmits(['showNotification']);
 
@@ -283,11 +302,11 @@ const loadProfile = async () => {
       originalTechnician.value = JSON.parse(JSON.stringify(fullProfile));
       tempTechnician.value = JSON.parse(JSON.stringify(fullProfile));
     } else {
-      emit('showNotification', 'Could not load profile data.', 'error');
+      emit('showNotification', texts[lang].technicianDashboard.messages?.couldNotLoadProfile || 'Could not load profile data.', 'error');
     }
   } catch (error) {
     console.error("Error loading profile:", error);
-    emit('showNotification', 'Error loading profile.', 'error');
+    emit('showNotification', texts[lang].technicianDashboard.messages?.errorLoadingProfile || 'Error loading profile.', 'error');
   }
   isLoading.value = false;
 };
@@ -297,26 +316,26 @@ const saveChanges = async () => {
   if (!technicianId.value) return;
 
   if (tempTechnician.value.password !== tempTechnician.value.confirmPassword) {
-    emit('showNotification', 'Passwords do not match!', 'error');
+    emit('showNotification', texts[lang].technicianDashboard.messages?.passwordsDoNotMatch || 'Passwords do not match!', 'error');
     return;
   }
   isSaving.value = true;
   const user = auth.currentUser;
   if (!user) {
-    emit('showNotification', 'No user logged in.', 'error');
+    emit('showNotification', texts[lang].technicianDashboard.messages?.noUserLoggedIn || 'No user logged in.', 'error');
     isSaving.value = false;
     return;
   }
   try {
     if (newImageFile.value) {
-  const imageUrl = await uploadImageOnly(newImageFile.value);
-  tempTechnician.value.profileImage = imageUrl;
-}
+      const imageUrl = await uploadImageOnly(newImageFile.value);
+      tempTechnician.value.profileImage = imageUrl;
+    }
 
-const newPassword = tempTechnician.value.password;
+    const newPassword = tempTechnician.value.password;
     if (newPassword && newPassword.trim() !== "") {
       if (newPassword.length < 6) {
-        emit('showNotification', 'Password must be at least 6 characters.', 'error');
+        emit('showNotification', texts[lang].technicianDashboard.messages?.weakPassword || 'Password must be at least 6 characters.', 'error');
         isSaving.value = false;
         return;
       }
@@ -350,12 +369,11 @@ const newPassword = tempTechnician.value.password;
     });
     // 🔹 بعد updateDoc مباشرة
     window.dispatchEvent(new CustomEvent("profile-updated", {
-    detail: { image: tempTechnician.value.profileImage }
+      detail: { image: tempTechnician.value.profileImage }
     }));
 
-
     originalTechnician.value = JSON.parse(JSON.stringify(tempTechnician.value));
-    emit('showNotification', 'Profile saved successfully!', 'success');
+    emit('showNotification', texts[lang].technicianDashboard.messages?.profileSaved || 'Profile saved successfully!', 'success');
     isEditing.value = false;
     newImageFile.value = null;
   } catch (error) {
@@ -363,13 +381,13 @@ const newPassword = tempTechnician.value.password;
     tempTechnician.value = JSON.parse(JSON.stringify(originalTechnician.value));
     
     if (error.code === "auth/requires-recent-login") {
-      emit('showNotification', 'Please log out and log back in to change sensitive info.', 'error');
+      emit('showNotification', texts[lang].technicianDashboard.messages?.reauthRequired || 'Please log out and log back in to change sensitive info.', 'error');
     } else if (error.code === "auth/weak-password") {
-      emit('showNotification', 'Password is too weak (min 6 characters).', 'error');
+      emit('showNotification', texts[lang].technicianDashboard.messages?.weakPassword || 'Password is too weak (min 6 characters).', 'error');
     } else if (error.code === "auth/email-already-in-use") {
-      emit('showNotification', 'Email is already in use by another account.', 'error');
+      emit('showNotification', texts[lang].technicianDashboard.messages?.emailInUse || 'Email is already in use by another account.', 'error');
     } else {
-      emit('showNotification', 'Failed to save profile.', 'error');
+      emit('showNotification', texts[lang].technicianDashboard.messages?.failedToSaveProfile || 'Failed to save profile.', 'error');
     }
   }
   isSaving.value = false;
@@ -411,3 +429,7 @@ const mapSrc = computed(() => {
   return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&hl=en&z=14&output=embed`;
 });
 </script>
+
+<style scoped>
+/* keep existing helpers */
+</style>

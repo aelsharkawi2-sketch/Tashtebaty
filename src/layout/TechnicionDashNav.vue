@@ -144,7 +144,7 @@ const closeDrawer = () => {
 
             <!-- Earnings -->
             <div class="flex items-center gap-2 text-sm opacity-90 mb-3">
-              <p class="font-medium">My Earnings:</p>
+              <p class="font-medium">{{texts[lang].technicianDashboard.earnings.title}}</p>
               <p class="font-bold text-xl text-green-600">
                 {{ totalEarnings?.toLocaleString?.() || 0 }}
                 <span class="text-sm font-semibold">EGP</span>
@@ -235,7 +235,7 @@ const closeDrawer = () => {
           class="cursor-pointer border hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-xl w-[88%] transition shadow-md text-[16px] flex items-center justify-center gap-2"
         >
           <i class="fa-solid fa-right-from-bracket text-white text-lg"></i>
-          {{ texts[lang].technicianDashboard.buttons.logout }}
+          {{ texts[lang].technicianDashboard.Tbuttons.logout }}
         </button>
       </div>
     </div>

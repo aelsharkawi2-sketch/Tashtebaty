@@ -1,13 +1,15 @@
 <script setup>
 import { ref, computed } from "vue";
 import AlertPopup from "../AlertPopup.vue"; // ✅ import your popup
+import { useTestLang } from "@/langTest/useTestLang";
+
+const { lang, texts } = useTestLang();
 
 const props = defineProps({
   order: Object,
 });
 
 const emit = defineEmits(["mark-completed", "cancel-order"]);
-
 
 // 🟩 States for popup input (verification code)
 const showCodePopup = ref(false);
@@ -35,7 +37,9 @@ const confirmCode = () => {
     showCodePopup.value = false;
     enteredCode.value = "";
   } else {
-    alertMessage.value = "❌ Incorrect code. Please verify with the client.";
+    alertMessage.value =
+      texts[lang].technicianDashboard.messages?.incorrectCode ||
+      "❌ Incorrect code. Please verify with the client.";
     showAlert.value = true;
   }
 };
@@ -91,8 +95,7 @@ const showDetails = ref(false);
 const isConfirmed = computed(() => props.order.status === "upcoming");
 </script>
 
-
-<template> 
+<template>
   <div
     class="order rounded-2xl shadow-md p-5 md:w-[31%] bg-white dark:bg-[#16222B] dark:text-white m-2 relative transition duration-200"
   >
@@ -101,7 +104,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
       @click="showDetails = true"
       class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
     >
-      Details
+      {{ texts[lang].technicianDashboard.buttons?.details || "Details" }}
     </button>
 
     <!-- Order Info -->
@@ -113,7 +116,9 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 break-words text-[#133B5D] dark:text-white">
-        <span class="font-bold text-[#133B5D] dark:text-white">Order:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.ordersCard?.orderLabel || "Order" }}:
+        </span>
         {{ shortDescription }}
       </p>
     </div>
@@ -127,7 +132,9 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 text-[#133B5D] dark:text-white">
-        <span class="font-bold text-[#133B5D] dark:text-white">Price:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.ordersCard?.priceLabel || "Price" }}:
+        </span>
         {{ order.price }} EGP
       </p>
     </div>
@@ -141,7 +148,9 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 text-[#133B5D] dark:text-white">
-        <span class="font-bold text-[#133B5D] dark:text-white">Date:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.ordersCard?.dateLabel || "Date" }}:
+        </span>
         {{ order.date }}
       </p>
     </div>
@@ -155,7 +164,9 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 text-[#133B5D] dark:text-white">
-        <span class="font-bold text-[#133B5D] dark:text-white">Time:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.ordersCard?.timeLabel || "Time" }}:
+        </span>
         {{ order.time }}
       </p>
     </div>
@@ -169,7 +180,9 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 text-[#133B5D] dark:text-white">
-        <span class="font-bold text-[#133B5D] dark:text-white">Location:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.ordersCard?.locationLabel || "Location" }}:
+        </span>
         {{ formatLocation(order.location) }}
       </p>
     </div>
@@ -183,7 +196,9 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 text-[#133B5D] dark:text-white">
-        <span class="font-bold text-[#133B5D] dark:text-white">Client:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.ordersCard?.clientLabel || "Client" }}:
+        </span>
         {{ order.customer }}
       </p>
     </div>
@@ -192,11 +207,15 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
     <div class="element flex m-1 text-lg">
       <i class="fa-solid fa-circle-info text-[#2574b9] text-xl"></i>
       <p class="mx-2">
-        <span class="font-bold text-[#133B5D] dark:text-white">Status:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.status?.label || "Status" }}:
+        </span>
         <span
           :class="isConfirmed ? 'text-green-600 font-semibold' : 'text-yellow-500 font-semibold'"
         >
-          {{ isConfirmed ? ' Confirmed (Paid)' : ' (waiting for Payment)' }}
+          {{ isConfirmed
+            ? texts[lang].technicianDashboard.status?.confirmed || " Confirmed (Paid)"
+            : texts[lang].technicianDashboard.status?.pending || " (waiting for Payment)" }}
         </span>
       </p>
     </div>
@@ -213,14 +232,14 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
             : 'cursor-not-allowed bg-gray-300 text-gray-500'
         ]"
       >
-        Mark as Completed
+        {{ texts[lang].technicianDashboard.buttons?.markCompleted || "Mark as Completed" }}
       </button>
 
       <button
         @click="handleCancelOrder"
         class="ml-1 cursor-pointer bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-xl transition"
       >
-        Cancel
+        {{ texts[lang].technicianDashboard.buttons?.cancel || "Cancel" }}
       </button>
     </div>
   </div>
@@ -233,30 +252,30 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
     >
       <div class="bg-white dark:bg-[#16222B] dark:text-white rounded-2xl shadow-xl p-6 w-96 text-center">
         <h3 class="text-xl font-semibold text-[#5984C6] dark:text-white mb-4">
-          Enter Order Verification Code
+          {{ texts[lang].technicianDashboard.popups?.enterVerificationCodeTitle || "Enter Order Verification Code" }}
         </h3>
         <p class="text-gray-700 dark:text-white mb-4">
-          Ask the client for their 6-digit order code.
+          {{ texts[lang].technicianDashboard.popups?.askClientForCode || "Ask the client for their 6-digit order code." }}
         </p>
         <input
           v-model="enteredCode"
           type="text"
           maxlength="6"
           class="border border-gray-300 rounded-lg p-2 w-full text-center tracking-widest text-lg mb-6 focus:ring-2 focus:ring-[#5984C6] outline-none dark:bg-[#16222B] dark:text-white"
-          placeholder="••••••"
+          :placeholder="texts[lang].technicianDashboard.popups?.codePlaceholder || '••••••'"
         />
         <div class="flex justify-end gap-3">
           <button
             @click="showCodePopup = false"
             class="bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-[#133B5D] dark:text-white px-4 py-2 rounded-lg font-semibold transition"
           >
-            Cancel
+            {{ texts[lang].technicianDashboard.buttons?.cancel || "Cancel" }}
           </button>
           <button
             @click="confirmCode"
             class="bg-[#5984C6] hover:bg-[#002153] text-white px-5 py-2 rounded-lg font-semibold transition"
           >
-            Confirm
+            {{ texts[lang].technicianDashboard.buttons?.confirm || "Confirm" }}
           </button>
         </div>
       </div>
@@ -281,20 +300,20 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         ✕
       </button>
 
-      <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4 text-center">
-        Order Details
+      <h2 class="text-2xl font-semibold text-[#133B5D] mb-4 text-center dark:text-white">
+        {{ texts[lang].technicianDashboard.popups?.orderDetailsTitle || "Order Details" }}
       </h2>
 
       <div class="mt-4 space-y-2 text-lg">
-        <textarea 
+        <textarea
           disabled
           class="text-[#133B5D] dark:text-white border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] dark:bg-[#16222B] dark:text-white"
         >{{ order.descreption }}</textarea>
-        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Price:</span> {{ order.price }} EGP</p>
-        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Date:</span> {{ order.date }}</p>
-        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Time:</span> {{ order.time }}</p>
-        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Location:</span> {{ formatLocation(order.location) }}</p>
-        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Client:</span> {{ order.customer }}</p>
+        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard?.priceLabel || "Price" }}:</span> {{ order.price }} EGP</p>
+        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard?.dateLabel || "Date" }}:</span> {{ order.date }}</p>
+        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard?.timeLabel || "Time" }}:</span> {{ order.time }}</p>
+        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard?.locationLabel || "Location" }}:</span> {{ formatLocation(order.location) }}</p>
+        <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard?.clientLabel || "Client" }}:</span> {{ order.customer }}</p>
       </div>
     </div>
   </div>
@@ -302,11 +321,17 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
   <transition name="fade">
     <div v-if="showCancelPopup" class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50">
       <div class="bg-white dark:bg-[#16222B] dark:text-white p-6 rounded-2xl shadow-xl w-[400px] text-center">
-        <h3 class="text-xl font-semibold mb-4 text-[#133B5D] dark:text-white">Enter reason for cancellation</h3>
-        <textarea v-model="cancelReason" rows="4" class="w-full border rounded-lg p-2 dark:bg-[#16222B] dark:text-white border-gray-300 focus:ring-2 focus:ring-[#133B5D]" placeholder="Type the reason..."></textarea>
+        <h3 class="text-xl font-semibold mb-4 text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.messages?.enterCancelReason || "Enter reason for cancellation" }}
+        </h3>
+        <textarea v-model="cancelReason" rows="4" class="w-full border rounded-lg p-2 dark:bg-[#16222B] dark:text-white border-gray-300 focus:ring-2 focus:ring-[#133B5D]" :placeholder="texts[lang].technicianDashboard.messages?.typeReasonPlaceholder || 'Type the reason...'"></textarea>
         <div class="flex justify-end gap-3 mt-4">
-          <button @click="cancelPopup" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Cancel</button>
-          <button @click="confirmCancel" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-5 py-2 rounded-lg font-semibold">Submit</button>
+          <button @click="cancelPopup" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+            {{ texts[lang].technicianDashboard.buttons?.cancel || "Cancel" }}
+          </button>
+          <button @click="confirmCancel" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-5 py-2 rounded-lg font-semibold">
+            {{ texts[lang].technicianDashboard.buttons?.submit || "Submit" }}
+          </button>
         </div>
       </div>
     </div>
@@ -327,4 +352,3 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
   opacity: 0;
 }
 </style>
-

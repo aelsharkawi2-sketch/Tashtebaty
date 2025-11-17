@@ -1166,7 +1166,7 @@ watch(selectedDayInfo, () => {
                 :disabled="isPriceLocked"
                 type="text"
                 :placeholder="
-                  isPriceLocked ? 'Price set by service' : 'Enter Your Budget (Optional)...'
+                  isPriceLocked ? 'Price set by service' : 'Enter Your Budget ...'
                 "
                 class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color disabled:bg-gray-100 dark:disabled:bg-transparent"
               />

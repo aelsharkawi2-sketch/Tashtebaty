@@ -1,5 +1,32 @@
 {
   "technicianDashboard": {
+        "profile": {
+      "loading": "جارٍ تحميل الملف الشخصي...",
+      "editProfile": "تعديل الملف الشخصي",
+      "personalInfo": "المعلومات الشخصية",
+      "profileImageAlt": "صورة الملف الشخصي",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "أدخل اسمك",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "عنوان البريد الإلكتروني",
+      "phoneLabel": "الهاتف",
+      "phonePlaceholder": "أدخل رقم الهاتف",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "أدخل كلمة المرور مرة أخرى",
+      "experienceLabel": "سنوات الخبرة",
+      "experiencePlaceholder": "مثال: 5",
+      "bioLabel": "نبذة تعريفية",
+      "bioPlaceholder": "اكتب نبذة عن نفسك ومهاراتك...",
+      "addressLabel": "العنوان",
+      "streetLabel": "الشارع",
+      "streetPlaceholder": "اسم الشارع",
+      "cityLabel": "المدينة",
+      "cityPlaceholder": "المدينة",
+      "countryLabel": "الدولة",
+      "countryPlaceholder": "الدولة"
+    },
     "nav": {
     "orders": "الطلبات",
     "appointments": "المواعيد",
@@ -10,7 +37,7 @@
     "reviews": "التقييمات",
     "settings": "الإعدادات"
   },
-  "buttons": {
+  "Tbuttons": {
     "logout": "تسجيل الخروج"
   },
   "sidebar": {

@@ -1,6 +1,33 @@
 {
 
   "technicianDashboard": {
+    "profile": {
+      "loading": "Loading Profile...",
+      "editProfile": "Edit Profile",
+      "personalInfo": "Personal Information",
+      "profileImageAlt": "Profile image",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Email address",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "Enter phone number",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "experienceLabel": "Years of Experience",
+      "experiencePlaceholder": "e.g., 5",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell clients a bit about yourself and your skills...",
+      "addressLabel": "Address",
+      "streetLabel": "Street",
+      "streetPlaceholder": "Street name",
+      "cityLabel": "City",
+      "cityPlaceholder": "City",
+      "countryLabel": "Country",
+      "countryPlaceholder": "Country"
+    },
     "nav": {
     "orders": "Orders",
     "appointments": "Appointments",
@@ -11,7 +38,7 @@
     "reviews": "Reviews",
     "settings": "Settings"
   },
-  "buttons": {
+  "Tbuttons": {
     "logout": "Log Out"
   },
   "sidebar": {

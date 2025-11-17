@@ -1,10 +1,14 @@
 <script setup>
-const emit = defineEmits(["createService"])
+import { useTestLang } from "@/langTest/useTestLang";
+const { lang, texts } = useTestLang();
+
+const emit = defineEmits(["createService"]);
 
 const handleCreate = () => {
-  emit("createService")
-}
+  emit("createService");
+};
 </script>
+
 <template>
   <div
     @click="handleCreate"
@@ -12,14 +16,15 @@ const handleCreate = () => {
   >
     <img
       src="/images/create service.png"
-      alt="Create service icon"
+      :alt="texts[lang].technicianDashboard.popups?.createServiceTitle || 'Create service icon'"
       class="w-[120px] h-[120px] object-contain mb-3"
     />
     <p class="text-center font-semibold text-2xl text-[#133B5D] dark:text-white">
-      Create New Service
+      {{ texts[lang].technicianDashboard.popups?.createServiceTitle || 'Create New Service' }}
     </p>
   </div>
 </template>
+
 <style scoped>
 .createServiceCard {
   border: 2px dashed #5984c6;
