@@ -1,4 +1,148 @@
 {
+  "technicianDashboard": {
+    "nav": {
+    "orders": "الطلبات",
+    "appointments": "المواعيد",
+    "services": "خدماتي",
+    "workGallery": "معرض الأعمال",
+    "earnings": "أرباحي",
+    "chat": "الدردشة",
+    "reviews": "التقييمات",
+    "settings": "الإعدادات"
+  },
+  "buttons": {
+    "logout": "تسجيل الخروج"
+  },
+  "sidebar": {
+    "switchToEnglish": "تبديل اللغة"
+  },
+    "orders": {
+      "title": "الطلبات"
+    },
+    "tabs": {
+      "requests": "طلبات جديدة",
+      "upcoming": "القادمة",
+      "completed": "المكتملة",
+      "cancelled": "الملغاة"
+    },
+    "saving": "جاري الحفظ...",
+    "saveAvailability": "حفظ المواعيد",
+    "table": {
+      "date": "التاريخ",
+      "service": "الخدمة",
+      "client": "العميل",
+      "amount": "المبلغ"
+    },
+    "empty": {
+      "noOrders": "لا يوجد طلبات في هذه الفئة.",
+      "noRecentOrders": "لا توجد طلبات حديثة بعد",
+      "noAvailability": "غير متاح"
+    },
+    "messages": {
+      "availabilitySaved": "تم حفظ المواعيد بنجاح!",
+      "availabilityFailed": "فشل حفظ المواعيد.",
+      "serviceUpdated": "تم تحديث الخدمة.",
+      "serviceCreated": "تم إنشاء الخدمة.",
+      "serviceDeleted": "تم حذف الخدمة.",
+      "imageUploadFailed": "فشل رفع الصورة. حاول مرة أخرى.",
+      "orderUpdated": "تم تحديث حالة الطلب.",
+      "failedToUpdateOrder": "فشل تحديث الطلب.",
+      "failedToSaveService": "فشل حفظ الخدمة.",
+      "failedToDeleteService": "فشل حذف الخدمة."
+    },
+    "buttons": {
+      "details": "تفاصيل",
+      "chooseFile": "اختيار ملف",
+      "deleteImage": "حذف الصورة",
+      "saveChanges": "حفظ التعديلات",
+      "addService": "إضافة خدمة",
+      "cancel": "إلغاء",
+      "confirmAndPay": "تأكيد والدفع",
+      "yesCancel": "نعم، إلغاء",
+      "noKeep": "لا، الاحتفاظ"
+    },
+    "popups": {
+      "completedOrderDetailsTitle": "تفاصيل الطلب المكتمل",
+      "createServiceTitle": "إنشاء خدمة جديدة",
+      "editServiceTitle": "تعديل الخدمة"
+    },
+    "availability": {
+      "title": "مواعيدي",
+      "loading": "جاري تحميل المواعيد...",
+      "startTime": "وقت البداية",
+      "endTime": "وقت النهاية",
+      "notAvailable": "غير متاح"
+    },
+    "earnings": {
+      "title": "أرباحي",
+      "totalEarningsLabel": "إجمالي الأرباح",
+      "updatedToday": "تم التحديث اليوم",
+      "earningsOverview": "نظرة عامة على الأرباح",
+      "recentOrders": "الطلبات الأخيرة",
+      "newEarningsThisMonth": "أرباح جديدة هذا الشهر"
+    },
+    "ordersCard": {
+      "orderLabel": "الطلب",
+      "priceLabel": "السعر",
+      "dateLabel": "التاريخ",
+      "timeLabel": "الوقت",
+      "locationLabel": "الموقع",
+      "clientLabel": "العميل",
+      "completedStatus": "مكتمل",
+      "cancelledByClient": "أُلغي بواسطة العميل"
+    },
+    "reviews": {
+      "title": "التقييمات",
+      "noReviews": "لا توجد تقييمات حتى الآن.",
+      "youRated": "لقد قيّمت: {rating}★"
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "noNotifications": "لا توجد إشعارات بعد"
+    },
+    "chart": {
+      "labelEarnings": "الأرباح (جنيه)",
+      "months": [
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر"
+      ]
+    }
+  },
+  "adminDashboard": {
+    "sidebar": {
+      "switchToEnglish": "تغيير اللغة"
+    }
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "yes": "نعم",
+    "no": "لا",
+    "close": "إغلاق",
+    "confirm": "تأكيد"
+  },
+  "chat": {
+    "title": "المحادثة",
+    "noMessages": "لا توجد رسائل بعد"
+  },
+  "workGallery": {
+    "title": "معرض الأعمال"
+  },
+  "settings": {
+    "title": "الإعدادات"
+  },
   "myOrdersPage": {
   "title": "طلباتي",
   "loading": "جارٍ تحميل الطلبات...",

@@ -1,4 +1,138 @@
 {
+
+  "technicianDashboard": {
+    "nav": {
+    "orders": "Orders",
+    "appointments": "Appointments",
+    "services": "My Services",
+    "workGallery": "Work Gallery",
+    "earnings": "My Earnings",
+    "chat": "Chat",
+    "reviews": "Reviews",
+    "settings": "Settings"
+  },
+  "buttons": {
+    "logout": "Log Out"
+  },
+  "sidebar": {
+    "switchToEnglish": "Switch language"
+  },
+    "orders": {
+      "title": "Orders"
+    },
+    "tabs": {
+      "requests": "New Requests",
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "cancelled": "Cancelled Orders"
+    },
+    "saving": "Saving...",
+    "saveAvailability": "Save Availability",
+    "table": {
+      "date": "Date",
+      "service": "Service",
+      "client": "Client",
+      "amount": "Amount"
+    },
+    "empty": {
+      "noOrders": "No orders found in this category.",
+      "noRecentOrders": "No recent orders yet",
+      "noAvailability": "Not available"
+    },
+    "messages": {
+      "availabilitySaved": "Availability saved successfully!",
+      "availabilityFailed": "Failed to save availability.",
+      "serviceUpdated": "Service updated.",
+      "serviceCreated": "Service created.",
+      "serviceDeleted": "Service deleted.",
+      "imageUploadFailed": "Image upload failed. Please try again.",
+      "orderUpdated": "Order updated.",
+      "failedToUpdateOrder": "Failed to update order.",
+      "failedToSaveService": "Failed to save service.",
+      "failedToDeleteService": "Failed to delete service."
+    },
+    "buttons": {
+      "details": "Details",
+      "chooseFile": "Choose File",
+      "deleteImage": "Delete Image",
+      "saveChanges": "Save Changes",
+      "addService": "Add Service",
+      "cancel": "Cancel",
+      "confirmAndPay": "Confirm & Pay",
+      "yesCancel": "Yes, Cancel",
+      "noKeep": "No, Keep it"
+    },
+    "popups": {
+      "completedOrderDetailsTitle": "Completed Order Details",
+      "createServiceTitle": "Create New Service",
+      "editServiceTitle": "Edit Service"
+    },
+    "availability": {
+      "title": "My Availability",
+      "loading": "Loading availability...",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "notAvailable": "Not available"
+    },
+    "earnings": {
+      "title": "My Earnings",
+      "totalEarningsLabel": "Total Earnings",
+      "updatedToday": "Updated today",
+      "earningsOverview": "Earnings Overview",
+      "recentOrders": "Recent Orders",
+      "newEarningsThisMonth": "New earnings this month"
+    },
+    "ordersCard": {
+      "orderLabel": "Order",
+      "priceLabel": "Price",
+      "dateLabel": "Date",
+      "timeLabel": "Time",
+      "locationLabel": "Location",
+      "clientLabel": "Client",
+      "completedStatus": "Completed",
+      "cancelledByClient": "Cancelled by client"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "noReviews": "No reviews yet.",
+      "youRated": "You rated: {rating}★"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "noNotifications": "No notifications yet"
+    },
+    "chart": {
+      "labelEarnings": "Earnings (EGP)",
+      "months": [
+        "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+      ]
+    }
+  },
+  "adminDashboard": {
+    "sidebar": {
+      "switchToEnglish": "Switch language"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "confirm": "Confirm"
+  },
+  "chat": {
+    "title": "Chat",
+    "noMessages": "No messages yet"
+  },
+  "workGallery": {
+    "title": "Work Gallery"
+  },
+  "settings": {
+    "title": "Settings"
+  },
   "myOrdersPage": {
   "title": "My Orders",
   "loading": "Loading orders...",

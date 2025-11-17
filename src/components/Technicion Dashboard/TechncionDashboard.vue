@@ -34,7 +34,7 @@ import { useTechnicianNotifications } from "@/composables/useTechnicianNotificat
 // ✅ Shared notifications (sidebar + top navbar)
 const { notifications, unreadCount, showNotifications, toggleNotifications } =
   useTechnicianNotifications();
-const { lang, texts } = useTestLang();
+const { lang, texts, switchLang } = useTestLang();
 const isDark = ref(false);
 
 // 🟦 Refs & states
@@ -104,6 +104,8 @@ const closeSidebarHandler = () => {
   showSidebar.value = false;
 };
 
+
+
 const applyTheme = (mode) => {
   isDark.value = mode === "dark";
   document.documentElement.classList.toggle("dark", isDark.value);
@@ -113,6 +115,59 @@ const toggleDarkMode = () => {
   applyTheme(next);
   localStorage.setItem("theme", next);
 };
+
+
+// ---------------------- Language toggle ----------------------
+/**
+ * Toggle language between 'en' and 'ar', update i18n, html attrs, and persist.
+ * Works like the NavBar implementation you showed.
+ */
+function toggleLanguage() {
+  // protect for SSR
+  const current = (lang && lang.value) || 'en';
+  const newLang = current === 'en' ? 'ar' : 'en';
+
+  // Tell the language composable to switch (it should handle any internal updates)
+  if (typeof switchLang === 'function') {
+    switchLang(newLang);
+  }
+
+  // Update <html> attributes
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = newLang;
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+  }
+
+  // Persist preference
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('lang', newLang);
+    }
+  } catch (e) {
+    // ignore storage errors
+    console.warn('Could not save language preference', e);
+  }
+}
+
+// Ensure html attrs are correct on mount (use saved preference if present)
+onMounted(() => {
+  try {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lang');
+      const effective = saved || (lang && lang.value) || 'en';
+      document.documentElement.lang = effective;
+      document.documentElement.dir = effective === 'ar' ? 'rtl' : 'ltr';
+
+      // If saved differs from composable's current, call switchLang to sync (but only if switchLang exists)
+      if (saved && switchLang && typeof switchLang === 'function' && lang?.value !== saved) {
+        switchLang(saved);
+      }
+    }
+  } catch (e) {
+    /* ignore */
+  }
+});
+
 
 // 🟩 Auth & Firestore listeners
 onMounted(() => {
@@ -556,603 +611,597 @@ watch(
         <i v-if="!showSidebar" class="fa-solid fa-bars text-2xl text-[#133B5D] dark:text-white"></i>
         <i v-else class="fa-solid fa-xmark text-2xl text-[#133B5D] dark:text-white"></i>
       </button>
-      <button
-        ref="langButton"
-        @click="toggleLanguage"
-        class="mr-6 cursor-pointer group relative h-9 w-9 rounded-full  border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 language-switch-button"
-        :title="texts[lang].adminDashboard.sidebar.switchToEnglish"
+      <button @click="toggleLanguage" class="cursor-pointer text-xl text-white mr-5">
+        <i class="fa-solid fa-globe "></i>
+      </button>
+
+
+  <!-- 🌙 Dark Mode -->
+  <button @click="toggleDarkMode" class="mr-6 cursor-pointer" :title="isDark ? 'Light mode' : 'Dark mode'">
+    <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
+    <i v-else class="fa-solid fa-moon text-[#133B5D] dark:text-white text-xl"></i>
+  </button>
+
+  <!-- 🔔 Notifications -->
+  <div class="relative">
+    <button @click="toggleNotifications" class="relative cursor-pointer">
+      <i class="fa-solid fa-bell text-xl text-[#133B5D] dark:text-white"></i>
+      <span
+        v-if="unreadCount > 0"
+        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
       >
-        <i
-          ref="langIcon"
-          class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
-        ></i>
-        <span class="sr-only">Toggle language</span>
-      </button>
-
-      <!-- 🌙 Dark Mode -->
-      <button @click="toggleDarkMode" class="mr-6 cursor-pointer" :title="isDark ? 'Light mode' : 'Dark mode'">
-        <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
-        <i v-else class="fa-solid fa-moon text-[#133B5D] dark:text-white text-xl"></i>
-      </button>
-
-      <!-- 🔔 Notifications -->
-      <div class="relative">
-        <button @click="toggleNotifications" class="relative cursor-pointer">
-          <i class="fa-solid fa-bell text-xl text-[#133B5D] dark:text-white"></i>
-          <span
-            v-if="unreadCount > 0"
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
+        {{ unreadCount }}
+      </span>
+    </button>
+    
+    <transition name="fade">
+      <div
+        v-if="showNotifications"
+        class="absolute right-0 mt-2 w-80 bg-white dark:bg-[#16222B] border border-gray-300 dark:border-gray-600 rounded-xl shadow-xl z-50"
+      >
+        <div class="p-3 font-semibold border-b border-gray-300 dark:border-gray-600 text-[#133B5D] dark:text-white">
+          {{ texts[lang].technicianDashboard.notifications.title }}
+        </div>
+        <ul class="max-h-64 overflow-y-auto">
+          <li
+            v-for="n in notifications"
+            :key="n.id"
+            class="p-3 border-b border-gray-200 dark:border-gray-700 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition text-[#133B5D] dark:text-gray-200"
           >
-            {{ unreadCount }}
-          </span>
-        </button>
-        
-        <transition name="fade">
+            <p>{{ n.message }}</p>
+            <p class="text-xs text-gray-400 mt-1">
+              {{ n.timestamp?.toDate?.().toLocaleString?.() || 'Just now' }}
+            </p>
+          </li>
+          <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">{{ texts[lang].technicianDashboard.notifications.noNotifications }}</li>
+        </ul>
+      </div>
+    </transition>
+  </div>
+</div>
+
+<!-- Sidebar (component) -->
+<TechnicionDashNav
+  :active="mainTab"
+  :mobile-open="showSidebar"
+  @changeTab="handleTabChange"
+  @closeSidebar="closeSidebarHandler"
+  class="z-50"  
+/>
+
+<div
+  v-if="showSidebar"
+  class="fixed inset-0 bg-black opacity-30 pointer-events-none z-30 md:hidden"
+  aria-hidden="true"
+></div>
+
+<div class="myOrders  w-[80%] px-8 py-6 relative pt-[80px] md:ml-[20%]">
+  <template v-if="mainTab === 'orders'">
+    <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4">{{ texts[lang].technicianDashboard.orders.title }}</h2>
+    <div
+      class="flex md:space-x-6 space-x-2 mb-6 border-b border-gray-300 text-lg font-medium"
+    >
+      <button
+        @click="orderTab = 'requests'"
+        :class="[ 
+          'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200 cursor-pointer',
+          orderTab === 'requests'
+            ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+            : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
+        ]"
+      >
+        {{ texts[lang].technicianDashboard.tabs.requests }}
+      </button>
+      <button
+        @click="orderTab = 'upcoming'"
+        :class="[
+          'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200',
+          orderTab === 'upcoming'
+            ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+            : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
+        ]"
+      >
+        {{ texts[lang].technicianDashboard.tabs.upcoming }}
+      </button>
+      <button
+        @click="orderTab = 'completed'"
+        :class="[
+          'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200',
+          orderTab === 'completed'
+            ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+            : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
+        ]"
+      >
+        {{ texts[lang].technicianDashboard.tabs.completed }}
+        <span
+          v-if="completedCount"
+          class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full"
+        >
+          {{ completedCount }}
+        </span>
+      </button>
+      <button
+        @click="orderTab = 'cancelled'"
+        :class="[
+          'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200',
+          orderTab === 'cancelled'
+            ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+            : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
+        ]"
+      >
+        {{ texts[lang].technicianDashboard.tabs.cancelled }}
+      </button>
+    </div>
+    <div
+      v-if="!filteredOrders.length"
+      class="text-center text-gray-500 dark:text-white mt-10"
+    >
+      {{ texts[lang].technicianDashboard.empty.noOrders }}
+    </div>
+    <div class="ordersContainer flex flex-wrap  -mx-2">
+      <template v-if="orderTab === 'requests'">
+        <ordersCard
+          v-for="order in filteredOrders"
+          :key="order.id"
+          :order="order"
+          @accept-order="handleAcceptOrder"
+          @decline-order="handleDeclineOrder"
+        />
+      </template>
+      <template v-else-if="orderTab === 'upcoming'">
+        <UpcomingCard
+          v-for="order in filteredOrders"
+          :key="order.id"
+          :order="order"
+          @mark-completed="handleMarkCompletedOrder"
+          @cancel-order="handleCancelOrder"
+        />
+      </template>
+      <template v-else-if="orderTab === 'completed'">
+        <div
+          v-for="order in filteredOrders"
+          :key="order.id"
+          class="order rounded-2xl shadow-md p-5 w-full md:w-[31%] bg-green-50 dark:bg-[#16222B] dark:text-white m-2 border border-green-300 relative transition duration-200"
+        >
+          <button
+            @click="order.showDetails = true"
+            class="cursor-pointer absolute right-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+          >
+            {{ texts[lang].technicianDashboard.buttons.details }}
+          </button>
+
+          <p
+            class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words"
+          >
+            <span class="font-bold">{{ texts[lang].technicianDashboard.ordersCard.orderLabel }}:</span>
+            {{
+              (order.descreption || "")
+                .split(/\s+/)
+                .slice(0, 15)
+                .join(" ") +
+              ((order.descreption || "").split(/\s+/).length > 15 ? "..." : "")
+            }}
+          </p>
+
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.priceLabel }}:</span>
+            {{ order.price }} EGP
+          </p>
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.dateLabel }}:</span>
+            {{ order.date }}
+          </p>
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.timeLabel }}:</span>
+            {{ order.time }}
+          </p>
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.locationLabel }}:</span>
+            {{ formatLocation(order.location) }}
+          </p>
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.clientLabel }}:</span>
+            {{ order.customer }}
+          </p>
+
+          <p class="text-green-600 dark:text-green-400 font-semibold mt-2">✅ {{ texts[lang].technicianDashboard.ordersCard.completedStatus }}</p>
+
           <div
-            v-if="showNotifications"
-            class="absolute right-0 mt-2 w-80 bg-white dark:bg-[#16222B] border border-gray-300 dark:border-gray-600 rounded-xl shadow-xl z-50"
+            v-if="order.showDetails"
+            @click.self="order.showDetails = false"
+            class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
           >
-            <div class="p-3 font-semibold border-b border-gray-300 dark:border-gray-600 text-[#133B5D] dark:text-white">
-              Notifications
-            </div>
-            <ul class="max-h-64 overflow-y-auto">
-              <li
-                v-for="n in notifications"
-                :key="n.id"
-                class="p-3 border-b border-gray-200 dark:border-gray-700 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition text-[#133B5D] dark:text-gray-200"
+            <div
+              class="bg-white dark:bg-[#16222B] dark:text-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
+            >
+              <button
+                @click="order.showDetails = false"
+                class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl"
               >
-                <p>{{ n.message }}</p>
-                <p class="text-xs text-gray-400 mt-1">
-                  {{ n.timestamp?.toDate?.().toLocaleString?.() || 'Just now' }}
+                ✕
+              </button>
+
+              <h2
+                class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4 text-center"
+              >
+                {{ texts[lang].technicianDashboard.popups.completedOrderDetailsTitle }}
+              </h2>
+
+              <div class="mt-4 space-y-2 text-lg">
+                <textarea
+                  disabled
+                  class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] dark:bg-[#16222B] dark:text-white"
+                >{{ order.descreption }}</textarea>
+                <p>
+                  <span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.priceLabel }}:</span>
+                  {{ order.price }} EGP
                 </p>
-              </li>
-              <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">No notifications yet</li>
-            </ul>
+                <p>
+                  <span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.dateLabel }}:</span>
+                  {{ order.date }}
+                </p>
+                <p>
+                  <span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.timeLabel }}:</span>
+                  {{ order.time }}
+                </p>
+                <p>
+                  <span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.locationLabel }}:</span>
+                  {{ formatLocation(order.location) }}
+                </p>
+                <p>
+                  <span class="font-bold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.clientLabel }}:</span>
+                  {{ order.customer }}
+                </p>
+                <p class="text-green-600 dark:text-green-400 font-semibold mt-2">
+                  ✅ {{ texts[lang].technicianDashboard.ordersCard.completedStatus }}
+                </p>
+              </div>
+            </div>
           </div>
-        </transition>
+        </div>
+      </template>
+
+      <template v-else-if="orderTab === 'cancelled'"> 
+        <div
+          v-for="order in filteredOrders"
+          :key="order.id"
+          class="order rounded-2xl shadow-md p-5 w-full md:w-[31%] bg-red-50 dark:bg-[#16222B] dark:text-white m-2 border border-red-300 relative transition duration-200"
+        >
+          <button
+            @click="order.showDetails = true"
+            class="cursor-pointer absolute right-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+          >
+            {{ texts[lang].technicianDashboard.buttons.details }}
+          </button>
+
+          <p class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words">
+            <span class="font-bold">{{ texts[lang].technicianDashboard.ordersCard.orderLabel }}:</span>
+            {{ order.descreption || "No description" }}
+          </p>
+
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.priceLabel }}:</span>
+            {{ order.price }} EGP
+          </p>
+
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.dateLabel }}:</span>
+            {{ order.date }}
+          </p>
+
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.timeLabel }}:</span>
+            {{ order.time }}
+          </p>
+
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.locationLabel }}:</span>
+            {{ formatLocation(order.location) }}
+          </p>
+
+          <p class="text-[#133B5D] dark:text-white">
+            <span class="font-semibold text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.ordersCard.clientLabel }}:</span>
+            {{ order.customer }}
+          </p>
+
+          <p class="text-red-600 dark:text-red-400 font-semibold mt-2">
+            ❌ {{ texts[lang].technicianDashboard.ordersCard.cancelledByClient }}
+          </p>
+        </div>
+      </template>
+
+
+    </div>
+  </template>
+
+  <template v-else-if="mainTab === 'services'">
+    <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">{{ texts[lang].technicianDashboard.earnings.title /* keep same or optionally adapt if separate title exists; using earnings.title here as 'My Services' is not in JSON */ }}</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <CreateServiceCard @createService="openCreatePopup" />
+      <ServiceCard
+        v-for="service in services"
+        :key="service.id"
+        :service="service"
+        @editService="openEditPopup"
+        @deleteService="handleDeleteService"
+      />
+    </div>
+  </template>
+
+  <template v-else-if="mainTab === 'earnings'">
+    <div class="earningsSection">
+      <h2
+        class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6 flex items-center gap-2"
+      >
+        {{ texts[lang].technicianDashboard.earnings.title }}
+      </h2>
+
+      <div
+        class="bg-linear-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center"
+      >
+        <div>
+          <p class="text-lg opacity-90">{{ texts[lang].technicianDashboard.earnings.totalEarningsLabel }}</p>
+          <h1 class="text-5xl font-bold mt-2">{{ totalEarnings }} EGP</h1>
+          <p class="text-sm text-gray-200 mt-2">{{ texts[lang].technicianDashboard.earnings.updatedToday }}</p>
+          <p
+            class="text-sm mt-1 font-medium flex items-center"
+            :class="{
+              'text-green-300': earningsGrowth === 'first' || earningsGrowth > 0,
+              'text-red-300': earningsGrowth < 0,
+              'text-gray-300': earningsGrowth === 0,
+            }"
+          >
+            <img
+              v-if="earningsGrowth === 'first'"
+              src="../../images/increase.png"
+              class="w-5 h-5 mr-1"
+              alt=""
+            />
+            <img
+              v-else
+              :src="
+                earningsGrowth > 0
+                  ? '../../images/increase.png'
+                  : '../../images/decrease.png'
+              "
+              class="w-5 h-5 mr-1"
+              alt=""
+            />
+
+            <span v-if="earningsGrowth === 'first'">
+              {{ texts[lang].technicianDashboard.earnings.newEarningsThisMonth }}
+            </span>
+            <span v-else>
+              {{ earningsGrowth > 0 ? '+' : '' }}{{ earningsGrowth }}% this month
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6 mb-6">
+        <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
+          {{ texts[lang].technicianDashboard.earnings.earningsOverview }}
+        </h3>
+        <div class="h-[300px]">
+          <canvas id="earningsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6">
+        <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
+          {{ texts[lang].technicianDashboard.earnings.recentOrders }}
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-left border-collapse dark:text-gray-200">
+            <thead>
+              <tr class="border-b text-gray-600 dark:text-gray-300">
+                <th class="py-2 px-3">{{ texts[lang].technicianDashboard.table.date }}</th>
+                <th class="py-2 px-3">{{ texts[lang].technicianDashboard.table.service }}</th>
+                <th class="py-2 px-3">{{ texts[lang].technicianDashboard.table.client }}</th>
+                <th class="py-2 px-3 text-right">{{ texts[lang].technicianDashboard.table.amount }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="order in orders"
+                :key="order.id"
+                class="border-b hover:bg-gray-50 dark:hover:bg-[#1E2A33] text-sm transition"
+              >
+                <td class="py-3 px-3">{{ order.date }}</td>
+                <td class="py-3 px-3">{{ order.descreption }}</td>
+                <td class="py-3 px-3">{{ order.customer }}</td>
+                <td class="py-3 px-3 text-right">
+                  <div class="flex flex-col items-end">
+                    <span
+                      class="px-2 py-1 rounded text-xs font-semibold mb-1"
+                      :class="{
+                        'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300':
+                          order.status === 'completed',
+                        'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300':
+                          order.status === 'pending',
+                        'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200':
+                          order.status === 'in-progress',
+                        'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300':
+                          order.status === 'cancelled',
+                      }"
+                    >
+                      {{
+                        order.status.charAt(0).toUpperCase() +
+                        order.status.slice(1)
+                      }}
+                    </span>
+                    <span class="text-sm text-[#133B5D] dark:text-gray-100 font-medium">
+                      {{ order.price }} EGP
+                    </span>
+                  </div>
+                </td>
+              </tr>
+
+              <tr v-if="!orders.length">
+                <td
+                  colspan="4"
+                  class="text-center py-4 text-gray-500 dark:text-gray-300"
+                >
+                  {{ texts[lang].technicianDashboard.empty.noRecentOrders }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+  </template>
 
-    <!-- Sidebar (component) -->
-    <TechnicionDashNav
-      :active="mainTab"
-      :mobile-open="showSidebar"
-      @changeTab="handleTabChange"
-      @closeSidebar="closeSidebarHandler"
-      class="z-50"  
-    />
 
+  <template v-else-if="mainTab === 'appointments'">
     <div
-      v-if="showSidebar"
-      class="fixed inset-0 bg-black opacity-30 pointer-events-none z-30 md:hidden"
-      aria-hidden="true"
-    ></div>
+      v-if="!technicianId"
+      class="text-center text-gray-500 mt-10 p-6 bg-white dark:bg-[#16222B] rounded-lg shadow"
+    >
+      <p>Loading user information...</p>
+    </div>
+    <div v-else class="p-6 bg-white dark:bg-[#16222B] rounded-2xl shadow-md">
+      <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 dark:text-white ">
+        {{ texts[lang].technicianDashboard.availability.title }}
+      </h2>
 
-    <div class="myOrders  w-[80%] px-8 py-6 relative pt-[80px] md:ml-[20%]">
-      <template v-if="mainTab === 'orders'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4">Orders</h2>
+      <div
+        v-if="availabilityLoading"
+        class="text-center text-gray-500 py-10"
+      >
         <div
-          class="flex md:space-x-6 space-x-2 mb-6 border-b border-gray-300 text-lg font-medium"
-        >
-          <button
-            @click="orderTab = 'requests'"
-            :class="[
-              'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200 cursor-pointer',
-              orderTab === 'requests'
-                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
-                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
-            ]"
-          >
-            New Requests
-          </button>
-          <button
-            @click="orderTab = 'upcoming'"
-            :class="[
-              'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200',
-              orderTab === 'upcoming'
-                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
-                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
-            ]"
-          >
-            Upcoming
-          </button>
-          <button
-            @click="orderTab = 'completed'"
-            :class="[
-              'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200',
-              orderTab === 'completed'
-                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
-                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
-            ]"
-          >
-            Completed
-            <span
-              v-if="completedCount"
-              class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full"
-            >
-              {{ completedCount }}
-            </span>
-          </button>
-          <button
-            @click="orderTab = 'cancelled'"
-            :class="[
-              'md:text-sm text-[12px] pb-2 border-b-2 transition-colors duration-200',
-              orderTab === 'cancelled'
-                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
-                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
-            ]"
-          >
-            Cancelled Orders
-          </button>
-        </div>
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"
+        ></div>
+        {{ texts[lang].technicianDashboard.availability.loading }}
+      </div>
+
+      <div v-else class="space-y-6">
         <div
-          v-if="!filteredOrders.length"
-          class="text-center text-gray-500 dark:text-white mt-10"
+          v-for="day in days"
+          :key="day.name"
+          class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-[#16222B]  hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors d "
         >
-          No orders found in this category.
-        </div>
-        <div class="ordersContainer flex flex-wrap  -mx-2">
-          <template v-if="orderTab === 'requests'">
-            <ordersCard
-              v-for="order in filteredOrders"
-              :key="order.id"
-              :order="order"
-              @accept-order="handleAcceptOrder"
-              @decline-order="handleDeclineOrder"
-            />
-          </template>
-          <template v-else-if="orderTab === 'upcoming'">
-            <UpcomingCard
-              v-for="order in filteredOrders"
-              :key="order.id"
-              :order="order"
-              @mark-completed="handleMarkCompletedOrder"
-              @cancel-order="handleCancelOrder"
-            />
-          </template>
-          <template v-else-if="orderTab === 'completed'">
-            <div
-              v-for="order in filteredOrders"
-              :key="order.id"
-              class="order rounded-2xl shadow-md p-5 w-full md:w-[31%] bg-green-50 dark:bg-[#16222B] dark:text-white m-2 border border-green-300 relative transition duration-200"
-            >
-              <button
-                @click="order.showDetails = true"
-                class="cursor-pointer absolute right-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
-              >
-                Details
-              </button>
-
-              <p
-                class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words"
-              >
-                <span class="font-bold">Order:</span>
-                {{
-                  (order.descreption || "")
-                    .split(/\s+/)
-                    .slice(0, 15)
-                    .join(" ") +
-                  ((order.descreption || "").split(/\s+/).length > 15 ? "..." : "")
-                }}
-              </p>
-
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Price:</span>
-                {{ order.price }} EGP
-              </p>
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Date:</span>
-                {{ order.date }}
-              </p>
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Time:</span>
-                {{ order.time }}
-              </p>
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Location:</span>
-                {{ formatLocation(order.location) }}
-              </p>
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Client:</span>
-                {{ order.customer }}
-              </p>
-
-              <p class="text-green-600 dark:text-green-400 font-semibold mt-2">✅ Completed</p>
-
-              <div
-                v-if="order.showDetails"
-                @click.self="order.showDetails = false"
-                class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
-              >
-                <div
-                  class="bg-white dark:bg-[#16222B] dark:text-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
-                >
-                  <button
-                    @click="order.showDetails = false"
-                    class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl"
-                  >
-                    ✕
-                  </button>
-
-                  <h2
-                    class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4 text-center"
-                  >
-                    Completed Order Details
-                  </h2>
-
-                  <div class="mt-4 space-y-2 text-lg">
-                    <textarea
-                      disabled
-                      class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] dark:bg-[#16222B] dark:text-white"
-                    >{{ order.descreption }}</textarea>
-                    <p>
-                      <span class="font-bold text-[#133B5D] dark:text-white">Price:</span>
-                      {{ order.price }} EGP
-                    </p>
-                    <p>
-                      <span class="font-bold text-[#133B5D] dark:text-white">Date:</span>
-                      {{ order.date }}
-                    </p>
-                    <p>
-                      <span class="font-bold text-[#133B5D] dark:text-white">Time:</span>
-                      {{ order.time }}
-                    </p>
-                    <p>
-                      <span class="font-bold text-[#133B5D] dark:text-white">Location:</span>
-                      {{ formatLocation(order.location) }}
-                    </p>
-                    <p>
-                      <span class="font-bold text-[#133B5D] dark:text-white">Client:</span>
-                      {{ order.customer }}
-                    </p>
-                    <p class="text-green-600 dark:text-green-400 font-semibold mt-2">
-                      ✅ Completed
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <template v-else-if="orderTab === 'cancelled'"> 
-            <div
-              v-for="order in filteredOrders"
-              :key="order.id"
-              class="order rounded-2xl shadow-md p-5 w-full md:w-[31%] bg-red-50 dark:bg-[#16222B] dark:text-white m-2 border border-red-300 relative transition duration-200"
-            >
-              <button
-                @click="order.showDetails = true"
-                class="cursor-pointer absolute right-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
-              >
-                Details
-              </button>
-
-              <p class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words">
-                <span class="font-bold">Order:</span>
-                {{ order.descreption || "No description" }}
-              </p>
-
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Price:</span>
-                {{ order.price }} EGP
-              </p>
-
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Date:</span>
-                {{ order.date }}
-              </p>
-
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Time:</span>
-                {{ order.time }}
-              </p>
-
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Location:</span>
-                {{ formatLocation(order.location) }}
-              </p>
-
-              <p class="text-[#133B5D] dark:text-white">
-                <span class="font-semibold text-[#133B5D] dark:text-white">Client:</span>
-                {{ order.customer }}
-              </p>
-
-              <p class="text-red-600 dark:text-red-400 font-semibold mt-2">
-                ❌ Cancelled by client
-              </p>
-            </div>
-          </template>
-
-
-        </div>
-      </template>
-
-      <template v-else-if="mainTab === 'services'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">My Services</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <CreateServiceCard @createService="openCreatePopup" />
-          <ServiceCard
-            v-for="service in services"
-            :key="service.id"
-            :service="service"
-            @editService="openEditPopup"
-            @deleteService="handleDeleteService"
-          />
-        </div>
-      </template>
-
-      <template v-else-if="mainTab === 'earnings'">
-        <div class="earningsSection">
-          <h2
-            class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6 flex items-center gap-2"
-          >
-            My Earnings
-          </h2>
-
           <div
-            class="bg-linear-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center"
+            class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4"
           >
-            <div>
-              <p class="text-lg opacity-90">Total Earnings</p>
-              <h1 class="text-5xl font-bold mt-2">{{ totalEarnings }} EGP</h1>
-              <p class="text-sm text-gray-200 mt-2">Updated today</p>
-              <p
-                class="text-sm mt-1 font-medium flex items-center"
-                :class="{
-                  'text-green-300': earningsGrowth === 'first' || earningsGrowth > 0,
-                  'text-red-300': earningsGrowth < 0,
-                  'text-gray-300': earningsGrowth === 0,
-                }"
-              >
-                <img
-                  v-if="earningsGrowth === 'first'"
-                  src="../../images/increase.png"
-                  class="w-5 h-5 mr-1"
-                  alt=""
-                />
-                <img
-                  v-else
-                  :src="
-                    earningsGrowth > 0
-                      ? '../../images/increase.png'
-                      : '../../images/decrease.png'
-                  "
-                  class="w-5 h-5 mr-1"
-                  alt=""
-                />
-
-                <span v-if="earningsGrowth === 'first'">
-                  New earnings this month
-                </span>
-                <span v-else>
-                  {{ earningsGrowth > 0 ? '+' : '' }}{{ earningsGrowth }}% this month
-                </span>
-              </p>
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6 mb-6">
-            <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
-              Earnings Overview
-            </h3>
-            <div class="h-[300px]">
-              <canvas id="earningsChart"></canvas>
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
-              Recent Orders
-            </h3>
-            <div class="overflow-x-auto">
-              <table class="min-w-full text-left border-collapse dark:text-gray-200">
-                <thead>
-                  <tr class="border-b text-gray-600 dark:text-gray-300">
-                    <th class="py-2 px-3">Date</th>
-                    <th class="py-2 px-3">Service</th>
-                    <th class="py-2 px-3">Client</th>
-                    <th class="py-2 px-3 text-right">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="order in orders"
-                    :key="order.id"
-                    class="border-b hover:bg-gray-50 dark:hover:bg-[#1E2A33] text-sm transition"
-                  >
-                    <td class="py-3 px-3">{{ order.date }}</td>
-                    <td class="py-3 px-3">{{ order.descreption }}</td>
-                    <td class="py-3 px-3">{{ order.customer }}</td>
-                    <td class="py-3 px-3 text-right">
-                      <div class="flex flex-col items-end">
-                        <span
-                          class="px-2 py-1 rounded text-xs font-semibold mb-1"
-                          :class="{
-                            'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300':
-                              order.status === 'completed',
-                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300':
-                              order.status === 'pending',
-                            'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200':
-                              order.status === 'in-progress',
-                            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300':
-                              order.status === 'cancelled',
-                          }"
-                        >
-                          {{
-                            order.status.charAt(0).toUpperCase() +
-                            order.status.slice(1)
-                          }}
-                        </span>
-                        <span class="text-sm text-[#133B5D] dark:text-gray-100 font-medium">
-                          {{ order.price }} EGP
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-
-                  <tr v-if="!orders.length">
-                    <td
-                      colspan="4"
-                      class="text-center py-4 text-gray-500 dark:text-gray-300"
-                    >
-                      No recent orders yet
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </template>
-
-
-      <template v-else-if="mainTab === 'appointments'">
-        <div
-          v-if="!technicianId"
-          class="text-center text-gray-500 mt-10 p-6 bg-white dark:bg-[#16222B] rounded-lg shadow"
-        >
-          <p>Loading user information...</p>
-        </div>
-        <div v-else class="p-6 bg-white dark:bg-[#16222B] rounded-2xl shadow-md">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 dark:text-white ">
-            My Availability
-          </h2>
-
-          <div
-            v-if="availabilityLoading"
-            class="text-center text-gray-500 py-10"
-          >
-            <div
-              class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"
-            ></div>
-            Loading availability...
-          </div>
-
-          <div v-else class="space-y-6">
-            <div
-              v-for="day in days"
-              :key="day.name"
-              class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-[#16222B]  hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors d "
+            <input
+              type="checkbox"
+              :id="`avail-${day.name}`"
+              v-model="day.active"
+              class="h-5 w-5 text-[#133B5D] dark:text-white rounded focus:ring-[#133B5D] border-gray-300 cursor-pointer"
+            />
+            <label
+              :for="`avail-${day.name}`"
+              class="text-lg font-semibold text-gray-800 dark:text-white cursor-pointer"
+              >{{ day.name }}</label
             >
-              <div
-                class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4"
-              >
-                <input
-                  type="checkbox"
-                  :id="`avail-${day.name}`"
-                  v-model="day.active"
-                  class="h-5 w-5 text-[#133B5D] dark:text-white rounded focus:ring-[#133B5D] border-gray-300 cursor-pointer"
-                />
+          </div>
+
+          <transition name="fade-fast">
+            <div
+              v-if="day.active"
+              class="flex flex-col sm:flex-row items-center gap-4 flex-1 w-full md:w-3/4"
+            >
+              <div class="flex-1 w-full sm:w-auto">
                 <label
-                  :for="`avail-${day.name}`"
-                  class="text-lg font-semibold text-gray-800 dark:text-white cursor-pointer"
-                  >{{ day.name }}</label
+                  :for="`start-${day.name}`"
+                  class="block text-sm font-medium text-gray-600 mb-1 dark:text-white "
+                  >{{ texts[lang].technicianDashboard.availability.startTime }}</label
                 >
-              </div>
-
-              <transition name="fade-fast">
-                <div
-                  v-if="day.active"
-                  class="flex flex-col sm:flex-row items-center gap-4 flex-1 w-full md:w-3/4"
+                <select
+                  :id="`start-${day.name}`"
+                  v-model="day.start"
+                  class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white "
                 >
-                  <div class="flex-1 w-full sm:w-auto">
-                    <label
-                      :for="`start-${day.name}`"
-                      class="block text-sm font-medium text-gray-600 mb-1 dark:text-white "
-                      >Start Time</label
-                    >
-                    <select
-                      :id="`start-${day.name}`"
-                      v-model="day.start"
-                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white "
-                    >
-                      <option
-                       class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
-                        v-for="time in timeOptions"
-                        :key="`start-${time}`"
-                        :value="time"
-                      >
-                        {{ time }}
-                      </option>
-                    </select>
-                  </div>
-                  <span class="text-gray-500 hidden sm:block pt-6">—</span>
-                  <div class="flex-1 w-full sm:w-auto">
-                    <label
-                      :for="`end-${day.name}`"
-                      class="block text-sm font-medium text-gray-600 mb-1 dark:text-white"
-                      >End Time</label
-                    >
-                    <select
-                      :id="`end-${day.name}`"
-                      v-model="day.end"
-                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white"
-                    >
-                      <option
-                      class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
-                        v-for="time in timeOptions"
-                        :key="`end-${time}`"
-                        :value="time"
-                      >
-                        {{ time }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </transition>
-
-              <transition name="fade-fast">
-                <div
-                  v-if="!day.active"
-                  class="flex-1 w-full md:w-3/4"
-                >
-                  <p
-                    class="text-gray-500 italic p-2 rounded bg-gray-200 text-center dark:bg-[#9ca3af]/30 dark:text-white"
+                  <option
+                   class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                    v-for="time in timeOptions"
+                    :key="`start-${time}`"
+                    :value="time"
                   >
-                    Not available
-                  </p>
-                </div>
-              </transition>
-            </div>
-
-            <div class="mt-8 flex justify-end">
-              <button
-                @click="saveAvailability"
-                :disabled="availabilitySaving || !technicianId"
-                class="bg-[#133B5D] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1b5383] transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                <svg
-                  v-if="availabilitySaving"
-                  class="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
+                    {{ time }}
+                  </option>
+                </select>
+              </div>
+              <span class="text-gray-500 hidden sm:block pt-6">—</span>
+              <div class="flex-1 w-full sm:w-auto">
+                <label
+                  :for="`end-${day.name}`"
+                  class="block text-sm font-medium text-gray-600 mb-1 dark:text-white"
+                  >{{ texts[lang].technicianDashboard.availability.endTime }}</label
                 >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  ></circle>
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                {{ availabilitySaving ? "Saving..." : "Save Availability" }}
-              </button>
+                <select
+                  :id="`end-${day.name}`"
+                  v-model="day.end"
+                  class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white dark:bg-[#9ca3af]/30 dark:text-white"
+                >
+                  <option
+                  class="bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                    v-for="time in timeOptions"
+                    :key="`end-${time}`"
+                    :value="time"
+                  >
+                    {{ time }}
+                  </option>
+                </select>
+              </div>
             </div>
-          </div>
+          </transition>
+
+          <transition name="fade-fast">
+            <div
+              v-if="!day.active"
+              class="flex-1 w-full md:w-3/4"
+            >
+              <p
+                class="text-gray-500 italic p-2 rounded bg-gray-200 text-center dark:bg-[#9ca3af]/30 dark:text-white"
+              >
+                {{ texts[lang].technicianDashboard.availability.notAvailable }}
+              </p>
+            </div>
+          </transition>
         </div>
-      </template>
-      <template v-else-if="mainTab === 'reviews'">
-  <h2 class="text-2xl font-bold mb-4 text-[#133B5D] dark:text-white">Reviews</h2>
+
+        <div class="mt-8 flex justify-end">
+          <button
+            @click="saveAvailability"
+            :disabled="availabilitySaving || !technicianId"
+            class="bg-[#133B5D] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1b5383] transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            <svg
+              v-if="availabilitySaving"
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            {{ availabilitySaving ? texts[lang].technicianDashboard.saving : texts[lang].technicianDashboard.saveAvailability }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template v-else-if="mainTab === 'reviews'">
+
+
+  <h2 class="text-2xl font-bold mb-4 text-[#133B5D] dark:text-white">{{ texts[lang].technicianDashboard.reviews.title }}</h2>
 
   <div v-if="reviews.length === 0" class="text-gray-500 dark:text-gray-300 dark:bg-[#16222B] p-4 rounded-lg">
-    No reviews yet.
+    {{ texts[lang].technicianDashboard.reviews.noReviews }}
   </div>
 
   <div
@@ -1167,178 +1216,190 @@ watch(
       </p>
     </div>
 
-    <!-- Body: icon left + content right -->
-    <div class="flex gap-4">
-      <!-- Icon -->
-      <img
-        :src="review.clientImageUrl || '/images/default-user.png'"
-        alt="client"
-        class="w-12 h-12 rounded-full object-cover border border-gray-300"
-      />
 
-      <!-- Content -->
-      <div class="flex-1">
-        <!-- Name -->
-        <p class="font-semibold text-lg text-[#133B5D] dark:text-white mb-2">{{ review.clientName }}</p>
+<!-- Body: icon left + content right -->
+<div class="flex gap-4">
+  <!-- Icon -->
+  <img
+    :src="review.clientImageUrl || '/images/default-user.png'"
+    alt="client"
+    class="w-12 h-12 rounded-full object-cover border border-gray-300"
+  />
 
-        <!-- Comment -->
-        <p class="text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
-          {{ review.comment }}
-        </p>
+  <!-- Content -->
+  <div class="flex-1">
+    <!-- Name -->
+    <p class="font-semibold text-lg text-[#133B5D] dark:text-white mb-2">{{ review.clientName }}</p>
 
-        <!-- Stars -->
-        <div class="flex items-center">
-          <i
-            v-for="i in 5"
-            :key="i"
-            :class="[
-              'fa-star',
-              'text-lg',
-              i <= review.stars ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400',
-            ]"
-            class="fa"
-          ></i>
-        </div>
-      </div>
+    <!-- Comment -->
+    <p class="text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
+      {{ review.comment }}
+    </p>
+
+    <!-- Stars -->
+    <div class="flex items-center">
+      <i
+        v-for="i in 5"
+        :key="i"
+        :class="[
+          'fa-star',
+          'text-lg',
+          i <= review.stars ? 'fa-solid text-yellow-400' : 'fa-regular text-gray-400',
+        ]"
+        class="fa"
+      ></i>
     </div>
+  </div>
+</div>
+
+
   </div>
 </template>
 
 
+  <template v-else-if="mainTab === 'Techsettings'">
+    <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">Settings</h2>
 
-      <template v-else-if="mainTab === 'Techsettings'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">Settings</h2>
+    <ManageTechnicianProfile @showNotification="triggerAlert" />
+  </template>
 
-        <ManageTechnicianProfile @showNotification="triggerAlert" />
-      </template>
+  <template v-else-if="mainTab === 'chat'">
+    <h2 class="text-2xl font-semibold text-[#133B5D]  dark:text-white mb-6">Chat</h2>
+    <ChatPage />
+  </template>
 
-      <template v-else-if="mainTab === 'chat'">
-        <h2 class="text-2xl font-semibold text-[#133B5D]  dark:text-white mb-6">Chat</h2>
-        <ChatPage />
-      </template>
+  <template v-else-if="mainTab === 'workGallery'">
+    <TechnicianWorkGallery />
+  </template>
 
-      <template v-else-if="mainTab === 'workGallery'">
-        <TechnicianWorkGallery />
-      </template>
+</div>
 
-    </div>
-
-    <div
-      v-if="showPopup"
-      @click.self="closePopup"
-      class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
+<div
+  v-if="showPopup"
+  @click.self="closePopup"
+  class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
+>
+  <div
+    class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative"
+  >
+    <button
+      @click="closePopup"
+      class="absolute top-3 right-4 text-gray-400 hover:text-red-500 text-2xl"
     >
-      <div
-        class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative"
+      &times;
+    </button>
+    <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">
+      {{ selectedService ? texts[lang].technicianDashboard.popups.editServiceTitle : texts[lang].technicianDashboard.popups.createServiceTitle }}
+    </h2>
+    <div class="flex flex-col items-center mb-6">
+      <img
+        :src="
+          newImage ||
+          selectedService?.image ||
+          '/images/create service.png'
+        "
+        alt="Service"
+        class="w-32 h-32 object-contain mb-3 border rounded-lg bg-gray-100"
+      />
+      <label
+        for="fileUpload"
+        class="bg-[#133B5D] text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-[#1b5383] transition text-sm"
+        >{{ texts[lang].technicianDashboard.buttons.chooseFile }}</label
       >
-        <button
-          @click="closePopup"
-          class="absolute top-3 right-4 text-gray-400 hover:text-red-500 text-2xl"
+      <input
+        id="fileUpload"
+        type="file"
+        @change="handleImageChange"
+        class="hidden"
+        accept="image/*"
+      />
+      <button
+        v-if="newImage || selectedService?.image"
+        @click="deleteImage"
+        class="bg-red-500 text-white rounded px-3 py-1 text-xs hover:bg-red-600 mt-2"
+      >
+        {{ texts[lang].technicianDashboard.buttons.deleteImage }}
+      </button>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label
+          class="block text-left font-semibold text-gray-700 mb-1 text-sm"
+          >Service Title</label
         >
-          &times;
-        </button>
-        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">
-          {{ selectedService ? "Edit Service" : "Create New Service" }}
-        </h2>
-        <div class="flex flex-col items-center mb-6">
-          <img
-            :src="
-              newImage ||
-              selectedService?.image ||
-              '/images/create service.png'
-            "
-            alt="Service"
-            class="w-32 h-32 object-contain mb-3 border rounded-lg bg-gray-100"
-          />
-          <label
-            for="fileUpload"
-            class="bg-[#133B5D] text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-[#1b5383] transition text-sm"
-            >Choose File</label
-          >
-          <input
-            id="fileUpload"
-            type="file"
-            @change="handleImageChange"
-            class="hidden"
-            accept="image/*"
-          />
-          <button
-            v-if="newImage || selectedService?.image"
-            @click="deleteImage"
-            class="bg-red-500 text-white rounded px-3 py-1 text-xs hover:bg-red-600 mt-2"
-          >
-            Delete Image
-          </button>
-        </div>
-        <div class="space-y-4">
-          <div>
-            <label
-              class="block text-left font-semibold text-gray-700 mb-1 text-sm"
-              >Service Title</label
-            >
-            <input
-              v-model="serviceTitle"
-              type="text"
-              placeholder="Enter service name"
-              class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D]"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-left font-semibold text-gray-700 mb-1 text-sm"
-              >Service Price</label
-            >
-            <input
-              v-model="servicePrice"
-              type="text"
-              placeholder="Enter price (e.g. 150 EGP)"
-              class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D]"
-            />
-          </div>
-        </div>
-        <div class="flex justify-center mt-6 space-x-4">
-          <button
-            @click="saveChanges"
-            class="bg-[#133B5D] text-white px-5 py-2 rounded-md hover:bg-[#1b5383] font-medium"
-          >
-            {{ selectedService ? "Save Changes" : "Add Service" }}
-          </button>
-          <button
-            @click="closePopup"
-            class="bg-gray-300 text-gray-700 px-5 py-2 rounded-md hover:bg-gray-400 font-medium"
-          >
-            Cancel
-          </button>
-        </div>
+        <input
+          v-model="serviceTitle"
+          type="text"
+          placeholder="Enter service name"
+          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D]"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-left font-semibold text-gray-700 mb-1 text-sm"
+          >Service Price</label
+        >
+        <input
+          v-model="servicePrice"
+          type="text"
+          placeholder="Enter price (e.g. 150 EGP)"
+          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D]"
+        />
       </div>
     </div>
+    <div class="flex justify-center mt-6 space-x-4">
+      <button
+        @click="saveChanges"
+        class="bg-[#133B5D] text-white px-5 py-2 rounded-md hover:bg-[#1b5383] font-medium"
+      >
+        {{ selectedService ? texts[lang].technicianDashboard.buttons.saveChanges : texts[lang].technicianDashboard.buttons.addService }}
+      </button>
+      <button
+        @click="closePopup"
+        class="bg-gray-300 text-gray-700 px-5 py-2 rounded-md hover:bg-gray-400 font-medium"
+      >
+        {{ texts[lang].technicianDashboard.buttons.cancel }}
+      </button>
+    </div>
+  </div>
+</div>
+
+
   </div>
 
   <div v-if="showPopup" @click.self="closePopup" class="fixed inset-0 ..."></div>
 
-  <button
-    v-if="technicianId && mainTab !== 'chat'"
-    @click="handleTabChange('chat')"
-    class="cursor-pointer sticky bottom-5 left-360 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110 "
-  >
-    <i class="fa-solid fa-comments text-3xl"></i>
+<button
+v-if="technicianId && mainTab !== 'chat'"
+@click="handleTabChange('chat')"
+class="cursor-pointer sticky bottom-5 left-360 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110 "
 
-    <span
-      v-if="unreadChatCount > 0"
-      class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white"
-      aria-label="New messages"
-    >
-      {{ unreadChatCount }}
-    </span>
+>
+
+
+<i class="fa-solid fa-comments text-3xl"></i>
+
+
+
+<span
+  v-if="unreadChatCount > 0"
+  class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white"
+  aria-label="New messages"
+>
+  {{ unreadChatCount }}
+</span>
+
+
   </button>
 
-  <AlertPopup
-    :show="showPopupMessage"
-    :message="popupMessageContent"
-    @close="closeAlert"
-  />
+<AlertPopup
+:show="showPopupMessage"
+:message="popupMessageContent"
+@close="closeAlert"
+/>
 
   </template>
+
 
 <style scoped>
 .fade-enter-active,

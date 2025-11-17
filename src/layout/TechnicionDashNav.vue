@@ -1,4 +1,6 @@
 <script setup>
+import { useTestLang } from "@/langTest/useTestLang";
+const { lang, texts } = useTestLang();
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
@@ -159,7 +161,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-clipboard-list text-white text-lg"></i>
-            Orders
+            {{ texts[lang].technicianDashboard.nav.orders }}
           </button>
 
           <button
@@ -168,7 +170,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-calendar-days text-white text-lg"></i>
-            Appointments
+            {{ texts[lang].technicianDashboard.nav.appointments }}
           </button>
 
           <button
@@ -177,7 +179,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-screwdriver-wrench text-white text-lg"></i>
-            My Services
+            {{ texts[lang].technicianDashboard.nav.services }}
           </button>
 
           <button
@@ -186,7 +188,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-image text-white text-lg"></i>
-            Work Gallery
+            {{ texts[lang].technicianDashboard.nav.workGallery }}
           </button>
 
           <button
@@ -195,7 +197,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-coins text-white text-lg"></i>
-            My Earnings
+            {{ texts[lang].technicianDashboard.nav.earnings }}
           </button>
 
           <button
@@ -204,7 +206,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-comments text-white text-lg"></i>
-            Chat
+            {{ texts[lang].technicianDashboard.nav.chat }}
           </button>
           <button
             @click="handleNav('reviews')"
@@ -212,7 +214,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-star text-white text-lg"></i>
-            Reviews
+            {{ texts[lang].technicianDashboard.nav.reviews }}
           </button>
 
           <button
@@ -221,7 +223,7 @@ const closeDrawer = () => {
             class="flex items-center gap-2 py-2.5 rounded-xl w-[88%] mx-auto transition p-3 font-semibold text-[16px]"
           >
             <i class="fa-solid fa-gear text-white text-lg"></i>
-            Settings
+            {{ texts[lang].technicianDashboard.nav.settings }}
           </button>
         </nav>
       </div>
@@ -233,7 +235,7 @@ const closeDrawer = () => {
           class="cursor-pointer border hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-xl w-[88%] transition shadow-md text-[16px] flex items-center justify-center gap-2"
         >
           <i class="fa-solid fa-right-from-bracket text-white text-lg"></i>
-          Log Out
+          {{ texts[lang].technicianDashboard.buttons.logout }}
         </button>
       </div>
     </div>
