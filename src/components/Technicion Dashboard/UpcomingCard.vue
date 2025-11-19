@@ -261,7 +261,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         @click="handleMarkCompleted"
         :disabled="!isConfirmed"
         :class="[
-          'font-semibold px-6 py-2 rounded-xl transition',
+          'font-semibold px-2 py-2 rounded-xl transition',
           isConfirmed
             ? 'cursor-pointer bg-[#133B5D] hover:bg-[#0f2d47] text-white'
             : 'cursor-not-allowed bg-gray-300 text-gray-500'
