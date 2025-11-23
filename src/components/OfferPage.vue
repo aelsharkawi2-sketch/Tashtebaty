@@ -179,6 +179,7 @@
         </div>
       </div>
     </div>
+    <chat-bot/>
   </div>
 </template>
 
@@ -189,7 +190,7 @@ import { useTestLang } from "@/langTest/useTestLang";
 import { db } from "@/firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, doc, setDoc } from "firebase/firestore";
-
+import ChatBot from "./chatbot/ChatBot.vue";
 const { lang, texts } = useTestLang();
 const offers = ref([]);
 const isLoading = ref(true);
