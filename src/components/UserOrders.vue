@@ -453,45 +453,52 @@ const confirmPayment = async () => {
   if (!selectedOrder.value) return;
 
   try {
-    // 🟩 أولًا: حدث الحالة في Firestore إلى "upcoming"
-    const orderRef = doc(db, "orders", selectedOrder.value.id);
-    await updateDoc(orderRef, { status: "upcoming" });
-    // 🔔 Notify technician
-    if (selectedOrder.value?.technicianId) {
-      const notifCol = collection(db, "technicians", selectedOrder.value.technicianId, "notifications");
-      await addDoc(notifCol, {
-        orderId: selectedOrder.value.id,
-        message: `✅ The order "${getTranslatedName(selectedOrder.value.serviceTitle)}" has been confirmed.`,
-        status: "upcoming",
-        isRead: false,
-        timestamp: serverTimestamp(),
-      });
-    }
+    const id = selectedOrder.value.id;
+    const amount = Number(selectedOrder.value.price) || 0;
 
-    // 🟦 ثانيًا: كمل العملية عادي بالربط مع السيرفر / باي موب
-    const response = await fetch("http://localhost:5001/pay", {
+    // 🟡 بدل "upcoming" نخليها مؤقتًا pending_payment
+    const orderRef = doc(db, "orders", id);
+    await updateDoc(orderRef, { status: "pending_payment" });
+
+    // 🟦 تغيير اللينك → /api/pay (Fix #1)
+    const response = await fetch("/api/pay", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amount: Number(selectedOrder.value.price) || 0,
-        orderId: selectedOrder.value.id,
+        amount,
+        orderId: id,
         serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle),
         technicianName: getTranslatedName(selectedOrder.value.technicianName),
       }),
     });
 
     const data = await response.json();
-    if (data.url) {
-      window.location.href = data.url; // 🚀 يروح على صفحة الدفع
-    } else {
+
+    if (!response.ok || !data.url) {
+      // ❌ لو الدفع فشل → رجّع الحالة unconfirmed (Fix #2)
+      await updateDoc(orderRef, { status: "unconfirmed" });
       triggerAlert(getT()?.myOrdersPage?.alerts?.paymentFailed || "Payment request failed.");
-      console.error("Payment response:", data);
+      return;
     }
+
+    // 🚀 لو نجح → روح لصفحة الدفع
+    window.location.href = data.url;
+
   } catch (err) {
-    console.error("Error updating order or connecting to payment:", err);
+    console.error("Error:", err);
+
+    // ❌ رجّع الأوردر لحالته الطبيعية (Fix #2)
+    try {
+      await updateDoc(doc(db, "orders", selectedOrder.value.id), { status: "unconfirmed" });
+    } catch (_) {}
+
     triggerAlert(getT()?.myOrdersPage?.alerts?.paymentError || "Error while preparing payment.");
+  } finally {
+    showPopup.value = false;
+    selectedOrder.value = null;
   }
 };
+
 
 // 🟦 Open cancel confirmation
 const openCancelPopup = (order) => {
