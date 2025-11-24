@@ -1502,7 +1502,7 @@ watch(selectedDayInfo, () => {
         <div
           v-for="(img, index) in galleryImages"
           :key="img.id || index"
-          class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
+          class="imgContainer dark:bg-[#1F2937] bg-[#e6e6e6] rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
           <img
             :src="img.url"
