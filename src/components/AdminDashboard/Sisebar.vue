@@ -1,3 +1,4 @@
+
 <template>
   <div class="flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 h-screen">
 
@@ -18,7 +19,7 @@
             class="h-16 mb-3"
           />
           <h2 class="text-lg font-semibold tracking-wide">
-            {{ texts[lang].adminDashboard.sidebar.title }}
+            {{ texts[lang]?.adminDashboard?.sidebar?.title || 'Admin Dashboard' }}
           </h2>
           <div class="w-full h-px bg-gray-400 mt-5"></div>
         </div>
@@ -30,7 +31,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-house"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.dashboard }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.dashboard || 'Dashboard' }}</span>
           </router-link>
 
           <router-link
@@ -39,7 +40,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/users', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-people"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.users }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.users || 'Users' }}</span>
           </router-link>
 
           <router-link
@@ -48,7 +49,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/services', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-briefcase"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.services }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.services || 'Services' }}</span>
           </router-link>
 
           <router-link
@@ -57,7 +58,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/providers', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-building"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.providers }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.providers || 'Providers' }}</span>
           </router-link>
 
           <router-link
@@ -66,7 +67,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/orders', 'space-x-reverse': lang === 'ar' }"
           >
             <i class="bi bi-receipt"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.orders }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.orders || 'Orders' }}</span>
           </router-link>
 
           <router-link
@@ -75,7 +76,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/payments' }"
           >
             <i class="bi bi-credit-card"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.payments }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.payments || 'Payments' }}</span>
           </router-link>
 
           <router-link
@@ -84,7 +85,7 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/support' }"
           >
             <i class="bi bi-question-circle"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.support }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.support || 'Support' }}</span>
           </router-link>
 
           <router-link
@@ -93,23 +94,20 @@
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/addoffer' }"
           >
             <i class="bi bi-tags"></i>
-            <span>{{ texts[lang].adminDashboard.sidebar.offers }}</span>
+            <span>{{ texts[lang]?.adminDashboard?.sidebar?.offers || 'Offers' }}</span>
           </router-link>
         </nav>
       </div>
 
       <!-- Logout Button -->
-        <!-- Logout Button -->
-     
-<div class="flex justify-center mt-auto mb-6">
-         <button
-           @click="handleLogout"
-       
-         class="flex items-center justify-center space-x-1 text-white font-medium text-sm py-1 px-3 rounded-xl transition-all duration-500 border border-white hover:bg-white hover:text-[#133B5D]"
-         >
-           <i class="bi bi-box-arrow-right text-lg"></i>
-           <span>{{ texts[lang].adminDashboard.sidebar.logout }}</span>
-         </button>
+      <div class="flex justify-center mt-auto mb-6">
+        <button
+          @click="handleLogout"
+          class="flex items-center justify-center space-x-1 text-white font-medium text-sm py-1 px-3 rounded-xl transition-all duration-500 border border-white hover:bg-white hover:text-[#133B5D]"
+        >
+          <i class="bi bi-box-arrow-right text-lg"></i>
+          <span>{{ texts[lang]?.adminDashboard?.sidebar?.logout || 'Logout' }}</span>
+        </button>
       </div>
     </aside>
 
@@ -121,33 +119,38 @@
         <button
           @click="toggleSidebar"
           class="lg:hidden flex items-center justify-center w-10 h-10 rounded-md bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
-          :title="texts[lang].adminDashboard.sidebar.menu"
+          :title="texts[lang]?.adminDashboard?.sidebar?.menu || 'Menu'"
         >
           <i class="bi bi-list text-xl text-gray-700 dark:text-gray-200"></i>
         </button>
 
         <!-- Controls Group -->
         <div class="flex items-center space-x-4">
+
+
           <!-- Language Switch -->
-      
-          <button
+          <!-- <button
             ref="langButton"
             @click="toggleLanguage"
             class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 language-switch-button"
-            :title="texts[lang].adminDashboard.sidebar.switchToEnglish"
+            :title="texts[lang]?.adminDashboard?.sidebar?.switchToEnglish || 'Switch language'"
           >
             <i
               ref="langIcon"
               class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
             ></i>
             <span class="sr-only">Toggle language</span>
-          </button>
+          </button> -->
 
+
+
+
+          
           <!-- Dark Mode Switch -->
           <button
             @click="toggleDarkMode"
             class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200"
-            :title="isDark ? texts[lang].adminDashboard.sidebar.lightMode : texts[lang].adminDashboard.sidebar.darkMode"
+            :title="isDark ? (texts[lang]?.adminDashboard?.sidebar?.lightMode || 'Light mode') : (texts[lang]?.adminDashboard?.sidebar?.darkMode || 'Dark mode')"
           >
             <!-- Sun -->
             <svg
@@ -173,6 +176,21 @@
             <span class="sr-only">Toggle theme</span>
           </button>
 
+          <!-- Notification button -->
+          <div class="relative">
+            <button
+              @click.stop="toggleNotifMenu"
+              class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 flex items-center justify-center"
+              :title="texts[lang]?.adminDashboard?.sidebar?.notifications || 'Notifications'"
+            >
+              <i class="fa-regular fa-bell text-gray-600 dark:text-gray-200"></i>
+              <span v-if="notificationCount > 0"
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full px-1.5 py-0.5">
+                {{ notificationCount }}
+              </span>
+            </button>
+          </div>
+
           <!-- Profile button -->
           <div
             @click.stop="toggleUserMenu"
@@ -190,13 +208,13 @@
         </div>
 
         <!-- Dropdown -->
-             <transition name="fade-slide">
+        <transition name="fade-slide">
           <div
             v-if="isUserMenuOpen"
             ref="dropdown"
             :class="[
               'absolute top-16 bg-white dark:bg-[#1f2937] w-60 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50',
-              $i18n.locale === 'ar' ? 'left-4' : 'right-4'
+              lang === 'ar' ? 'left-4' : 'right-4'
             ]"
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
@@ -214,22 +232,20 @@
               </div>
               <h3 class="text-gray-800 dark:text-gray-100 font-medium mt-2">{{ userName || 'Admin' }}</h3>
               <p class="text-gray-500 dark:text-gray-300 text-sm">{{ userEmail }}</p>
-
             </div>
 
             <div class="flex flex-col py-2">
-            <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
-  <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
-  <span>{{ $t('adminDashboard.sidebar.profileSettings') }}</span>
-</div>
-
+              <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
+                <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
+                <span>{{ texts[lang]?.adminDashboard?.sidebar?.profileSettings || 'Profile Settings' }}</span>
+              </div>
 
               <div
                 @click="switchAccount"
                 class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               >
                 <i class="fa-solid fa-repeat text-[#5984C6]"></i>
-                <span>{{ $t('adminDashboard.sidebar.switchAccount') }}</span>
+                <span>{{ texts[lang]?.adminDashboard?.sidebar?.switchAccount || 'Switch Account' }}</span>
               </div>
 
               <div
@@ -237,7 +253,159 @@
                 class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               >
                 <i class="fa-solid fa-arrow-right-from-bracket text-[#5984C6]"></i>
-                <span>{{ $t('adminDashboard.sidebar.logout') }}</span>
+                <span>{{ texts[lang]?.adminDashboard?.sidebar?.logout || 'Logout' }}</span>
+              </div>
+            </div>
+          </div>
+        </transition>
+
+        <!-- Notifications Dropdown -->
+        <transition name="fade-slide">
+          <div
+            v-if="isNotifOpen"
+            ref="notifDropdown"
+            :class="[
+              'absolute top-16 bg-white dark:bg-[#1f2937] w-80 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50',
+              lang === 'ar' ? 'left-4' : 'right-4'
+            ]"
+          >
+            <div class="py-3 px-4 border-b border-gray-200 dark:border-gray-700">
+              <div class="flex items-center justify-between">
+                <h4 class="font-medium text-gray-800 dark:text-gray-100">{{ texts[lang]?.adminDashboard?.sidebar?.notifications || 'Notifications' }}</h4>
+                <button
+                  v-if="notificationCount > 0"
+                  @click="markAllAsRead"
+                  class="text-sm text-blue-600 dark:text-blue-400 hover:underline ml-2"
+                >
+                  {{ texts[lang]?.adminDashboard?.sidebar?.markAllAsRead || 'Mark All as Read' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-col max-h-80 overflow-y-auto">
+              <!-- New Clients -->
+              <router-link 
+                v-if="newClientsCount > 0"
+                @click="() => { isNotifOpen = false }" 
+                to="/dashboard/users" 
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-person-plus text-[#5984C6]"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.newClients || 'New clients' }}</span>
+                </div>
+                <div class="text-sm font-medium">{{ newClientsCount }}</div>
+              </router-link>
+
+              <!-- Pending Technicians -->
+              <router-link 
+                v-if="pendingTechniciansCount > 0"
+                @click="() => { isNotifOpen = false }" 
+                to="/dashboard/providers" 
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-person-badge text-[#f59e0b]"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.pendingTechnicians || 'Pending technician accounts' }}</span>
+                </div>
+                <div class="text-sm font-medium">{{ pendingTechniciansCount }}</div>
+              </router-link>
+
+              <!-- Pending Companies -->
+              <router-link 
+                v-if="newCompaniesCount > 0"
+                @click="() => { isNotifOpen = false }" 
+                to="/dashboard/providers" 
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-building text-[#10b981]"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.pendingCompanies || 'Pending company accounts' }}</span>
+                </div>
+                <div class="text-sm font-medium">{{ newCompaniesCount }}</div>
+              </router-link>
+
+              <!-- Completed Orders -->
+              <router-link 
+                v-if="newCompleteOrdersCount > 0"
+                @click="() => { isNotifOpen = false }" 
+                to="/dashboard/orders" 
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-cart-fill text-[#0cc033]"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.completedOrders || 'Completed orders' }}</span>
+                </div>
+                <div class="text-sm font-medium">{{ newCompleteOrdersCount }}</div>
+              </router-link>
+
+              <!-- Cancelled Orders -->
+              <router-link
+                v-if="newCancelledOrdersCount > 0"
+                @click="() => { isNotifOpen = false }"
+                to="/dashboard/orders"
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-x-circle text-red-500"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.cancelledOrders || 'Cancelled orders' }}</span>
+                </div>
+                <div class="text-sm font-medium">
+                  {{ newCancelledOrdersCount }}
+                </div>
+              </router-link>
+
+              <!-- New Payments -->
+              <router-link 
+                v-if="newPaymentsCount > 0"
+                @click="() => { isNotifOpen = false }" 
+                to="/dashboard/payments" 
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-credit-card text-[#06b6d4]"></i>
+                  <span>{{texts[lang]?.adminDashboard?.notifications?.newPayments || 'New payments' }}</span>
+                </div>
+                <div class="text-sm font-medium">{{ newPaymentsCount }}</div>
+              </router-link>
+
+              <!-- Cancelled Payments -->
+              <router-link
+                v-if="newCancelledPaymentsCount > 0"
+                @click="() => { isNotifOpen = false }"
+                to="/dashboard/payments"
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-x-circle text-red-500"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.cancelledPayments || 'Cancelled payments' }}</span>
+                </div>
+                <div class="text-sm font-medium">
+                  {{ newCancelledPaymentsCount }}
+                </div>
+              </router-link>
+
+              <!-- New Feedbacks -->
+              <router-link 
+                v-if="newFeedbacksCount > 0"
+                @click="() => { isNotifOpen = false }" 
+                to="/dashboard/support" 
+                class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#111827]"
+              >
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-chat-left-text text-[#7c3aed]"></i>
+                  <span>{{ texts[lang]?.adminDashboard?.notifications?.newFeedbacks || 'New feedback' }}</span>
+                </div>
+                <div class="text-sm font-medium">{{ newFeedbacksCount }}</div>
+              </router-link>
+
+              <!-- No Notifications Message -->
+              <div 
+                v-if="notificationCount === 0" 
+                class="px-4 py-6 text-center text-gray-500 dark:text-gray-400 text-sm"
+              >
+                <i class="bi bi-bell text-2xl mb-2 block opacity-50"></i>
+                <span>{{ texts[lang]?.adminDashboard?.notifications?.noNotifications || 'No notifications' }}</span>
               </div>
             </div>
           </div>
@@ -259,21 +427,17 @@
 
   </div>
 </template>
-
-
 <script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTestLang } from "@/langTest/useTestLang"
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, collection, getDocs, query, where, setDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../../firebase/firebase'
 
 export default {
   setup() {
-   
     const { lang, texts, switchLang } = useTestLang()
-
     const router = useRouter()
     const email = ref('')
     const password = ref('')
@@ -286,9 +450,280 @@ export default {
     const userPhoto = ref('')
     const isDark = ref(false)
     const isSidebarOpen = ref(false)
+    const isNotifOpen = ref(false)
+    const notifDropdown = ref(null)
+    const newClientsCount = ref(0)
+    const pendingTechniciansCount = ref(0)
+    const newCompaniesCount = ref(0)
+    const newCompleteOrdersCount = ref(0)
+    const newPaymentsCount = ref(0)
+    const newFeedbacksCount = ref(0)
+    const newCancelledOrdersCount = ref(0)
+    const newCancelledPaymentsCount = ref(0)
+
     const windowWidth = ref(window.innerWidth)
     const isLanguageSwitching = ref(false)
     const auth = getAuth()
+
+    // Computed notification count as sum of all categories
+    const notificationCount = computed(() => {
+      return newClientsCount.value +
+             pendingTechniciansCount.value +
+             newCompaniesCount.value +
+             newCompleteOrdersCount.value +
+             newCancelledOrdersCount.value +
+             newPaymentsCount.value +
+             newCancelledPaymentsCount.value +   
+             newFeedbacksCount.value
+    })
+
+    // Helper to get lastMarkedReadAt from Firebase
+    const getLastMarkedReadAt = async () => {
+      try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) return new Date(0); // Default to very old date
+        
+        const adminDoc = await getDoc(doc(db, 'admin', currentUser.uid));
+        if (adminDoc.exists()) {
+          const data = adminDoc.data();
+          if (data.lastMarkedReadAt) {
+            // Handle both Timestamp and string formats
+            if (data.lastMarkedReadAt.seconds) {
+              return new Date(data.lastMarkedReadAt.seconds * 1000);
+            } else if (data.lastMarkedReadAt) {
+              return new Date(data.lastMarkedReadAt);
+            }
+          }
+        }
+        
+        // If no record exists, create one with current time
+        const now = new Date();
+        await setLastMarkedReadAt(now);
+        return now;
+      } catch (error) {
+        console.error('Error getting lastMarkedReadAt from Firebase:', error);
+        // Fallback to localStorage
+        let ts = localStorage.getItem('lastMarkedReadAt');
+        if (!ts) {
+          const now = new Date();
+          localStorage.setItem('lastMarkedReadAt', now.toISOString());
+          ts = now.toISOString();
+        }
+        return new Date(ts);
+      }
+    };
+
+    // Helper to set lastMarkedReadAt in Firebase
+    const setLastMarkedReadAt = async (date) => {
+      try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          // Fallback to localStorage if no user
+          localStorage.setItem('lastMarkedReadAt', date.toISOString());
+          return;
+        }
+        
+        await setDoc(doc(db, 'admin', currentUser.uid), {
+          lastMarkedReadAt: date.toISOString()
+        }, { merge: true });
+        
+        // Also update localStorage as backup
+        localStorage.setItem('lastMarkedReadAt', date.toISOString());
+      } catch (error) {
+        console.error('Error setting lastMarkedReadAt in Firebase:', error);
+        // Fallback to localStorage
+        localStorage.setItem('lastMarkedReadAt', date.toISOString());
+      }
+    };
+
+    // Updated markAllAsRead function
+    const markAllAsRead = async () => {
+      try {
+        const now = new Date();
+        await setLastMarkedReadAt(now);
+        
+        // Reset all counts
+        newClientsCount.value = 0;
+        pendingTechniciansCount.value = 0;
+        newCompaniesCount.value = 0;
+        newCompleteOrdersCount.value = 0;
+        newCancelledOrdersCount.value = 0;
+        newPaymentsCount.value = 0;
+        newCancelledPaymentsCount.value = 0;
+        newFeedbacksCount.value = 0;
+        
+        isNotifOpen.value = false;
+        
+        console.log('All notifications marked as read at:', now);
+      } catch (error) {
+        console.error('Error marking all as read:', error);
+      }
+    };
+
+    // Add real-time listeners for notifications
+    const setupRealTimeListeners = () => {
+      // Listen for new clients
+      onSnapshot(collection(db, 'clients'), (snapshot) => {
+        fetchNotificationCounts(); // Refresh counts when clients change
+      });
+
+      // Listen for technicians
+      onSnapshot(query(collection(db, 'technicians'), where('status', '==', 'pending')), (snapshot) => {
+        fetchNotificationCounts();
+      });
+
+      // Listen for companies
+      onSnapshot(collection(db, 'companies'), (snapshot) => {
+        fetchNotificationCounts();
+      });
+
+      // Listen for orders
+      onSnapshot(collection(db, 'orders'), (snapshot) => {
+        fetchNotificationCounts();
+      });
+
+      // Listen for payments
+      onSnapshot(collection(db, 'payments'), (snapshot) => {
+        fetchNotificationCounts();
+      });
+
+      // Listen for feedbacks
+      onSnapshot(collection(db, 'feedbacks'), (snapshot) => {
+        fetchNotificationCounts();
+      });
+    };
+
+    // Updated fetchNotificationCounts to use Firebase timestamp
+    const fetchNotificationCounts = async () => {
+      try {
+        const lastMarkedReadAt = await getLastMarkedReadAt();
+        console.log('Fetching notifications after:', lastMarkedReadAt);
+
+        // New clients (createdAt may be string or Timestamp)
+        try {
+          const clientsSnap = await getDocs(collection(db, 'clients'));
+          let c = 0;
+          clientsSnap.forEach((d) => {
+            const data = d.data() || {};
+            let dt = null;
+            if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+            else if (data.createdAt) dt = new Date(data.createdAt);
+            if (dt && dt > lastMarkedReadAt) c++;
+          });
+          newClientsCount.value = c;
+        } catch (e) { 
+          console.error('Error fetching clients:', e);
+          newClientsCount.value = 0;
+        }
+
+        // Pending technicians (status pending)
+        try {
+          const pendingTechSnap = await getDocs(query(collection(db, 'technicians'), where('status', '==', 'pending')));
+          let pCount = 0;
+          pendingTechSnap.forEach((d) => {
+            const data = d.data() || {};
+            let dt = null;
+            if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+            else if (data.createdAt) dt = new Date(data.createdAt);
+            if (dt && dt > lastMarkedReadAt) pCount++;
+          });
+          pendingTechniciansCount.value = pCount;
+        } catch (e) { 
+          console.error('Error fetching technicians:', e);
+          pendingTechniciansCount.value = 0;
+        }
+
+        // New companies (createdAt after lastMarkedReadAt)
+        try {
+          const compsSnap = await getDocs(collection(db, 'companies'));
+          let cc = 0;
+          compsSnap.forEach((d) => {
+            const data = d.data() || {};
+            let dt = null;
+            if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+            else if (data.createdAt) dt = new Date(data.createdAt);
+            if (dt && dt > lastMarkedReadAt) cc++;
+          });
+          newCompaniesCount.value = cc;
+        } catch (e) { 
+          console.error('Error fetching companies:', e);
+          newCompaniesCount.value = 0;
+        }
+
+        // New completed orders (status completed and after lastMarkedReadAt)
+        try {
+          const ordersSnap = await getDocs(collection(db, 'orders'));
+          let oc = 0;
+          let cc = 0;
+          ordersSnap.forEach((d) => {
+            const data = d.data() || {};
+            if (data.status === 'completed') {
+              let dt = null;
+              if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+              else if (data.createdAt) dt = new Date(data.createdAt);
+              else if (data.date && data.date.seconds) dt = new Date(data.date.seconds * 1000);
+              if (dt && dt > lastMarkedReadAt) oc++;
+            }
+            if (data.status === 'cancelled') {
+              let dt = null;
+              if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+              else if (data.createdAt) dt = new Date(data.createdAt);
+              else if (data.date && data.date.seconds) dt = new Date(data.date.seconds * 1000);
+              if (dt && dt > lastMarkedReadAt) cc++;
+            }
+          });
+          newCompleteOrdersCount.value = oc;
+          newCancelledOrdersCount.value = cc;
+        } catch (e) { 
+          console.error('Error fetching orders:', e);
+          newCompleteOrdersCount.value = 0;
+          newCancelledOrdersCount.value = 0;
+        }
+
+        // New payments
+        try {
+          const paySnap = await getDocs(collection(db, 'payments'));
+          let pc = 0;
+          let cc = 0;
+          paySnap.forEach((d) => {
+            const data = d.data() || {};
+            let dt = null;
+            if (data.date && data.date.seconds) dt = new Date(data.date.seconds * 1000);
+            else if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+            else if (data.createdAt) dt = new Date(data.createdAt);
+
+            if (data.status === 'completed' && dt && dt > lastMarkedReadAt) pc++;
+            if (data.status === 'cancelled' && dt && dt > lastMarkedReadAt) cc++;
+          });
+          newPaymentsCount.value = pc;
+          newCancelledPaymentsCount.value = cc;
+        } catch (e) {
+          console.error('Error fetching payments:', e);
+          newPaymentsCount.value = 0;
+          newCancelledPaymentsCount.value = 0;
+        }
+
+        // New feedbacks (createdAt after lastMarkedReadAt)
+        try {
+          const fbSnap = await getDocs(collection(db, 'feedbacks'));
+          let fc = 0;
+          fbSnap.forEach((d) => {
+            const data = d.data() || {};
+            let dt = null;
+            if (data.createdAt && data.createdAt.seconds) dt = new Date(data.createdAt.seconds * 1000);
+            else if (data.createdAt) dt = new Date(data.createdAt);
+            if (dt && dt > lastMarkedReadAt) fc++;
+          });
+          newFeedbacksCount.value = fc;
+        } catch (e) { 
+          console.error('Error fetching feedbacks:', e);
+          newFeedbacksCount.value = 0;
+        }
+
+      } catch (e) {
+        console.error('fetchNotificationCounts failed', e);
+      }
+    };
 
     // 🟦 تحميل بيانات المستخدم
     onMounted(() => {
@@ -361,6 +796,17 @@ export default {
       // الثيم
       const savedTheme = localStorage.getItem('theme')
       applyTheme(savedTheme || "light")
+      
+      // Load initial notification counts
+      fetchNotificationCounts()
+      
+      // Setup real-time listeners
+      setupRealTimeListeners()
+      
+      // refresh counts periodically (backup)
+      setInterval(() => {
+        fetchNotificationCounts()
+      }, 30000)
     })
 
     onBeforeUnmount(() => {
@@ -375,6 +821,9 @@ export default {
     const handleClickOutside = (e) => {
       if (dropdown.value && !dropdown.value.contains(e.target)) {
         isUserMenuOpen.value = false
+      }
+      if (notifDropdown.value && !notifDropdown.value.contains(e.target)) {
+        isNotifOpen.value = false
       }
     }
 
@@ -427,41 +876,42 @@ export default {
       localStorage.setItem("theme", next)
     }
 
-    // 🌐 تغيير اللغة الجديدة
-    const toggleLanguage = () => {
-      isLanguageSwitching.value = true
+    // const toggleLanguage = () => {
+    //   isLanguageSwitching.value = true
 
-      const next = lang.value === "ar" ? "en" : "ar"
-      const isClockwise = next === "ar" // Clockwise for English to Arabic
+    //   const next = lang.value === "ar" ? "en" : "ar"
+    //   const isClockwise = next === "ar" // Clockwise for English to Arabic
 
-      // Add rotation class to icon
-      if (langIcon.value) {
-        langIcon.value.classList.add(isClockwise ? 'rotate-animate-clockwise' : 'rotate-animate-counterclockwise')
-      }
+    //   // Add rotation class to icon
+    //   if (langIcon.value) {
+    //     langIcon.value.classList.add(isClockwise ? 'rotate-animate-clockwise' : 'rotate-animate-counterclockwise')
+    //   }
 
-      switchLang(next)
+    //   switchLang(next)
 
-      document.documentElement.lang = next
-      document.documentElement.dir = next === "ar" ? "rtl" : "ltr"
+    //   document.documentElement.lang = next
+    //   document.documentElement.dir = next === "ar" ? "rtl" : "ltr"
 
-      localStorage.setItem("lang", next)
+    //   localStorage.setItem("lang", next)
 
-      // إنهاء الانيميشن بعد انتهاء الدوران
-      setTimeout(() => {
-        isLanguageSwitching.value = false
-        // Remove rotation class after animation
-        if (langIcon.value) {
-          langIcon.value.classList.remove('rotate-animate-clockwise', 'rotate-animate-counterclockwise')
-        }
-      }, 600) // Slightly longer than animation duration
-    }
+    //   // إنهاء الانيميشن بعد انتهاء الدوران
+    //   setTimeout(() => {
+    //     isLanguageSwitching.value = false
+    //     // Remove rotation class after animation
+    //     if (langIcon.value) {
+    //       langIcon.value.classList.remove('rotate-animate-clockwise', 'rotate-animate-counterclockwise')
+    //     }
+    //   }, 600) // Slightly longer than animation duration
+    // }
 
-    // ⛔ صورة فاسدة
     const handleImageError = (event) => {
       userPhoto.value = null
       localStorage.removeItem('adminPhoto')
       event.target.style.display = "none"
     }
+
+    // Notifications
+    const toggleNotifMenu = () => isNotifOpen.value = !isNotifOpen.value
 
     // Sidebar toggle functions
     const toggleSidebar = () => {
@@ -483,8 +933,8 @@ export default {
     return {
       lang,
       texts,
-      switchLang,
-      toggleLanguage,
+      // switchLang,
+      // toggleLanguage,
       email,
       password,
       handleSignIn,
@@ -506,54 +956,24 @@ export default {
       isSidebarOpen,
       toggleSidebar,
       closeSidebar,
+      // Notifications
+      isNotifOpen,
+      toggleNotifMenu,
+      notifDropdown,
+      newClientsCount,
+      pendingTechniciansCount,
+      newCompaniesCount,
+      newCompleteOrdersCount,
+      newPaymentsCount,
+      newFeedbacksCount,
+      fetchNotificationCounts,
       windowWidth,
       isLanguageSwitching,
+      markAllAsRead,
+      notificationCount,
+      newCancelledOrdersCount,
+      newCancelledPaymentsCount
     }
   }
 }
 </script>
-
-
-<style scoped>
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-.fade-slide-enter-from,
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-/* Language switch animation */
-.language-switch-button {
-  transition: transform 0.3s ease-in-out;
-}
-
-.rotate-animate-clockwise {
-  animation: rotate-clockwise 0.5s ease-in-out;
-}
-
-.rotate-animate-counterclockwise {
-  animation: rotate-counterclockwise 0.5s ease-in-out;
-}
-
-@keyframes rotate-clockwise {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes rotate-counterclockwise {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
-}
-</style>

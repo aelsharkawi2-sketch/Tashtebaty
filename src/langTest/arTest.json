@@ -147,7 +147,56 @@
   },
   "adminDashboard": {
     "sidebar": {
-      "switchToEnglish": "تغيير اللغة"
+      "switchToEnglish": "تغيير اللغة",
+      "title": "إدارة تشطيباتي",
+      "dashboard": "لوحة التحكم",
+      "users": "العملاء",
+      "services": "الخدمات",
+      "providers": "مقدمي الخدمات",
+      "orders": "الطلبات",
+      "payments": "المدفوعات",
+      "support": "الدعم",
+      "offers": "العروض",
+      "logout": "تسجيل الخروج",
+      "profileSettings": "إعدادات الملف الشخصي",
+      "switchAccount": "تبديل الحساب",
+      "lightMode": "الوضع الفاتح",
+      "darkMode": "الوضع المظلم",
+      "switchToArabic": "العربية",
+      "switchToEnglish": "English",
+     "notifications": "الإشعارات",
+      "markAllAsRead": "وضع علامة مقروءة على الكل"
+    },
+     "notifications": {
+      "newClients": "عملاء جدد",
+      "pendingTechnicians": "حسابات فنيين معلقة",
+      "pendingCompanies": "حسابات شركات معلقة",
+      "completedOrders": "طلبات مكتملة",
+      "cancelledOrders": "طلبات ملغاة",
+      "newPayments": "مدفوعات جديدة",
+      "cancelledPayments": "مدفوعات ملغاة",
+      "newFeedbacks": "تعليقات جديدة",
+      "noNotifications": "لا توجد إشعارات"
+    },
+    "adminProfile": {
+      "title": "إعدادات ملف المدير",
+      "loading": "جار تحميل الملف الشخصي...",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "saveChanges": "حفظ التغييرات",
+      "clickToChange": "انقر لتغيير الصورة",
+      "clickToAdd": "انقر لإضافة صورة",
+      "saving": "جار الحفظ...",
+      "success": "تم تحديث الملف الشخصي بنجاح!",
+      "error": "فشل في تحديث الملف الشخصي.",
+      "removeProfilePicture": "إزالة صورة الملف الشخصي",
+      "selectValidImage": "يرجى اختيار ملف صورة صالح.",
+      "noFileSelected": "لم يتم اختيار ملف.",
+      "imageSizeError": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت.",
+      "errorProcessingImage": "خطأ في معالجة الصورة. يرجى المحاولة مرة أخرى.",
+      "loginFirst": "يرجى تسجيل الدخول أولاً.",
+      "changesSaved": "تم حفظ التغييرات بنجاح!",
+      "saveError": "فشل في حفظ التغييرات. يرجى المحاولة مرة أخرى."
     }
   },
   "common": {
@@ -672,7 +721,20 @@
       "lightMode": "الوضع الفاتح",
       "darkMode": "الوضع المظلم",
       "switchToArabic": "العربية",
-      "switchToEnglish": "English"
+      "switchToEnglish": "English",
+        "notifications": "الإشعارات",
+      "markAllAsRead": "وضع الكل كمقروء"
+    },
+     "notifications": {
+      "newClients": "عملاء جدد",
+      "pendingTechnicians": "حسابات الفنيين المعلقة",
+      "pendingCompanies": "حسابات الشركات المعلقة",
+      "completedOrders": "الطلبات المكتملة",
+      "cancelledOrders": "الطلبات الملغاة",
+      "newPayments": "المدفوعات الجديدة",
+      "cancelledPayments": "المدفوعات الملغاة",
+      "newFeedbacks": "التعليقات الجديدة",
+      "noNotifications": "لا توجد إشعارات"
     },
     "dashboard": {
       "title": "نظرة عامة على لوحة التحكم",
@@ -873,6 +935,7 @@
       "loading": "جار تحميل الملف الشخصي...",
       "name": "الاسم",
       "email": "البريد الإلكتروني",
+       "language": "اللغة",
       "newPassword": "كلمة المرور الجديدة",
       "saveChanges": "حفظ التغييرات",
       "clickToChange": "انقر لتغيير الصورة",

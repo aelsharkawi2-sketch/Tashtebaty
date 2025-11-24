@@ -136,6 +136,81 @@ const router = createRouter({
   },
 });
 
+// ================================
+// Navigation Guards
+// ================================
+router.beforeEach(async (to, from, next) => {
+  const user = auth.currentUser;
+  
+  if (!user) {
+    if (to.meta.requiresAuth || to.meta.requiresAdmin || to.meta.requiresTechnician || to.meta.requiresCompany) {
+      next('/login');
+    } else {
+      next();
+    }
+    return;
+  }
+
+  try {
+    const [adminDoc, techDoc, companyDoc, clientDoc] = await Promise.all([
+      getDoc(doc(db, "admin", user.uid)),
+      getDoc(doc(db, "technicians", user.uid)),
+      getDoc(doc(db, "companies", user.uid)),
+      getDoc(doc(db, "clients", user.uid))
+    ]);
+
+    // التحقق من حالة الحظر
+    if ((techDoc.exists() && techDoc.data().status === "banned") ||
+        (companyDoc.exists() && companyDoc.data().status === "banned") ||
+        (adminDoc.exists() && adminDoc.data().status === "banned") ||
+        (clientDoc.exists() && clientDoc.data().status === "banned")) {
+      await auth.signOut();
+      next('/login');
+      return;
+    }
+
+    // 🔥 تحقق إضافي: منع الـ client من الدخول لـ dashboard routes حتى لو حاول يدخل مباشر
+    if ((to.path.startsWith("/dashboard") || 
+         to.path.startsWith("/technician-dashboard") || 
+         to.path.startsWith("/company-dashboard")) && 
+        clientDoc.exists()) {
+      next('/'); // إرجاع العميل للصفحة الرئيسية
+      return;
+    }
+
+    // التحقق من الصلاحيات
+    if (to.meta.requiresAdmin && !adminDoc.exists()) {
+      next('/');
+      return;
+    }
+    if (to.meta.requiresTechnician && !techDoc.exists()) {
+      next('/');
+      return;
+    }
+    if (to.meta.requiresCompany && !companyDoc.exists()) {
+      next('/');
+      return;
+    }
+
+    next();
+  } catch (error) {
+    console.error("Navigation guard error:", error);
+    next('/');
+  }
+});
+
+
+
+// Save last dashboard route
+router.afterEach((to) => {
+  if (
+    to.path.startsWith("/dashboard") ||
+    to.path.startsWith("/technician-dashboard") ||
+    to.path.startsWith("/company-dashboard")
+  ) {
+    localStorage.setItem("lastDashboardRoute", to.fullPath);
+  }
+});
 // Save last dashboard route
 router.afterEach((to) => {
   if (
@@ -167,12 +242,12 @@ app.use(Toast, {
 app.mount("#app");
 
 // ================================
+// ================================
 // Firebase Auth Listener
 // ================================
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     localStorage.removeItem("lastDashboardRoute");
-
     if (
       router.currentRoute.value.meta.requiresAdmin ||
       router.currentRoute.value.meta.requiresTechnician ||
@@ -184,38 +259,77 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
-    const [adminDoc, techDoc, companyDoc] = await Promise.all([
+    const [adminDoc, techDoc, companyDoc, clientDoc] = await Promise.all([
       getDoc(doc(db, "admin", user.uid)),
       getDoc(doc(db, "technicians", user.uid)),
       getDoc(doc(db, "companies", user.uid)),
+      getDoc(doc(db, "clients", user.uid))
     ]);
 
     const currentPath = router.currentRoute.value.path;
     let lastRoute = localStorage.getItem("lastDashboardRoute");
 
+    // التحقق من حالة الحظر أولاً
+    if ((techDoc.exists() && techDoc.data().status === "banned") ||
+        (companyDoc.exists() && companyDoc.data().status === "banned") ||
+        (adminDoc.exists() && adminDoc.data().status === "banned") ||
+        (clientDoc.exists() && clientDoc.data().status === "banned")) {
+      await auth.signOut();
+      router.push("/login");
+      return;
+    }
+
+    // 🔥 التوجيه بناءً على نوع المستخدم - مع منع الـ client من الدخول للـ dashboards
     if (techDoc.exists()) {
+      // technician
       if (!lastRoute || !lastRoute.startsWith("/technician-dashboard")) {
-        localStorage.setItem("lastDashboardRoute", "/technician-dashboard");
         lastRoute = "/technician-dashboard";
         localStorage.setItem("lastDashboardRoute", lastRoute);
       }
-      if (["/", "/login", "/signup"].includes(currentPath)) router.replace(lastRoute);
+      if (["/", "/login", "/signup"].includes(currentPath) || 
+          currentPath.startsWith("/dashboard") || 
+          currentPath.startsWith("/company-dashboard")) {
+        router.replace(lastRoute);
+      }
     } else if (adminDoc.exists()) {
+      // admin
       if (!lastRoute || !lastRoute.startsWith("/dashboard")) {
-        localStorage.setItem("lastDashboardRoute", "/dashboard");
         lastRoute = "/dashboard";
         localStorage.setItem("lastDashboardRoute", lastRoute);
       }
-      if (["/", "/login", "/signup"].includes(currentPath)) router.replace(lastRoute);
+      if (["/", "/login", "/signup"].includes(currentPath) ||
+          currentPath.startsWith("/technician-dashboard") ||
+          currentPath.startsWith("/company-dashboard")) {
+        router.replace(lastRoute);
+      }
     } else if (companyDoc.exists()) {
+      // company
       if (!lastRoute || !lastRoute.startsWith("/company-dashboard")) {
-        localStorage.setItem("lastDashboardRoute", "/company-dashboard");
         lastRoute = "/company-dashboard";
         localStorage.setItem("lastDashboardRoute", lastRoute);
       }
-      if (["/", "/login", "/signup"].includes(currentPath)) router.replace(lastRoute);
+      if (["/", "/login", "/signup"].includes(currentPath) ||
+          currentPath.startsWith("/dashboard") ||
+          currentPath.startsWith("/technician-dashboard")) {
+        router.replace(lastRoute);
+      }
+    } else if (clientDoc.exists()) {
+      // 🔥 العميل العادي - امنعه من الدخول لأي dashboard
+      if (currentPath.startsWith("/dashboard") || 
+          currentPath.startsWith("/technician-dashboard") || 
+          currentPath.startsWith("/company-dashboard")) {
+        router.replace("/"); // إرجعه للصفحة الرئيسية
+      }
+      // احفظ آخر route للعميل (ولكن ليس dashboard)
+      if (!currentPath.startsWith("/dashboard") && 
+          !currentPath.startsWith("/technician-dashboard") && 
+          !currentPath.startsWith("/company-dashboard")) {
+        localStorage.setItem("lastClientRoute", currentPath);
+      }
     } else {
-      if (["/login", "/signup"].includes(currentPath)) router.replace("/");
+      // إذا لم يكن المستخدم موجود في أي مجموعة
+      await auth.signOut();
+      router.push("/login");
     }
   } catch (error) {
     console.error("Error restoring dashboard route:", error);
