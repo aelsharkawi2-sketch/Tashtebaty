@@ -27,7 +27,7 @@
       <!-- Gallery Images -->
       <div
         v-for="(img, index) in images"
-        :key="index"
+        :key="img.id || index"
         class="relative rounded-2xl overflow-hidden bg-white shadow-lg"
       >
         <img
@@ -86,7 +86,11 @@ const triggerUpload = () => {
 const handleUpload = async (e) => {
   const files = Array.from(e.target.files);
   if (!files.length) return;
-  if (!technicianId.value) return;
+  if (!technicianId.value) {
+    popupMessage.value = "User not loaded. Please refresh or login again.";
+    showPopup.value = true;
+    return;
+  }
 
   const remainingSlots = 15 - images.value.length;
   const uploadList = files.slice(0, remainingSlots);
@@ -110,14 +114,49 @@ const confirmDelete = (id) => {
   showPopup.value = true;
 };
 
+/**
+ * Important behavior:
+ * - AlertPopup currently emits no value (emit('close')).
+ * - handlePopupClose accepts the emitted value (may be undefined).
+ * - If deleteTarget is set and confirmed is true OR undefined, we treat that as confirmation.
+ * - For other uses of the popup (notifications), we just close it.
+ */
 const handlePopupClose = async (confirmed) => {
-  // When AlertPopup closes
-  if (deleteTarget.value && confirmed === true) {
-    await deleteDoc(doc(db, "technicians", technicianId.value, "gallery", deleteTarget.value));
-    deleteTarget.value = null;
-    popupMessage.value = "Image deleted successfully!";
-    await loadGallery();
+  // If we have a pending delete operation
+  if (deleteTarget.value) {
+    // Treat 'true' OR undefined (popup emitted nothing) as confirmation
+    const isConfirmed = confirmed === true || typeof confirmed === "undefined";
+
+    if (isConfirmed) {
+      if (!technicianId.value) {
+        popupMessage.value = "Unable to delete: user not loaded.";
+        showPopup.value = true;
+        deleteTarget.value = null;
+        return;
+      }
+      try {
+        await deleteDoc(doc(db, "technicians", technicianId.value, "gallery", deleteTarget.value));
+        deleteTarget.value = null;
+        popupMessage.value = "Image deleted successfully!";
+        // reload gallery
+        await loadGallery();
+        // keep popup visible for success message
+        showPopup.value = true;
+      } catch (err) {
+        console.error("Delete gallery image error:", err);
+        popupMessage.value = "Failed to delete image. Try again.";
+        showPopup.value = true;
+        deleteTarget.value = null;
+      }
+    } else {
+      // user cancelled explicitly (if AlertPopup ever emits false)
+      deleteTarget.value = null;
+      showPopup.value = false;
+    }
+    return;
   }
+
+  // No delete pending — just close notification popups
   showPopup.value = false;
 };
 

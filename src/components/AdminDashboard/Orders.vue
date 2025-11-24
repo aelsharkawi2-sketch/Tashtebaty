@@ -302,7 +302,7 @@
             <!-- EDIT -->
             <div v-else-if="modalType === 'edit'" class="space-y-3">
               <div>
-                <label class="text-sm text-gray-600">
+                <label class="text-sm text-gray-600 dark:text-gray-100">
                   {{ texts[lang].adminDashboard.orders.customerLabel }}
                 </label>
                 <input v-model="selectedOrder.customer"
@@ -311,7 +311,7 @@
               </div>
 
               <div>
-                <label class="text-sm text-gray-600">
+                <label class="text-sm text-gray-600 dark:text-gray-100">
                   {{ texts[lang].adminDashboard.orders.serviceLabel }}
                 </label>
                 <input v-model="selectedOrder.service"
@@ -320,7 +320,7 @@
               </div>
 
               <div>
-                <label class="text-sm text-gray-600">
+                <label class="text-sm text-gray-600 dark:text-gray-100">
                   {{ texts[lang].adminDashboard.orders.providerLabel }}
                 </label>
                 <input v-model="selectedOrder.provider"
@@ -329,7 +329,7 @@
               </div>
 
               <div>
-                <label class="text-sm text-gray-600">
+                <label class="text-sm text-gray-600 dark:text-gray-100">
                   {{ texts[lang].adminDashboard.orders.amountLabel }}
                 </label>
                 <input v-model="selectedOrder.amount"
@@ -338,7 +338,7 @@
               </div>
 
               <div>
-                <label class="text-sm text-gray-600">
+                <label class="text-sm text-gray-600 dark:text-gray-100">
                   {{ texts[lang].adminDashboard.orders.statusLabel }}
                 </label>
                 <select v-model="selectedOrder.status"
@@ -393,16 +393,14 @@
 
 
 <script>
-import { ref, computed, onMounted } from "vue";
-import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from "../../firebase/firebase";
 
-// ⭐ Import new translation system
+import { ref, computed, onMounted } from "vue";
+import { collection, getDocs, doc, onSnapshot, updateDoc, deleteDoc, orderBy, query } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 import { useTestLang } from "@/langTest/useTestLang";
 
 export default {
   setup() {
-    // ⭐ initialize lang + texts
     const { lang, texts } = useTestLang();
 
     const orders = ref([]);
@@ -412,42 +410,42 @@ export default {
     const showModal = ref(false);
     const modalType = ref("");
     const selectedOrder = ref({});
-
-    // keep All as it is (no translation)
     const statusOptions = ['All', 'completed', 'unconfirmed', 'upcoming', 'declined', 'cancelled', 'new'];
-
     const loading = ref(true);
 
-    const fetchOrders = async () => {
-      loading.value = true;
-      const snapshot = await getDocs(collection(db, "orders"));
+   const fetchOrdersRealtime = () => {
+  loading.value = true;
+      const q = query(collection(db, "orders"), orderBy("appointmentDate", "desc"));
 
-      orders.value = snapshot.docs.map((docItem) => {
-        const data = docItem.data();
-        return {
-          id: docItem.id,
-          customer: data.clientName,
-          service: data.description,
-          provider: data.technicianName,
-          amount: data.price,
-          date: data.appointmentDate.toDate().toLocaleDateString(),
-          time: data.appointmentDate.toDate().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          status: data.status,
-        };
-      });
 
-      loading.value = false;
-    };
+  onSnapshot(q, (snapshot) => {
+    orders.value = snapshot.docs.map((docItem) => {
+      const data = docItem.data();
+      return {
+        id: docItem.id,
+        customer: data.clientName,
+        service: data.description,
+        provider: data.technicianName,
+        amount: data.price,
+        date: data.appointmentDate.toDate().toLocaleDateString(),
+        time: data.appointmentDate.toDate().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        status: data.status,
+        timestamp: data.appointmentDate.toDate().getTime(),
+      };
+    });
+    loading.value = false;
+  });
+};
 
-    onMounted(fetchOrders);
+onMounted(fetchOrdersRealtime);
 
     const filteredOrders = computed(() => {
       const searchTerm = searchQuery.value.toLowerCase().trim();
       
-      return orders.value.filter((order) => {
+      let filtered = orders.value.filter((order) => {
         let matchesSearch = true;
         
         if (searchTerm) {
@@ -467,6 +465,9 @@ export default {
 
         return matchesSearch && matchesStatus;
       });
+
+      
+      return filtered.sort((a, b) => b.timestamp - a.timestamp);
     });
 
     const toggleFilter = () => (showFilter.value = !showFilter.value);
@@ -517,10 +518,8 @@ export default {
     };
 
     return {
-      // ⭐ expose lang + texts for template
       lang,
       texts,
-
       orders,
       loading,
       filteredOrders,
@@ -540,4 +539,3 @@ export default {
   },
 };
 </script>
-

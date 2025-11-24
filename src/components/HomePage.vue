@@ -264,8 +264,12 @@
       </div>
     </section>
 
-    <section class="offers">
-      
+    <section class="offers relative">
+      <div
+        class="absolute top-7 right-18 cursor-pointer text-accent-color flex justify-end rtl:justify-end me-20 font-semibold text-xl rtl:ms-10 rtl:me-60"
+      >
+        <router-link to="/offers">{{ texts[lang].home.offers.seeMore }} ></router-link>
+      </div>
       <div v-if="loading" class="flex justify-center mt-10">
         <p class="text-lg">{{ texts[lang].home.offers.loading }}</p>
       </div>
@@ -273,11 +277,7 @@
       <div>
         <h2 class="text-center main-header">{{ texts[lang].home.offers.title }}</h2>
       </div>
-    <div
-        class="text-accent-color flex justify-end rtl:justify-end me-20 font-semibold text-xl rtl:ms-10 rtl:me-60"
-      >
-        <router-link to="/offers">{{ texts[lang].home.offers.seeMore }}</router-link>
-      </div>
+    
       <div v-if="loading" class="flex justify-center mt-10">
         <p class="text-lg">{{ texts[lang].home.offers.loading }}</p>
       </div>

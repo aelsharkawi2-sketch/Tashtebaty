@@ -70,7 +70,7 @@
 
         <div class="flex flex-row items-center gap-10">
           <button
-            class="mt-4 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition-all duration-500"
+            class="cursor-pointer mt-4 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition-all duration-500"
             :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
             @click="goToProfile"
           >
