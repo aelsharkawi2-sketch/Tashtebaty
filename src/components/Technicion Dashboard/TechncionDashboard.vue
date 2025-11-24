@@ -504,10 +504,26 @@ const completedCount = computed(() =>
 
 // Calculate total (90% of order price)
 const totalEarnings = computed(() => {
-  return orders.value
+  // نجمع بدقة أحسن
+  const total = orders.value
     .filter((o) => o.status === "completed")
-    .reduce((sum, o) => sum + (parseFloat(o.price) * 0.9 || 0), 0);
+    .reduce((sum, o) => {
+      const price = Number(o.price) || 0;
+      return sum + price * 0.9;
+    }, 0);
+
+  // نقرب الرقم لحد رقمين ونتفادى الكسور الغريبة
+  return Math.round(total * 100) / 100;
 });
+
+// ===== عرض منسق ready =====
+const formattedTotalEarnings = computed(() => {
+  return totalEarnings.value.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+});
+
 
 // 🔹 Earnings grouped by month (for chart) (90% of order price)
 const monthlyEarnings = computed(() => {
@@ -542,13 +558,13 @@ const earningsGrowth = computed(() => {
 // 🟩 Chart
 let chartInstance = null;
 watch(
-  [mainTab, monthlyEarnings],
+  [mainTab, monthlyEarnings,isDark],
   ([newTab], [_, oldMonthly]) => {
     if (newTab === "earnings") {
       nextTick(() => {
         const ctx = document.getElementById("earningsChart");
         if (!ctx) return;
-
+        const isDarkMode = !!isDark.value || document.documentElement.classList.contains("dark");
         const data = monthlyEarnings.value;
         const labels = [
           "Jan",
@@ -574,12 +590,14 @@ watch(
               {
                 label: "Earnings (EGP)",
                 data,
-                backgroundColor: "rgba(19, 59, 93, 0.2)",
-                borderColor: "#133B5D",
+                backgroundColor: isDarkMode
+                ? "rgba(255,255,255,0.15)" 
+                : "rgba(19, 59, 93, 0.2)",
+                borderColor: isDarkMode ? "#ffffff" : "#133B5D",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: "#1b5383",
+                pointBackgroundColor: isDarkMode ? "#ffffff" : "#1b5383",
                 pointRadius: 5,
               },
             ],
@@ -598,13 +616,14 @@ watch(
             scales: {
               y: {
                 beginAtZero: true,
-                grid: { color: "#e0e0e0" },
-                ticks: { color: "#133B5D" },
+                grid: { color: isDarkMode ? "#444" : "#e0e0e0" },
+                ticks: { color: isDarkMode ? "#ffffff" : "#133B5D" },
               },
               x: {
                 grid: { display: false },
-                ticks: { color: "#133B5D" },
+                ticks: { color: isDarkMode ? "#ffffff" : "#133B5D" },
               },
+
             },
           },
         });
@@ -1298,10 +1317,10 @@ watch(
 <div
   v-if="showPopup"
   @click.self="closePopup"
-  class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
+  class="fixed inset-0 bg-[#0000009c] bg-opacity-60 flex justify-center items-center z-50 p-4"
 >
   <div
-    class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative"
+    class="bg-white dark:bg-[#16222B] rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative"
   >
     <button
       @click="closePopup"
@@ -1309,7 +1328,7 @@ watch(
     >
       &times;
     </button>
-    <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">
+    <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">
       {{ selectedService ? texts[lang].technicianDashboard.popups.editServiceTitle : texts[lang].technicianDashboard.popups.createServiceTitle }}
     </h2>
     <div class="flex flex-col items-center mb-6">
@@ -1345,26 +1364,26 @@ watch(
     <div class="space-y-4">
       <div>
         <label
-          class="block text-left font-semibold text-gray-700 mb-1 text-sm"
+          class="block text-left font-semibold text-gray-700 dark:text-white mb-1 text-sm"
           >Service Title</label
         >
         <input
           v-model="serviceTitle"
           type="text"
           placeholder="Enter service name"
-          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D]"
+          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D] text-black dark:text-white"
         />
       </div>
       <div>
         <label
-          class="block text-left font-semibold text-gray-700 mb-1 text-sm"
+          class="block text-left font-semibold text-gray-700 dark:text-white mb-1 text-sm"
           >Service Price</label
         >
         <input
           v-model="servicePrice"
           type="text"
           placeholder="Enter price (e.g. 150 EGP)"
-          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D]"
+          class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-[#133B5D] text-black dark:text-white"
         />
       </div>
     </div>
