@@ -290,13 +290,13 @@
           </div>
 
           <!-- EDIT -->
-          <div v-else-if="modalType === 'edit'" class="space-y-3">
+          <div v-else-if="modalType === 'edit'" class="space-y-3 " >
 
             <div>
               <label class="text-sm">{{ texts[lang].adminDashboard.payments.customer }}</label>
               <input
                 v-model="selectedPayment.customer"
-                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800"
+                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
 
@@ -304,7 +304,7 @@
               <label class="text-sm">{{ texts[lang].adminDashboard.payments.orderId }}</label>
               <input
                 v-model="selectedPayment.orderId"
-                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800"
+                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
 
@@ -312,16 +312,24 @@
               <label class="text-sm">{{ texts[lang].adminDashboard.payments.amount }}</label>
               <input
                 v-model="selectedPayment.amount"
-                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800"
+                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
 
             <div>
               <label class="text-sm">{{ texts[lang].adminDashboard.payments.status }}</label>
-              <input
+              <select
                 v-model="selectedPayment.status"
-                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800"
-              />
+                class="w-full p-2 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100 text-sm"
+              >
+                <option
+                  v-for="option in statusOptions"
+                  :key="option"
+                  :value="option.toLowerCase()"
+                >
+                  {{ option === 'All' ? texts[lang].adminDashboard.payments.statuses.all : texts[lang].adminDashboard.payments.statuses[option.toLowerCase()] }}
+                </option>
+              </select>
             </div>
 
             <div class="flex justify-end pt-2">
@@ -373,6 +381,8 @@ import {
   deleteDoc,
   collection,
   onSnapshot,
+  query,
+  orderBy,
 } from 'firebase/firestore';
 
 import { useTestLang } from "@/langTest/useTestLang";
@@ -404,7 +414,7 @@ export default {
   created() {
     this.loading = true;
 
-    const ordersCol = collection(db, 'orders');
+    const ordersCol = query(collection(db, 'orders'), orderBy('appointmentDate', 'desc'));
 
     this.unsubscribeOrders = onSnapshot(
       ordersCol,
@@ -430,6 +440,7 @@ export default {
               : (o.time || ''),
 
             status: rawStatus.toString().toLowerCase(),
+            timestamp: o.appointmentDate && o.appointmentDate.toDate ? o.appointmentDate.toDate().getTime() : 0,
           };
         });
 
@@ -449,19 +460,21 @@ export default {
 
   computed: {
     filteredPayments() {
-      return this.payments.filter((payment) => {
-        const q = this.searchQuery.toLowerCase();
+      return this.payments
+        .filter((payment) => {
+          const q = this.searchQuery.toLowerCase();
 
-        const matchesSearch =
-          payment.customer.toLowerCase().includes(q) ||
-          payment.orderId.toLowerCase().includes(q) ||
-          payment.method.toLowerCase().includes(q);
+          const matchesSearch =
+            payment.customer.toLowerCase().includes(q) ||
+            payment.orderId.toLowerCase().includes(q) ||
+            payment.method.toLowerCase().includes(q);
 
-        const matchesStatus =
-          this.filterStatus === "All" || payment.status === this.filterStatus;
+          const matchesStatus =
+            this.filterStatus === "All" || payment.status === this.filterStatus;
 
-        return matchesSearch && matchesStatus;
-      });
+          return matchesSearch && matchesStatus;
+        })
+        .sort((a, b) => b.timestamp - a.timestamp);
     },
   },
 

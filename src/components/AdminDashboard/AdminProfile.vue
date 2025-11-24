@@ -2,62 +2,73 @@
   <div class="min-h-screen bg-gray-50 dark:bg-[#0f172a] p-6">
     <div class="max-w-2xl mx-auto bg-white dark:bg-[#1f2937] shadow-md rounded-2xl p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">{{ $t('adminDashboard.adminProfile.title') }}</h2>
+        <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">{{ texts.adminDashboard?.adminProfile?.title || 'Admin Profile' }}</h2>
+        
+        <!-- Language Switch -->
+        <button
+          ref="langButton"
+          @click="toggleLanguage"
+          class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 language-switch-button"
+          :title="texts[lang]?.adminDashboard?.sidebar?.switchToEnglish || 'Switch language'"
+        >
+          <i
+            ref="langIcon"
+            class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 dark:text-gray-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
+          ></i>
+          <span class="sr-only">Toggle language</span>
+        </button>
       </div>
-
+      
       <!-- Loading -->
-      <div v-if="loading" class="text-center py-8 text-gray-600 dark:text-gray-300">{{ $t('adminDashboard.adminProfile.loading') }}</div>
-
+      <div v-if="loading" class="text-center py-8 text-gray-600 dark:text-gray-300">{{ texts.adminDashboard?.adminProfile?.loading || 'Loading...' }}</div>
+      
       <!-- Content -->
       <div v-else>
         <!-- Profile Picture Section -->
-        <div class="flex flex-col items-center mb-6">
-          <div class="relative">
-            <div
-              @click="triggerFileInput"
-              class="w-24 h-24 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-100 dark:bg-gray-700 overflow-hidden cursor-pointer hover:opacity-80 transition"
-            >
-              <img
-                v-if="photoURL && photoURL !== 'null' && !photoURL.startsWith('undefined')"
-                :src="photoURL"
-                alt="Profile"
-                class="w-full h-full object-cover"
-                @error="handleImageError"
-              />
-              <i v-else class="fa-solid fa-user text-4xl text-gray-500"></i>
-            </div>
-            
-          <!-- Delete Image Button -->
-         <button
-  v-if="photoURL"
-  @click="deleteProfileImage"
-  class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors shadow-sm"
-  :title="$t('adminDashboard.adminProfile.removeProfilePicture')"
->
-  <i class="fa-solid fa-xmark text-[10px]"></i>
-</button>
-
+        <div class="flex flex-col items-center mb-6 relative">
+          <div
+            @click="triggerFileInput"
+            class="w-24 h-24 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-100 dark:bg-gray-700 overflow-hidden cursor-pointer hover:opacity-80 transition relative"
+          >
+            <img
+              v-if="photoURL && photoURL !== 'null' && !photoURL.startsWith('undefined')"
+              :src="photoURL"
+              alt="Profile"
+              class="w-full h-full object-cover"
+              @error="handleImageError"
+            />
+            <i v-else class="fa-solid fa-user text-4xl text-gray-500"></i>
           </div>
-
-          <!-- Upload Instructions -->
-          <p class="text-sm text-gray-500 dark:text-gray-300 mt-2">
-            {{ photoURL ? $t('adminDashboard.adminProfile.clickToChange') : $t('adminDashboard.adminProfile.clickToAdd') }}
-          </p>
-
-          <!-- Hidden Input for image -->
-          <input
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            @change="onFileChange"
-            class="hidden"
-          />
+          
+          <!-- Delete Image Button -->
+          <button
+            v-if="photoURL && photoURL !== 'null' && !photoURL.startsWith('undefined')"
+            @click="deleteProfileImage"
+            class="absolute top-20 right-1/2 transform translate-x-12 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors shadow-sm"
+            :title="texts.adminDashboard?.adminProfile?.removeProfilePicture || 'Remove profile picture'"
+          >
+            <i class="fa-solid fa-xmark text-[10px]"></i>
+          </button>
         </div>
+
+        <!-- Upload Instructions -->
+        <p class="text-sm text-gray-500 dark:text-gray-300 mt-2 text-center">
+          {{ photoURL ? (texts.adminDashboard?.adminProfile?.clickToChange || 'Click to change profile picture') : (texts.adminDashboard?.adminProfile?.clickToAdd || 'Click to add profile picture') }}
+        </p>
+   
+        <!-- Hidden Input for image -->
+        <input
+          ref="fileInput"
+          type="file"
+          accept="image/*"
+          @change="onFileChange"
+          class="hidden"
+        />
 
         <!-- Profile Info -->
         <div class="space-y-4">
           <div>
-            <label class="block text-gray-700 dark:text-gray-200 mb-1">{{ $t('adminDashboard.adminProfile.name') }}</label>
+            <label class="block text-gray-700 dark:text-gray-200 mb-1">{{ texts.adminDashboard?.adminProfile?.name || 'Name' }}</label>
             <input
               v-model="name"
               type="text"
@@ -66,7 +77,7 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 dark:text-gray-200 mb-1">{{ $t('adminDashboard.adminProfile.email') }}</label>
+            <label class="block text-gray-700 dark:text-gray-200 mb-1">{{ texts.adminDashboard?.adminProfile?.email || 'Email' }}</label>
             <input
               v-model="email"
               type="email"
@@ -78,9 +89,9 @@
           <button
             @click="updateProfile"
             :disabled="saving"
-            class="w-full bg-[#5984C6] text-white py-2 rounded-lg hover:bg-[#4a6ea8] transition"
+            class="w-full bg-[#5984C6] text-white py-2 rounded-lg hover:bg-[#4a6ea8] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ saving ? $t('adminDashboard.adminProfile.saving') : $t('adminDashboard.adminProfile.saveChanges') }}
+            {{ saving ? (texts.adminDashboard?.adminProfile?.saving || 'Saving...') : (texts.adminDashboard?.adminProfile?.saveChanges || 'Save Changes') }}
           </button>
         </div>
 
@@ -94,406 +105,445 @@
 </template>
 
 <script>
-
+import { ref, computed, onMounted } from "vue";
 import { auth, db } from "../../firebase/firebase";
 import { getDoc, doc, setDoc } from "firebase/firestore";
 import { updateProfile, reload } from "firebase/auth";
+import { useTestLang } from "@/langTest/useTestLang";
 
 export default {
-  data() {
-    return {
-      name: "",
-      email: "",
-      photoURL: "",
-      photoPublicId: "", // Add public ID tracking
-      file: null,
-      loading: true,
-      saving: false,
-      successMessage: "",
-      errorMessage: ""
+  name: "AdminProfile",
+  setup() {
+    const { lang, texts: allTexts, switchLang } = useTestLang();
+    const texts = computed(() => allTexts[lang.value] || {});
+    const langButton = ref(null);
+    const langIcon = ref(null);
+    const isLanguageSwitching = ref(false);
+
+    const name = ref("");
+    const email = ref("");
+    const photoURL = ref(null);
+    const photoPublicId = ref(null);
+    const file = ref(null);
+    const loading = ref(true);
+    const saving = ref(false);
+    const successMessage = ref("");
+    const errorMessage = ref("");
+    const fileInput = ref(null);
+
+    // Load user data
+    const loadUserData = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        loading.value = false;
+        return;
+      }
+
+      await reload(user);
+
+      email.value = user.email;
+      name.value = user.displayName || "Admin";
+
+      const docRef = doc(db, "admin", user.uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        name.value = data.name || name.value;
+
+        if (data.photoURL && data.photoURL !== "null" && !data.photoURL.startsWith("undefined")) {
+          photoURL.value = data.photoURL;
+        } else {
+          photoURL.value = null;
+        }
+
+        if (data.photoPublicId) {
+          photoPublicId.value = data.photoPublicId;
+        }
+      } else {
+        if (user.photoURL && user.photoURL !== "null" && !user.photoURL.startsWith("undefined")) {
+          photoURL.value = user.photoURL;
+        } else {
+          photoURL.value = null;
+        }
+      }
+      loading.value = false;
     };
-  },
 
-  async created() {
-    const user = auth.currentUser;
-    if (!user) {
-      this.loading = false;
-      return;
-    }
+    const triggerFileInput = () => {
+      if (fileInput.value) fileInput.value.click();
+    };
 
-    // ✅ Refresh the user data to get the latest photoURL from Firebase Auth
-    await reload(user);
+    const handleImageError = (event) => {
+      photoURL.value = null;
+      event.target.style.display = "none";
+    };
 
-    // 🔹 Get data from Firebase Auth
-    this.email = user.email;
-    this.name = user.displayName || "Admin";
-
-    // 🔹 Get additional data from Firestore
-    const docRef = doc(db, "admin", user.uid);
-    const snap = await getDoc(docRef);
-    if (snap.exists()) {
-      const data = snap.data();
-      this.name = data.name || this.name;
-      
-      // Check for valid photo URL from Firestore
-      if (data.photoURL && data.photoURL !== 'null' && !data.photoURL.startsWith('undefined')) {
-        this.photoURL = data.photoURL;
-      } else {
-        this.photoURL = null;
-      }
-      
-      if (data.photoPublicId) {
-        this.photoPublicId = data.photoPublicId;
-      }
-    } else {
-      // If no Firestore data, check Firebase Auth photoURL
-      if (user.photoURL && user.photoURL !== 'null' && !user.photoURL.startsWith('undefined')) {
-        this.photoURL = user.photoURL;
-      } else {
-        this.photoURL = null;
-      }
-    }
-
-    this.loading = false;
-  },
-
-  methods: {
-    applyTheme(theme) {
-      const root = document.documentElement;
-      if (theme === 'dark') {
-        root.setAttribute('data-theme', 'dark');
-        root.classList.add('dark');
-        this.isDark = true;
-      } else {
-        root.removeAttribute('data-theme');
-        root.classList.remove('dark');
-        this.isDark = false;
-      }
-    },
-    toggleDarkMode() {
-      const next = this.isDark ? 'light' : 'dark';
-      this.applyTheme(next);
-      try { localStorage.setItem('theme', next); } catch (e) {}
-    },
-    // Handle image load errors
-    handleImageError(event) {
-      // If image fails to load, set photoURL to null to show default icon
-      this.photoURL = null;
-      event.target.style.display = 'none';
-    },
-
-    // Clear all image caches and states
-    async clearImageCaches() {
-      // Clear browser cache for the image
-      if (this.photoURL) {
-        // Add timestamp to force cache invalidation
-        const timestamp = Date.now();
-        await updateProfile(auth.currentUser, {
-          photoURL: `null?t=${timestamp}`
-        });
-        
-        // Clear all storages
-        localStorage.removeItem("adminPhoto");
-        sessionStorage.removeItem("adminPhoto");
-        
-        // Clear blob URLs
-        if (this.photoURL.startsWith('blob:')) {
-          URL.revokeObjectURL(this.photoURL);
-        }
-        
-        // Force reload the image element
-        const img = document.querySelector('img[alt="Profile"]');
-        if (img) {
-          img.src = '';
-        }
-      }
-      
-      // Clear file input
-      if (this.$refs.fileInput) {
-        this.$refs.fileInput.value = '';
-      }
-      
-      this.photoURL = null;
-      this.file = null;
-    },
-    
-    // 🔹 When clicking the profile image
-    triggerFileInput() {
-      this.$refs.fileInput.click();
-    },
-
-    // 🔹 Handle image selection
-    onFileChange(e) {
-      const file = e.target.files[0];
-      if (!file) {
-        this.errorMessage = this.$t('adminDashboard.adminProfile.noFileSelected');
+    const onFileChange = (e) => {
+      const selectedFile = e.target.files[0];
+      if (!selectedFile) {
+        errorMessage.value =
+          texts.value.adminDashboard?.adminProfile?.noFileSelected ||
+          "No file selected";
         return;
       }
 
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        this.errorMessage = this.$t('adminDashboard.adminProfile.selectValidImage');
-        this.$refs.fileInput.value = '';
+      if (!selectedFile.type.startsWith("image/")) {
+        errorMessage.value =
+          texts.value.adminDashboard?.adminProfile?.selectValidImage ||
+          "Please select a valid image file";
+        if (fileInput.value) fileInput.value.value = "";
         return;
       }
 
-      // Validate file size (max 5MB)
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-      if (file.size > maxSize) {
-        this.errorMessage = this.$t('adminDashboard.adminProfile.imageSizeError');
-        this.$refs.fileInput.value = '';
+      const maxSize = 5 * 1024 * 1024;
+      if (selectedFile.size > maxSize) {
+        errorMessage.value =
+          texts.value.adminDashboard?.adminProfile?.imageSizeError ||
+          "Image size should be less than 5MB";
+        if (fileInput.value) fileInput.value.value = "";
         return;
       }
 
       try {
-        this.file = file;
-        // Show temporary preview
-        this.photoURL = URL.createObjectURL(file);
-        this.errorMessage = "";
-        this.successMessage = this.$t('adminDashboard.adminProfile.imageSelected');
+        file.value = selectedFile;
+        photoURL.value = URL.createObjectURL(selectedFile);
+        errorMessage.value = "";
+        successMessage.value =
+          texts.value.adminDashboard?.adminProfile?.imageSelected ||
+          "Image selected successfully";
       } catch (error) {
         console.error("Error handling file:", error);
-        this.errorMessage = "Error processing image. Please try again.";
-        this.file = null;
-        this.photoURL = null;
-        this.$refs.fileInput.value = '';
+        errorMessage.value = "Error processing image. Please try again.";
+        file.value = null;
+        photoURL.value = null;
+        if (fileInput.value) fileInput.value.value = "";
       }
-    },
+    };
 
-    // 🔹 Delete profile image
-    async deleteProfileImage() {
+    const clearImageCaches = async () => {
+      if (photoURL.value) {
+        const timestamp = Date.now();
+        await updateProfile(auth.currentUser, {
+          photoURL: `null?t=${timestamp}`,
+        });
+
+        localStorage.removeItem("adminPhoto");
+        sessionStorage.removeItem("adminPhoto");
+
+        if (photoURL.value.startsWith("blob:")) {
+          URL.revokeObjectURL(photoURL.value);
+        }
+
+        const img = document.querySelector('img[alt="Profile"]');
+        if (img) {
+          img.src = "";
+        }
+      }
+
+      if (fileInput.value) {
+        fileInput.value.value = "";
+      }
+
+      photoURL.value = null;
+      file.value = null;
+    };
+
+    const deleteProfileImage = async () => {
       try {
         const user = auth.currentUser;
         if (!user) {
-          this.errorMessage = this.$t('adminDashboard.adminProfile.loginFirst');
+          errorMessage.value =
+            texts.value.adminDashboard?.adminProfile?.loginFirst ||
+            "Please log in first";
           return;
         }
 
-        this.saving = true;
-        this.errorMessage = "";
-        this.successMessage = "";
+        saving.value = true;
+        errorMessage.value = "";
+        successMessage.value = "";
 
         const timestamp = Date.now();
 
-        // Delete from Cloudinary if public ID exists
-        if (this.photoPublicId) {
+        if (photoPublicId.value) {
           try {
-            const { deleteImage } = await import("../../composables/useImageUpload");
-            await deleteImage(this.photoPublicId);
+            const { deleteImage } = await import(
+              "../../composables/useImageUpload"
+            );
+            await deleteImage(photoPublicId.value);
           } catch (deleteError) {
             console.error("Error deleting from Cloudinary:", deleteError);
-            // Continue with local deletion even if Cloudinary delete fails
           }
         }
 
-        // Immediately clear local state and UI
-        this.photoURL = null;
-        this.photoPublicId = null;
-        this.file = null;
+        photoURL.value = null;
+        photoPublicId.value = null;
+        file.value = null;
 
-        // Immediately clear storages
-        localStorage.removeItem('adminPhoto');
-        sessionStorage.removeItem('adminPhoto');
+        localStorage.removeItem("adminPhoto");
+        sessionStorage.removeItem("adminPhoto");
 
-        // Force immediate UI update in all components
-        window.dispatchEvent(new CustomEvent('adminProfileChanged', {
-          detail: {
-            name: this.name,
-            photoURL: null,
-            timestamp,
-            forceUpdate: true
-          }
-        }));
+        window.dispatchEvent(
+          new CustomEvent("adminProfileChanged", {
+            detail: {
+              name: name.value,
+              photoURL: null,
+              timestamp,
+              forceUpdate: true,
+            },
+          })
+        );
 
-        // Clear any blob URLs and force image updates
-        document.querySelectorAll('img[alt="Profile"]').forEach(img => {
-          if (img.src.startsWith('blob:')) {
+        document.querySelectorAll('img[alt="Profile"]').forEach((img) => {
+          if (img.src.startsWith("blob:")) {
             URL.revokeObjectURL(img.src);
           }
-          img.src = '';
-          img.style.display = 'none'; // Force hide images
+          img.src = "";
+          img.style.display = "none";
         });
 
-        // Clear file input
-        if (this.$refs.fileInput) {
-          this.$refs.fileInput.value = '';
+        if (fileInput.value) {
+          fileInput.value.value = "";
         }
 
-        try {
-          // Update Firebase Auth first
-          await updateProfile(user, {
-            photoURL: null
-          });
+        await updateProfile(user, {
+          photoURL: null,
+        });
 
-          // Then update Firestore
-          const refDoc = doc(db, 'admin', user.uid);
-          await setDoc(refDoc, {
+        const refDoc = doc(db, "admin", user.uid);
+        await setDoc(
+          refDoc,
+          {
             photoURL: null,
             photoPublicId: null,
-            lastImageUpdate: timestamp
-          }, { merge: true });
+            lastImageUpdate: timestamp,
+          },
+          { merge: true }
+        );
 
-          // Force reload user data
-          await reload(user);
+        await reload(user);
 
-          // Dispatch another event after backend update
-          window.dispatchEvent(new CustomEvent('adminProfileChanged', {
+        window.dispatchEvent(
+          new CustomEvent("adminProfileChanged", {
             detail: {
-              name: this.name,
+              name: name.value,
               photoURL: null,
               timestamp: Date.now(),
-              forceUpdate: true
-            }
-          }));
+              forceUpdate: true,
+            },
+          })
+        );
 
-          this.successMessage = this.$t('adminDashboard.adminProfile.success');
-        } catch (error) {
-          throw error; // Re-throw to be caught by outer try-catch
-        }
+        successMessage.value =
+          texts.value.adminDashboard?.adminProfile?.success ||
+          "Profile picture removed successfully";
       } catch (error) {
-        console.error('Error removing profile picture:', error);
-        this.errorMessage = this.$t('adminDashboard.adminProfile.error');
+        console.error("Error removing profile picture:", error);
+        errorMessage.value =
+          texts.value.adminDashboard?.adminProfile?.error ||
+          "Error removing profile picture";
 
-        // Try to revert changes if backend operations fail
         try {
-          const storedPhoto = localStorage.getItem('adminPhoto');
+          const storedPhoto = localStorage.getItem("adminPhoto");
           if (storedPhoto) {
-            this.photoURL = storedPhoto;
-            window.dispatchEvent(new CustomEvent('adminProfileChanged', {
-              detail: {
-                name: this.name,
-                photoURL: storedPhoto,
-                timestamp: Date.now(),
-                forceUpdate: true
-              }
-            }));
+            photoURL.value = storedPhoto;
+            window.dispatchEvent(
+              new CustomEvent("adminProfileChanged", {
+                detail: {
+                  name: name.value,
+                  photoURL: storedPhoto,
+                  timestamp: Date.now(),
+                  forceUpdate: true,
+                },
+              })
+            );
           }
         } catch (e) {
-          console.error('Failed to revert changes:', e);
+          console.error("Failed to revert changes:", e);
         }
       } finally {
-        this.saving = false;
+        saving.value = false;
       }
-    },
+    };
 
-    // 🔹 Update profile info (name + photo)
-    async updateProfile() {
+    const toggleLanguage = () => {
+      isLanguageSwitching.value = true;
+
+      const next = lang.value === "ar" ? "en" : "ar";
+      const isClockwise = next === "ar"; // Clockwise for English to Arabic
+
+      // Add rotation class to icon
+      if (langIcon.value) {
+        langIcon.value.classList.add(
+          isClockwise ? "rotate-animate-clockwise" : "rotate-animate-counterclockwise"
+        );
+      }
+
+      switchLang(next);
+
+      document.documentElement.lang = next;
+      document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+
+      localStorage.setItem("lang", next);
+
+      // Remove rotation class after animation
+      setTimeout(() => {
+        isLanguageSwitching.value = false;
+        if (langIcon.value) {
+          langIcon.value.classList.remove(
+            "rotate-animate-clockwise",
+            "rotate-animate-counterclockwise"
+          );
+        }
+      }, 600);
+    };
+
+    const updateProfile = async () => {
       try {
         const user = auth.currentUser;
         if (!user) {
-          this.errorMessage = this.$t('adminDashboard.adminProfile.loginFirst');
+          errorMessage.value = texts.value.adminDashboard?.adminProfile?.loginFirst || 'Please log in first';
           return;
         }
 
-        this.saving = true;
-        this.errorMessage = "";
-        this.successMessage = "";
+        saving.value = true;
+        errorMessage.value = "";
+        successMessage.value = "";
 
-        let newPhotoURL = this.photoURL;
-        let newPhotoPublicId = this.photoPublicId;
+        let newPhotoURL = photoURL.value;
+        let newPhotoPublicId = photoPublicId.value;
 
-        // Upload new image if selected
-        if (this.file) {
+        if (file.value) {
           try {
-            console.log("File to upload:", this.file);
             const { uploadImageOnly } = await import("../../composables/useImageUpload");
-            console.log("Starting image upload...");
-            const uploadResult = await uploadImageOnly(this.file);
-            console.log("Upload result:", uploadResult);
+            const uploadResult = await uploadImageOnly(file.value);
 
             if (uploadResult && uploadResult.url) {
               newPhotoURL = uploadResult.url;
               newPhotoPublicId = uploadResult.publicId || null;
-              console.log("New photo URL:", newPhotoURL);
-              console.log("New photo public ID:", newPhotoPublicId);
             } else {
-              console.error("Upload result is invalid:", uploadResult);
               throw new Error("Invalid upload result");
             }
           } catch (uploadError) {
             console.error("Error uploading to Cloudinary:", uploadError);
-            console.error("Error details:", uploadError.response ? uploadError.response.data : uploadError.message);
-            this.errorMessage = `Upload failed: ${uploadError.message || 'Unknown error'}`;
-            this.saving = false;
+            errorMessage.value = `Upload failed: ${uploadError.message || 'Unknown error'}`;
+            saving.value = false;
             return;
           }
         }
 
-        // Update Firebase Auth
         await updateProfile(user, {
-          displayName: this.name,
+          displayName: name.value,
           photoURL: newPhotoURL,
         });
 
-        // Update Firestore with both URL and public ID
         const refDoc = doc(db, "admin", user.uid);
         await setDoc(refDoc, {
-          name: this.name,
+          name: name.value,
           photoURL: newPhotoURL,
           photoPublicId: newPhotoPublicId
         }, { merge: true });
 
-        // Update local storage
-        this.photoURL = newPhotoURL;
-        this.photoPublicId = newPhotoPublicId;
+        photoURL.value = newPhotoURL;
+        photoPublicId.value = newPhotoPublicId;
         localStorage.setItem("adminPhoto", newPhotoURL);
-        localStorage.setItem("adminName", this.name);
+        localStorage.setItem("adminName", name.value);
 
-        // Dispatch event for header update
         const event = new CustomEvent("adminProfileChanged", {
-          detail: { name: this.name, photoURL: newPhotoURL },
+          detail: { name: name.value, photoURL: newPhotoURL },
         });
         window.dispatchEvent(event);
 
-        try {
-          window.dispatchEvent(new Event("adminProfileChanged"));
-        } catch (e) {
-          // ignore
-        }
+        successMessage.value = texts.value.adminDashboard?.adminProfile?.changesSaved || 'Changes saved successfully';
 
-        this.successMessage = this.$t('adminDashboard.adminProfile.changesSaved');
-
-        // Clear file input after successful save
-        if (this.$refs.fileInput) {
-          this.$refs.fileInput.value = '';
+        if (fileInput.value) {
+          fileInput.value.value = '';
         }
-        this.file = null;
+        file.value = null;
 
       } catch (err) {
         console.error("Error updating profile:", err);
-        this.errorMessage = this.$t('adminDashboard.adminProfile.saveError');
+        errorMessage.value = texts.value.adminDashboard?.adminProfile?.saveError || 'Error saving changes';
       } finally {
-        this.saving = false;
-        // Clear messages after delay
+        saving.value = false;
         setTimeout(() => {
-          this.successMessage = "";
-          this.errorMessage = "";
+          successMessage.value = "";
+          errorMessage.value = "";
         }, 3000);
       }
-    },
-  },
-  mounted() {
-    try {
-      const saved = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const hasClass = document.documentElement.classList.contains('dark');
-      const target = saved ? saved : (prefersDark ? 'dark' : 'light');
-      // If DOM already matches, just sync isDark; else apply
-      if ((hasClass && target === 'dark') || (!hasClass && target === 'light')) {
-        this.isDark = target === 'dark';
-      } else {
-        this.applyTheme(target);
+    };
+
+    onMounted(() => {
+      loadUserData();
+
+      try {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const hasClass = document.documentElement.classList.contains('dark');
+        const target = saved ? saved : (prefersDark ? 'dark' : 'light');
+
+        if ((hasClass && target === 'dark') || (!hasClass && target === 'light')) {
+          // do nothing
+        } else {
+          if (target === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.documentElement.classList.remove('dark');
+          }
+        }
+      } catch (e) {
+        console.error("Error setting theme:", e);
       }
-    } catch (e) {
-      // fallback: derive from DOM
-      this.isDark = document.documentElement.classList.contains('dark');
-    }
+    });
+
+    return {
+      lang,
+      texts,
+      langButton,
+      langIcon,
+      isLanguageSwitching,
+      name,
+      email,
+      photoURL,
+      photoPublicId,
+      file,
+      loading,
+      saving,
+      successMessage,
+      errorMessage,
+      fileInput,
+      triggerFileInput,
+      handleImageError,
+      onFileChange,
+      clearImageCaches,
+      deleteProfileImage,
+      updateProfile,
+      toggleLanguage,
+    };
   }
 };
 </script>
 
-
 <style scoped>
+.rotate-animate-clockwise {
+  animation: rotateClockwise 0.5s ease-in-out;
+}
+
+.rotate-animate-counterclockwise {
+  animation: rotateCounterclockwise 0.5s ease-in-out;
+}
+
+@keyframes rotateClockwise {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes rotateCounterclockwise {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
 input[type="file"] {
   border: none;
 }

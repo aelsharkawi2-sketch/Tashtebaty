@@ -428,7 +428,8 @@
       "lightMode": "Light mode",
       "darkMode": "Dark mode",
       "switchToArabic": "العربية",
-      "switchToEnglish": "English"
+      "switchToEnglish": "English",
+      "markAllAsRead": "Mark all as read"
     },
     "dashboard": {
       "title": "Dashboard Overview",

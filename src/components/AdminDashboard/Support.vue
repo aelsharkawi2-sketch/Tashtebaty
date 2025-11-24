@@ -83,19 +83,28 @@
             <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">{{ ticket.subject }}</td>
 
             <td class="py-3 px-4" :class="lang === 'ar' ? 'text-right' : 'text-left'">
-              {{ ticket.createdAt?.toDate().toLocaleString() }}
-            </td>
+  <div class="flex flex-col">
+    <span class="font-medium">{{ formatDate(ticket.createdAt) }}</span>
+    <span class="text-xs text-gray-500 dark:text-gray-400">{{ formatTime(ticket.createdAt) }}</span>
+  </div>
+</td>
 
             <!-- Actions -->
             <td class="py-3 px-4 flex space-x-2">
-              <button
-                @click="viewMessage(ticket)"
-                class="p-2 rounded-lg text-green-500 hover:bg-green-100 transition"
-                :title="texts[lang].adminDashboard.support.viewMessage"
-              >
-                <i class="bi bi-chat-dots"></i>
+               <button @click="viewMessage(ticket)" class="p-2 rounded-lg text-green-500 hover:bg-green-100 transition" :title="texts[lang].adminDashboard.support.viewMessage" > 
+                <i class="bi bi-chat-dots"></i> 
               </button>
-            </td>
+             <!-- Admin Read Button -->
+  <button
+    @click="adminReadTicket(ticket.id)"
+    class="flex items-center gap-1 p-2 rounded-lg text-blue-600 hover:bg-blue-100 transition"
+    :title="texts[lang].adminDashboard.support.adminReadTicket"
+  >
+    <i class="bi bi-check-circle"></i>
+    <span class="text-xs font-semibold">{{ texts[lang].adminDashboard.support.adminRead }}</span>
+  </button>
+</td>
+         
           </tr>
         </tbody>
 
@@ -125,20 +134,17 @@
             <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.support.subject }}:</span>
             <span class="font-medium">{{ ticket.subject }}</span>
           </div>
-          <div class="flex justify-between" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
-            <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.support.ticketDate }}:</span>
-            <span class="font-medium">{{ ticket.createdAt?.toDate().toLocaleString() }}</span>
-          </div>
+
+         <div class="flex justify-between" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
+  <span class="text-gray-600 dark:text-gray-400">{{ texts[lang].adminDashboard.support.ticketDate }}:</span>
+  <div class="flex flex-col">
+    <span class="font-medium">{{ formatDate(ticket.createdAt) }}</span>
+    <span class="text-xs text-gray-500 dark:text-gray-400">{{ formatTime(ticket.createdAt) }}</span>
+  </div>
+</div>
+
         </div>
 
-        <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-200 dark:border-gray-700" :class="lang === 'ar' ? 'flex-row-reverse' : ''">
-          <button
-            @click="viewMessage(ticket)"
-            class="p-2 text-green-500 hover:bg-green-100 rounded-lg"
-          >
-            <i class="bi bi-chat-dots"></i>
-          </button>
-        </div>
       </div>
     </div>
 
@@ -184,7 +190,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
 // استخدم اللغة الجديدة
@@ -234,7 +240,7 @@ const closeMessageModal = () => {
 const fetchTickets = async () => {
   loading.value = true;
   try {
-    const querySnapshot = await getDocs(collection(db, "feedbacks"));
+    const querySnapshot = await getDocs(query(collection(db, "feedbacks"), orderBy("createdAt", "desc")));
     tickets.value = querySnapshot.docs.map((doc) => {
       const data = doc.data();
 
@@ -252,6 +258,37 @@ const fetchTickets = async () => {
     console.error("Error fetching tickets:", error);
   } finally {
     loading.value = false;
+  }
+};
+const formatDate = (timestamp) => {
+  if (!timestamp) return "-";
+  const dateObj = timestamp.toDate();
+  return dateObj.toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const formatTime = (timestamp) => {
+  if (!timestamp) return "-";
+  const dateObj = timestamp.toDate();
+  return dateObj.toLocaleTimeString(lang === "ar" ? "ar-EG" : "en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+
+import { deleteDoc, doc } from "firebase/firestore";
+  
+const adminReadTicket = async (ticketId) => {
+  try {
+    await deleteDoc(doc(db, "feedbacks", ticketId));
+    // Remove from tickets list locally
+    tickets.value = tickets.value.filter(ticket => ticket.id !== ticketId);
+  } catch (error) {
+    console.error("Error deleting ticket: ", error);
   }
 };
 

@@ -120,11 +120,11 @@
         </div>
 
         <!-- Google Login -->
-        <button
-          @click="handleGoogleSignIn"
-          type="button"
-          class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
-        >
+       <button
+  @click="handleGoogleSignIn"
+  type="button"
+  class="w-full flex items-center justify-center border border-gray-300 dark:border-gray-600 rounded-lg py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:shadow-md transition-all duration-200 ease-in-out transform hover:scale-[1.02] active:scale-[0.98]"
+>
           <img
             src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1761736435/search_1_kmka0a.png"
             alt="Google"
@@ -155,23 +155,17 @@
 
 
 <script setup>
-import { useTestLang } from "@/langTest/useTestLang";
-const { lang, texts } = useTestLang();
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
-
 import { useI18n } from "vue-i18n";
 import { useToast } from "vue-toastification";
 
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+import { useTestLang } from "@/langTest/useTestLang";
+
+const { lang, texts } = useTestLang();
 const { t } = useI18n();
 const toast = useToast();
 const router = useRouter();
@@ -182,44 +176,41 @@ const showPassword = ref(false);
 const forgotEmail = ref("");
 const isSending = ref(false);
 
-// toast message function
 const showToastMessage = (message, type) => {
-  if (type === "success") {
-    toast.success(message);
-  } else {
-    toast.error(message);
-  }
+  if (type === "success") toast.success(message);
+  else toast.error(message);
 };
 
-// handle sign in
+// ----------------- SIGN IN -----------------
 const handleSignIn = async () => {
+  if (!email.value || !password.value) {
+    showToastMessage(t("loginPage.errors.enterCredentials"), "error");
+    return;
+  }
+
   try {
     const auth = getAuth();
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
-
-    const collections = [
-      { name: "admin", route: "/dashboard" },
-      { name: "clients", route: "/" },
-      { name: "technicians", route: "/technician-dashboard" },
-      { name: "companies", route: "/company-dashboard" },
-    ];
+    
+     const collections = [
+    { name: "admin", route: "/dashboard" },
+    { name: "clients", route: "/" }, 
+    { name: "technicians", route: "/technician-dashboard" },
+    { name: "companies", route: "/company-dashboard" },
+  ];
 
     let found = false;
-
     for (const c of collections) {
       const docRef = doc(db, c.name, user.uid);
       const userDoc = await getDoc(docRef);
-
       if (userDoc.exists()) {
         const userData = userDoc.data();
-
-        if (userData.status && userData.status === "banned") {
+        if (userData.status === "banned") {
           showToastMessage(t("loginPage.errors.banned"), "error");
           await auth.signOut();
           return;
         }
-
         found = true;
         router.push(c.route);
         return;
@@ -229,22 +220,20 @@ const handleSignIn = async () => {
     if (!found) {
       showToastMessage(t("loginPage.errors.notFoundDB"), "error");
       await auth.signOut();
-      return;
     }
+
   } catch (error) {
-    if (error.code === "auth/user-not-found") {
-      showToastMessage(t("loginPage.errors.notFoundEmail"), "error");
-    } else if (error.code === "auth/wrong-password") {
-      showToastMessage(t("loginPage.errors.wrongPassword"), "error");
-    } else {
-      showToastMessage(t("loginPage.errors.generic"), "error");
-    }
+    console.log("SignIn Error:", error.code, error.message);
+    if (error.code === "auth/user-not-found") showToastMessage(t("loginPage.errors.notFoundEmail"), "error");
+    else if (error.code === "auth/wrong-password") showToastMessage(t("loginPage.errors.wrongPassword"), "error");
+    else showToastMessage(t("loginPage.errors.generic"), "error");
   }
 };
 
-// handle forgot password
+// ----------------- FORGOT PASSWORD -----------------
 const handleForgotPasswordModal = async () => {
-  if (!forgotEmail.value.trim()) {
+  const userEmail = forgotEmail.value.trim();
+  if (!userEmail) {
     showToastMessage(t("loginPage.errors.reset.enterEmail"), "error");
     return;
   }
@@ -252,21 +241,20 @@ const handleForgotPasswordModal = async () => {
   try {
     isSending.value = true;
     const auth = getAuth();
-    await sendPasswordResetEmail(auth, forgotEmail.value);
+    await sendPasswordResetEmail(auth, userEmail);
     showToastMessage(t("loginPage.errors.reset.sent"), "success");
     forgotEmail.value = "";
   } catch (error) {
-    if (error.code === "auth/user-not-found") {
-      showToastMessage(t("loginPage.errors.reset.noAccount"), "error");
-    } else {
-      showToastMessage(t("loginPage.errors.reset.failed"), "error");
-    }
+    console.log("ForgotPassword Error:", error.code, error.message);
+    if (error.code === "auth/user-not-found") showToastMessage(t("loginPage.errors.reset.noAccount"), "error");
+    else if (error.code === "auth/invalid-api-key") showToastMessage("API Key غير صحيح! تحقق منه في Firebase Console", "error");
+    else showToastMessage(t("loginPage.errors.reset.failed"), "error");
   } finally {
     isSending.value = false;
   }
 };
 
-// handle Google sign in
+// ----------------- GOOGLE SIGN IN -----------------
 const handleGoogleSignIn = async () => {
   try {
     const auth = getAuth();
@@ -274,28 +262,24 @@ const handleGoogleSignIn = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const collections = [
-      { name: "admin", route: "/dashboard" },
-      { name: "clients", route: "/" },
-      { name: "technicians", route: "/technician-dashboard" },
-      { name: "companies", route: "/technician-dashboard" },
-    ];
+     const collections = [
+    { name: "admin", route: "/dashboard" },
+    { name: "clients", route: "/" }, 
+    { name: "technicians", route: "/technician-dashboard" },
+    { name: "companies", route: "/company-dashboard" },
+  ];
 
     let found = false;
-
     for (const c of collections) {
       const docRef = doc(db, c.name, user.uid);
       const userDoc = await getDoc(docRef);
-
       if (userDoc.exists()) {
         const userData = userDoc.data();
-
         if (userData.status === "banned") {
           showToastMessage(t("loginPage.errors.banned"), "error");
           await auth.signOut();
           return;
         }
-
         found = true;
         router.push(c.route);
         return;
@@ -305,14 +289,15 @@ const handleGoogleSignIn = async () => {
     if (!found) {
       showToastMessage(t("loginPage.errors.generic"), "error");
       await auth.signOut();
-     
     }
+
   } catch (error) {
+    console.log("GoogleSignIn Error:", error.code, error.message);
     showToastMessage(t("loginPage.errors.googleFailed"), "error");
   }
 };
-
 </script>
+
 
 <style scoped>
 

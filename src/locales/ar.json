@@ -426,7 +426,8 @@
       "lightMode": "الوضع الفاتح",
       "darkMode": "الوضع المظلم",
       "switchToArabic": "العربية",
-      "switchToEnglish": "English"
+      "switchToEnglish": "English",
+      "markAllAsRead": "وضع الكل كمقروء"
     },
     "dashboard": {
       "title": "نظرة عامة على لوحة التحكم",

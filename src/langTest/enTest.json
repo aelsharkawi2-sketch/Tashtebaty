@@ -135,11 +135,7 @@
       ]
     }
   },
-  "adminDashboard": {
-    "sidebar": {
-      "switchToEnglish": "Switch language"
-    }
-  },
+  
   "common": {
     "loading": "Loading...",
     "save": "Save",
@@ -664,8 +660,23 @@
       "lightMode": "Light mode",
       "darkMode": "Dark mode",
       "switchToArabic": "العربية",
-      "switchToEnglish": "English"
+      "switchToEnglish": "English",
+         "notifications": "Notifications",
+      "markAllAsRead": "Mark All as Read"
     },
+   
+     "notifications": {
+      "newClients": "New clients",
+      "pendingTechnicians": "Pending technician accounts",
+      "pendingCompanies": "Pending company accounts",
+      "completedOrders": "Completed orders",
+      "cancelledOrders": "Cancelled orders",
+      "newPayments": "New payments",
+      "cancelledPayments": "Cancelled payments",
+      "newFeedbacks": "New feedback",
+      "noNotifications": "No notifications"
+    },
+ 
     "dashboard": {
       "title": "Dashboard Overview",
       "subtitle": "Monitor your platform’s performance and key metrics",
@@ -949,6 +960,7 @@
       "loading": "Loading profile...",
       "name": "Name",
       "email": "Email",
+      "language": "Language",
       "newPassword": "New Password",
       "saveChanges": "Save Changes",
       "clickToChange": "Click to change picture",
