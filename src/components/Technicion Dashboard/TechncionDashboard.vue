@@ -504,10 +504,26 @@ const completedCount = computed(() =>
 
 // Calculate total (90% of order price)
 const totalEarnings = computed(() => {
-  return orders.value
+  // نجمع بدقة أحسن
+  const total = orders.value
     .filter((o) => o.status === "completed")
-    .reduce((sum, o) => sum + (parseFloat(o.price) * 0.9 || 0), 0);
+    .reduce((sum, o) => {
+      const price = Number(o.price) || 0;
+      return sum + price * 0.9;
+    }, 0);
+
+  // نقرب الرقم لحد رقمين ونتفادى الكسور الغريبة
+  return Math.round(total * 100) / 100;
 });
+
+// ===== عرض منسق ready =====
+const formattedTotalEarnings = computed(() => {
+  return totalEarnings.value.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+});
+
 
 // 🔹 Earnings grouped by month (for chart) (90% of order price)
 const monthlyEarnings = computed(() => {
@@ -542,13 +558,13 @@ const earningsGrowth = computed(() => {
 // 🟩 Chart
 let chartInstance = null;
 watch(
-  [mainTab, monthlyEarnings],
+  [mainTab, monthlyEarnings,isDark],
   ([newTab], [_, oldMonthly]) => {
     if (newTab === "earnings") {
       nextTick(() => {
         const ctx = document.getElementById("earningsChart");
         if (!ctx) return;
-
+        const isDarkMode = !!isDark.value || document.documentElement.classList.contains("dark");
         const data = monthlyEarnings.value;
         const labels = [
           "Jan",
@@ -574,12 +590,14 @@ watch(
               {
                 label: "Earnings (EGP)",
                 data,
-                backgroundColor: "rgba(19, 59, 93, 0.2)",
-                borderColor: "#133B5D",
+                backgroundColor: isDarkMode
+                ? "rgba(255,255,255,0.15)" 
+                : "rgba(19, 59, 93, 0.2)",
+                borderColor: isDarkMode ? "#ffffff" : "#133B5D",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: "#1b5383",
+                pointBackgroundColor: isDarkMode ? "#ffffff" : "#1b5383",
                 pointRadius: 5,
               },
             ],
@@ -598,13 +616,14 @@ watch(
             scales: {
               y: {
                 beginAtZero: true,
-                grid: { color: "#e0e0e0" },
-                ticks: { color: "#133B5D" },
+                grid: { color: isDarkMode ? "#444" : "#e0e0e0" },
+                ticks: { color: isDarkMode ? "#ffffff" : "#133B5D" },
               },
               x: {
                 grid: { display: false },
-                ticks: { color: "#133B5D" },
+                ticks: { color: isDarkMode ? "#ffffff" : "#133B5D" },
               },
+
             },
           },
         });
