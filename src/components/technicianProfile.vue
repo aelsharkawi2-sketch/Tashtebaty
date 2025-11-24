@@ -1507,7 +1507,7 @@ watch(selectedDayInfo, () => {
           <img
             :src="img.url"
             :alt="`Work photo ${index + 1}`"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-contain"
           />
         </div>
       </div>
