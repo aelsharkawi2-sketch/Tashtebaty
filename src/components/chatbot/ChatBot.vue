@@ -242,8 +242,8 @@ const sendMessage = async () => {
     clearSelectedImage();
 
     // 2. Prepare API request
-    const apiKey = "AIzaSyBpmTZfjWAe27eagNKzwlSOzezKdNKdeSs"; // API key is handled by the environment
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`;
+    // removed hardcoded api key; proxy to serverless route on Vercel
+    const apiUrl = '/api/generate';
 
     // Map our chat history to the API's expected format
     const apiMessages = messages.value.map(msg => {
