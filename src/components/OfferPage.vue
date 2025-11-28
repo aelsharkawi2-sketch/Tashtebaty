@@ -4,8 +4,10 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         
         <div
-          class="relative lg:col-span-2 w-full mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
+          v-if="!userId"
+          class="relative lg:col-span-3 w-full mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
         >
+            <img src="../images/offerbackground.png" class="absolute top-0 z-0" alt="">
           <div
             class="absolute top-4 right-4 rtl:right-auto rtl:left-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
           >
@@ -15,19 +17,20 @@
           <div
             class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border-2 border-white/30 inline-block"
           >
-            <div class="text-4xl md:text-5xl font-black mb-2">150 EGP</div>
+            <div class="text-4xl md:text-5xl font-black mb-2">50 EGP</div>
             <div class="text-2xl font-semibold">{{ texts[lang].offersPage.banner1.subtitle }}</div>
           </div>
-          <p class="mt-6 text-lg">{{ texts[lang].offersPage.banner1.text }}</p>
+          <p class="mt-6 text-lg z-50">{{ texts[lang].offersPage.banner1.text }}</p>
           <router-link
-            to="/signup"
-            class="mt-6 bg-white text-accent-color w-fit px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 rtl:space-x-reverse"
+            :to="{ path: '/signup', query: { fromGetStarted: 'true' } }"
+            class="z-50 mt-6 bg-white text-accent-color w-fit px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 rtl:space-x-reverse"
           >
-            <span>{{ texts[lang].offersPage.banner1.button }}</span>
+            <span class="z-50">{{ texts[lang].offersPage.banner1.button }}</span>
           </router-link>
         </div>
 
         <div
+          v-if="userId"
           class="bg-gradient-to-br w-full mx-auto from-purple-600 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:scale-105 transition duration-300"
         >
           <div class="flex flex-col items-center justify-between gap-6">
@@ -145,17 +148,17 @@
     </div>
 
     <!-- 🎉 FLOATING CELEBRATION CARD -->
-<transition name="slide-up">
-  <div
-    v-if="showCard"
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-(--surface) shadow-2xl rounded-2xl px-6 py-4 z-9999 flex items-center gap-3 border-l-4 border-green-500"
-  >
-    <span class="text-3xl">🎉</span>
-    <div class="text-gray-800 font-semibold text-lg dark:text-white">
-      {{ claimedMessage }}
-    </div>
-  </div>
-</transition>
+    <transition name="slide-up">
+      <div
+        v-if="showCard"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-(--surface) shadow-2xl rounded-2xl px-6 py-4 z-9999 flex items-center gap-3 border-l-4 border-green-500"
+      >
+        <span class="text-3xl">🎉</span>
+        <div class="text-gray-800 font-semibold text-lg dark:text-white">
+          {{ claimedMessage }}
+        </div>
+      </div>
+    </transition>
 
 <chat-bot/>
 

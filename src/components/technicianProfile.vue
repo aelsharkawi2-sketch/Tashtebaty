@@ -286,29 +286,43 @@ const offerTotals = computed(() => {
     return { basePrice, discountAmount: 0, finalPrice: basePrice };
   }
 
-  // robust parsing & normalization for discountValue
-  const rawVal = String(selectedOffer.value.discountValue ?? "").replace("%", "").trim();
-  let num = Number(rawVal);
+  const sel = selectedOffer.value;
+  let discountAmount = 0;
 
-  if (!Number.isFinite(num)) {
-    // fallback if it's not parseable
-    num = 0;
+  // ---- FLAT DISCOUNT (EGP) ----
+  if ((sel.discountType || "").toLowerCase() === "flat") {
+    const flat = Number(sel.discountValue) || 0;
+    // يخصم 50 EGP أو أي قيمة لكن مش أكتر من السعر الأساسي
+    discountAmount = Math.min(Math.max(flat, 0), basePrice);
   }
 
-  // If stored as fraction (e.g., 0.15) convert to percent (15)
-  let discountPercent = num;
-  if (Math.abs(discountPercent) <= 1 && discountPercent !== 0) {
-    discountPercent = discountPercent * 100;
+  // ---- PERCENTAGE DISCOUNT ----
+  else {
+    const rawVal = String(sel.discountValue ?? "").replace("%", "").trim();
+    let num = Number(rawVal);
+
+    if (!Number.isFinite(num)) {
+      // fallback لو المستخدم كتب نص غلط
+      const maybeFrac = Number(String(sel.discountValue).trim());
+      if (Number.isFinite(maybeFrac)) num = maybeFrac;
+      else num = 0;
+    }
+
+    // لو مكتوبة 0.2 يخليها 20%
+    let discountPercent = num;
+    if (Math.abs(discountPercent) <= 1 && discountPercent !== 0) {
+      discountPercent = discountPercent * 100;
+    }
+
+    // يمنع أخطاء الإدخال: 0 → 100
+    discountPercent = Math.min(Math.max(discountPercent, 0), 100);
+
+    // حساب نسبة الخصم
+    discountAmount = (basePrice * discountPercent) / 100;
+
+    // clamp
+    discountAmount = Math.min(Math.max(discountAmount, 0), basePrice);
   }
-
-  // clamp between 0 and 100
-  discountPercent = Math.min(Math.max(discountPercent, 0), 100);
-
-  // calculate percentage discount
-  let discountAmount = (basePrice * discountPercent) / 100;
-
-  // clamp discount amount
-  discountAmount = Math.min(Math.max(discountAmount, 0), basePrice);
 
   const finalPrice = Number((basePrice - discountAmount).toFixed(2));
 
@@ -318,6 +332,7 @@ const offerTotals = computed(() => {
     finalPrice,
   };
 });
+
 
 
 
@@ -1359,8 +1374,20 @@ watch(selectedDayInfo, () => {
                     class="coupon-bg"
                   />
                   <div class="coupon-overlay">
-                    <div class="coupon-top dark:text-white">COUPON</div>
-                    <div class="coupon-bottom dark:text-white">{{ formatOfferPercent(offer) }} off</div>
+                    <div class="coupon-top dark:text-white">
+                      {{ offer.overlayTop ?? (offer.title ? offer.title.toString().toUpperCase() : "COUPON") }}
+                    </div>
+
+                    <div class="coupon-bottom dark:text-white">
+                      {{
+                        offer.overlayBottom
+                          ?? (
+                              (offer.discountType || "").toLowerCase() === "flat"
+                                ? (offer.discountValue != null ? `${offer.discountValue} EGP` : "")
+                                : `${formatOfferPercent(offer)} off`
+                            )
+                      }}
+                    </div>
                   </div>
                 </div>
               </div>

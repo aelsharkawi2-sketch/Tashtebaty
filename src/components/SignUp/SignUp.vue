@@ -53,7 +53,7 @@
 <script>
 import { auth, db } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import Tabs from "./Tabs.vue";
 import ClientForm from "./ClientForm.vue";
 import TechnicianForm from "./TechnicianForm.vue";
@@ -96,6 +96,28 @@ export default {
       return messages[code] || "An unexpected error occurred. Please try again.";
     },
 
+
+    async giveWelcomeCouponToUser(uid) {
+  try {
+    const couponRef = doc(db, "clients", uid, "claimedOffers", "welcome50");
+    await setDoc(couponRef, {
+      title: "50 EGP off",
+      discountType: "flat",
+      discountValue: 50,
+      active: true,
+      targetType: "all",
+      used: false,
+      overlayTop: "50 EGP off",
+      overlayBottom: "first order",
+      createdAt: serverTimestamp(),
+    });
+    console.log("Welcome coupon granted for user", uid);
+  } catch (err) {
+    console.error("Failed to grant welcome coupon:", err);
+  }
+},
+
+
     // ---- CLIENT ----
     async submitClient(formData) {
       try {
@@ -137,6 +159,26 @@ export default {
 
         await setDoc(doc(db, "clients", user.uid), payload);
 
+        // ====== NEW: only give coupon if came from Get Started ======
+        const cameFromGetStarted = this.$route && this.$route.query && this.$route.query.fromGetStarted === "true";
+        if (cameFromGetStarted && typeof this.giveWelcomeCouponToUser === "function") {
+          try {
+            await this.giveWelcomeCouponToUser(user.uid);
+          } catch (err) {
+            console.error("Error granting welcome coupon:", err);
+          }
+        }
+
+        // remove the query param from URL so it won't trigger again
+        try {
+          const newQuery = { ...(this.$route.query || {}) };
+          if (newQuery.fromGetStarted) delete newQuery.fromGetStarted;
+          this.$router.replace({ path: this.$route.path, query: newQuery }).catch(() => {});
+        } catch (e) {
+          // ignore
+        }
+        // =========================================================
+
         this.showToast("Client registered successfully!", "success");
         setTimeout(() => this.$router.push("/"), 1500);
       } catch (err) {
@@ -147,6 +189,7 @@ export default {
         this.$refs.clientForm.setSubmitting(false);
       }
     },
+
     // ---- TECHNICIAN ----
     async submitTechnician(formData) {
       try {
@@ -273,6 +316,7 @@ export default {
         this.$refs.companyForm.setSubmitting(false);
       }
     },
+
   },
 };
 </script>
