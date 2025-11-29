@@ -324,6 +324,39 @@
         
     </section>
 
+    <section class="work-gallery py-16 ">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
+          {{ texts[lang].home.gallery.title }}
+        </h2>
+        <p class="text-(--text-muted) max-w-2xl mx-auto text-base">
+          {{ texts[lang].home.gallery.description }}
+        </p>
+      </div>
+
+      <div class="flex justify-center">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-11/12 md:w-4/5"
+        >
+          <div
+            v-for="(image, index) in works"
+            :key="index"
+            class="relative group overflow-hidden rounded-2xl cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
+          >
+            <img
+              :src="image.src"
+              :alt="image.alt"
+              class="w-full h-48 sm:h-56 md:h-64 lg:h-62 object-cover transform group-hover:scale-110 transition-transform duration-500"
+            />
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+            >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="feedback">
       <div class="relative w-[80%] mx-auto">
         <h2 class="main-header">{{ texts[lang].home.feedback.title }}</h2>
@@ -378,39 +411,6 @@
             class="w-3 h-3 rounded-full transition-colors"
             :class="currentSlide === index ? 'bg-accent-color' : 'bg-(--text-muted)'"
           ></button>
-        </div>
-      </div>
-    </section>
-
-    <section class="work-gallery py-16 bg-(--section)">
-      <div class="text-center mb-10">
-        <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
-          {{ texts[lang].home.gallery.title }}
-        </h2>
-        <p class="text-(--text-muted) max-w-2xl mx-auto text-base">
-          {{ texts[lang].home.gallery.description }}
-        </p>
-      </div>
-
-      <div class="flex justify-center">
-        <div
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-11/12 md:w-4/5"
-        >
-          <div
-            v-for="(image, index) in works"
-            :key="index"
-            class="relative group overflow-hidden rounded-2xl cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
-          >
-            <img
-              :src="image.src"
-              :alt="image.alt"
-              class="w-full h-48 sm:h-56 md:h-64 lg:h-62 object-cover transform group-hover:scale-110 transition-transform duration-500"
-            />
-            <div
-              class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-            >
-            </div>
-          </div>
         </div>
       </div>
     </section>
