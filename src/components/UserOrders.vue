@@ -586,10 +586,14 @@ const closeCancelPopup = () => {
 
 // 🟨 Status badge colors (unchanged)
 const statusColor = (status) => {
-  switch ((status || "").toLowerCase()) {
+  const st = normalizeStatus(status);
+  switch (st) {
     case "unconfirmed":
       return "bg-yellow-100 text-yellow-700";
     case "upcoming":
+    case "pending_payment":
+    case "pending":
+    case "paid":
       return "bg-green-100 text-green-700";
     case "completed":
       return "bg-blue-100 text-blue-700";
@@ -600,6 +604,7 @@ const statusColor = (status) => {
       return "bg-gray-100 text-gray-600";
   }
 };
+
 
 // Load orders
 onMounted(() => {
@@ -629,6 +634,11 @@ onMounted(() => {
 });
 
 // grouped BEFORE tabs (important)
+const normalizeStatus = (s) => {
+  if (!s) return "";
+  return String(s).trim().toLowerCase().replace(/\s+/g, "_");
+};
+
 const grouped = computed(() => {
   const buckets = {
     unconfirmed: [],
@@ -639,12 +649,21 @@ const grouped = computed(() => {
     other: [],
   };
   for (const o of orders.value) {
-    const st = (o.status || "").toLowerCase();
+    const raw = o.status || "";
+    const st = normalizeStatus(raw);
+
+    // اعتبر pending_payment كـ upcoming
+    if (st === "pending_payment" || st === "pending" || st === "paid") {
+      buckets.upcoming.push(o);
+      continue;
+    }
+
     if (st in buckets) buckets[st].push(o);
     else buckets.other.push(o);
   }
   return buckets;
 });
+
 
 // tabs control
 const activeTab = ref("all");
