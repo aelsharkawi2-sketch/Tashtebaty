@@ -14,9 +14,9 @@
       <div>
         <div class="flex flex-col items-center mb-6">
           <img
-            src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760784552/image__11_-removebg-preview_ev3uvd.png"
+            src="../../images/white logo.png"
             alt="Logo"
-            class="h-16 mb-3"
+            class="h-10 mb-3"
           />
           <h2 class="text-lg font-semibold tracking-wide">
             {{ texts[lang]?.adminDashboard?.sidebar?.title || 'Admin Dashboard' }}
