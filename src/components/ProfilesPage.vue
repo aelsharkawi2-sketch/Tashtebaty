@@ -287,7 +287,7 @@ export default {
             service: data.skill,
             location: extractCity(data.address),
             rating: data.ratingAverage || data.rating || 0,
-            bio: data.description || ("no bio"),
+            bio: data.bio || ("No bio available." ),
             profileImage: data.profileImage || "/images/engineer2.png",
             completedOrders: completedOrders,
             type: "technician", // add type to distinguish

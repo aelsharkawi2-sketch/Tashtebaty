@@ -1,6 +1,6 @@
 <template>
   <div class="pb-16">
-    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 mt-10">
+    <!-- <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 mt-10">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         
         <div
@@ -56,10 +56,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Offers Section -->
-    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-30">
       <div v-if="isLoading" class="text-center py-20">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-color mx-auto"></div>
         <p class="mt-3 text-(--text-muted)">{{ texts[lang].offersPage.grid.loading }}</p>
