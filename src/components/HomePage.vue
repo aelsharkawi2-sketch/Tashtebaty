@@ -29,8 +29,9 @@
       </div>
     </section>
 
+    <section class="services mt-16">
     <h2 class="text-center main-header">{{ texts[lang].home.services.title }}</h2>
-    <div class="flex justify-center mb-10 p-5 items-center mx-auto">
+    <div class="flex justify-center px-5 items-center mx-auto">
       <div class="grid grid-cols-1 md:gap-20 gap-8 md:grid-cols-4">
         <div
           class="card cursor-pointer bg-(--surface) image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
@@ -90,8 +91,72 @@
         </div>
       </div>
     </div>
+    </section>
 
-    <section id="how-it-works" class="relative isolate  py-8">
+     <section class="why choose us mt-16">
+      <div>
+        <h2 class="main-header">{{ texts[lang].home.whyUs.title }}</h2>
+      </div>
+      <div class="flex justify-center">
+        <div class="grid grid-cols-1 md:grid-cols-[40%_60%] w-[80%] gap-3 items-center">
+          <!-- Image Section -->
+          <div class="flex justify-center">
+            <img
+              src="../images/whyUs.png"
+              class="hidden md:block h-[480px] w-full object-contain"
+              alt="Technician at work"
+            />
+          </div>
+
+          <!-- Text List Section -->
+          <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
+              <div class="text-4xl shrink-0">
+                <img
+                  class="w-10"
+                  src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760704859/image__9_-removebg-preview_rlbcrt.png"
+                  alt="icon"
+                />
+              </div>
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ texts[lang].home.whyUs.point1 }}
+              </p>
+            </li>
+
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
+              <i class="fa-solid fa-people-group text-accent-color text-3xl shrink-0"></i>
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ texts[lang].home.whyUs.point2 }}
+              </p>
+            </li>
+
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
+              <i class="fa-solid fa-address-card text-accent-color text-3xl shrink-0"></i>
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ texts[lang].home.whyUs.point3 }}
+              </p>
+            </li>
+
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
+              <i class="fa-solid fa-headphones text-accent-color text-3xl shrink-0"></i>
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ texts[lang].home.whyUs.point4 }}
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="relative isolate  mt-16 ">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <header class="text-center">
@@ -200,82 +265,13 @@
         </div>
       </div>
     </section>
-    
-    
 
-    <section class="why choose us">
-      <div>
-        <h2 class="main-header">{{ texts[lang].home.whyUs.title }}</h2>
-      </div>
-      <div class="flex justify-center">
-        <div class="grid grid-cols-1 md:grid-cols-[40%_60%] w-[80%] gap-3 items-center">
-          <!-- Image Section -->
-          <div class="flex justify-center">
-            <img
-              src="../images/whyUs.png"
-              class="hidden md:block h-[480px] w-full object-contain"
-              alt="Technician at work"
-            />
-          </div>
-
-          <!-- Text List Section -->
-          <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <li
-              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
-            >
-              <div class="text-4xl shrink-0">
-                <img
-                  class="w-10"
-                  src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760704859/image__9_-removebg-preview_rlbcrt.png"
-                  alt="icon"
-                />
-              </div>
-              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
-                {{ texts[lang].home.whyUs.point1 }}
-              </p>
-            </li>
-
-            <li
-              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
-            >
-              <i class="fa-solid fa-people-group text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
-                {{ texts[lang].home.whyUs.point2 }}
-              </p>
-            </li>
-
-            <li
-              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
-            >
-              <i class="fa-solid fa-address-card text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
-                {{ texts[lang].home.whyUs.point3 }}
-              </p>
-            </li>
-
-            <li
-              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
-            >
-              <i class="fa-solid fa-headphones text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
-                {{ texts[lang].home.whyUs.point4 }}
-              </p>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="offers relative">
+    <section class="offers relative mt-16">
       <div
         class="absolute top-7 right-18 cursor-pointer text-accent-color flex justify-end rtl:justify-end me-20 font-semibold text-xl rtl:ms-10 rtl:me-60"
       >
         <router-link to="/offers">{{ texts[lang].home.offers.seeMore }} ></router-link>
       </div>
-      <div v-if="loading" class="flex justify-center mt-10">
-        <p class="text-lg">{{ texts[lang].home.offers.loading }}</p>
-      </div>
-
       <div>
         <h2 class="text-center main-header">{{ texts[lang].home.offers.title }}</h2>
       </div>
@@ -284,7 +280,7 @@
         <p class="text-lg">{{ texts[lang].home.offers.loading }}</p>
       </div>
 
-      <div v-else-if="offers.length > 0" class="flex justify-center mt-5">
+      <div v-else-if="offers.length > 0" class="flex justify-center mt-10">
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div
             v-for="offer in offers"
@@ -307,11 +303,36 @@
               <p class="text-lg">{{ offer.description }}</p>
 
               <div class="card-actions pb-3">
-                <button
-                  class="cursor-pointer btn border-none mt-2 text-white px-3 bg-accent-color rounded-[10px] text-lg"
-                >
-                  {{ texts[lang].home.offers.claim }}
-                </button>
+                 <button
+                @click="claimOffer(offer)"
+                :disabled="
+                  isClaiming === offer.id ||
+                  claimedOfferIds.has(offer.id) ||
+                  isExpired(offer) ||
+                  !offer.active
+                "
+                class="cursor-pointer text-white font-semibold py-2 transition rounded-[10px] px-3 text-lg"
+                :class="[
+                  claimedOfferIds.has(offer.id) ? 'bg-green-600 cursor-not-allowed' : '',
+                  isExpired(offer) || !offer.active
+                    ? 'bg-gray-500 text-white cursor-not-allowed'
+                    : '',
+                  !claimedOfferIds.has(offer.id) && !isExpired(offer) && offer.active
+                    ? 'bg-accent-color hover:bg-(--accent)'
+                    : '',
+                  isClaiming === offer.id ? 'opacity-50 cursor-not-allowed' : '',
+                ]"
+              >
+                {{
+                  isClaiming === offer.id
+                    ? texts[lang].offersPage.grid.buttonClaiming
+                    : claimedOfferIds.has(offer.id)
+                    ? texts[lang].offersPage.grid.buttonClaimed
+                    : isExpired(offer) || !offer.active
+                    ? "Not Available"
+                    : texts[lang].offersPage.grid.buttonClaim
+                }}
+              </button>
               </div>
             </div>
           </div>
@@ -324,7 +345,8 @@
         
     </section>
 
-    <section class="work-gallery py-16 ">
+
+    <section class="work-gallery mt-16 bg-(--section) py-10">
       <div class="text-center mb-10">
         <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
           {{ texts[lang].home.gallery.title }}
@@ -357,7 +379,7 @@
       </div>
     </section>
 
-    <section class="feedback">
+     <section class="feedback mt-16">
       <div class="relative w-[80%] mx-auto">
         <h2 class="main-header">{{ texts[lang].home.feedback.title }}</h2>
 
@@ -466,7 +488,18 @@
         </div>
       </div>
     </section>
-
+ <!-- 🎉 FLOATING CELEBRATION CARD -->
+    <transition name="slide-up">
+      <div
+        v-if="showCard"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-(--surface) shadow-2xl rounded-2xl px-6 py-4 z-9999 flex items-center gap-3 border-l-4 border-green-500"
+      >
+        <span class="text-3xl">🎉</span>
+        <div class="text-gray-800 font-semibold text-lg dark:text-white">
+          {{ claimedMessage }}
+        </div>
+      </div>
+    </transition>
     <chat-bot/>
   </div>
 </template>
@@ -476,8 +509,11 @@ import { ref, onMounted, onBeforeUnmount, computed, watch, onUnmounted } from 'v
 import { useTestLang } from "@/langTest/useTestLang";
 const { lang, texts, switchLang } = useTestLang();
 import { db } from '@/firebase/firebase';
-import { collection, getDocs, query, limit } from 'firebase/firestore';
+import { collection, getDocs, query, limit,setDoc ,doc } from 'firebase/firestore';
 import ChatBot from './chatbot/ChatBot.vue';
+import confetti from "canvas-confetti";
+import { useRouter } from "vue-router";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 defineOptions({
   name: 'HomePage'
 });
@@ -486,6 +522,100 @@ const slides = ref([]);
 const works = ref([]);
 let interval = null;
 const offers = ref([]);
+const userId = ref(null);
+const claimedOfferIds = ref(new Set());
+const isClaiming = ref(null);
+
+// ⭐ Popup state
+const showCard = ref(false);
+const claimedMessage = ref("");
+const router = useRouter();
+const auth = getAuth();
+
+
+
+/** Fetch claimed offers for current user */
+const fetchClaimedOffers = async (uid) => {
+  if (!uid) {
+    claimedOfferIds.value = new Set();
+    return;
+  }
+  try {
+    const snapshot = await getDocs(collection(db, "clients", uid, "claimedOffers"));
+    const ids = new Set();
+    snapshot.forEach((doc) => ids.add(doc.id));
+    claimedOfferIds.value = ids;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+/** Check if offer expired */
+const isExpired = (offer) => {
+  return offer.expiresAt && new Date(offer.expiresAt) < new Date();
+};
+
+/** Claim an offer */
+const claimOffer = async (offer) => {
+  const user = auth.currentUser;
+  if (!user) return router.push("/login");
+
+  // // If expired
+  // if (isExpired(offer)) {
+  //   notify(texts[lang].offersPage.grid.messageExpired);
+  //   return;
+  // }
+
+  // // If not active
+  // if (!offer.active) {
+  //   notify(texts[lang].offersPage.grid.messageNotActive || "This offer is not active.");
+  //   return;
+  // }
+
+  // // If already claimed
+  // if (claimedOfferIds.value.has(offer.id)) {
+  //   notify(texts[lang].offersPage.grid.messageClaimed);
+  //   return;
+  // }
+
+  isClaiming.value = offer.id;
+
+  try {
+    let value = offer.discountValue;
+    if (offer.discountType === "percentage") {
+      value = Math.min(Math.max(Number(value), 0), 100);
+    }
+
+    await setDoc(doc(db, "clients", user.uid, "claimedOffers", offer.id), {
+      ...offer,
+      discountValue: value,
+      used: false,
+      claimedAt: new Date(),
+    });
+
+    claimedOfferIds.value.add(offer.id);
+
+    claimedMessage.value = `You claimed ${offer.title} successfully!`;
+showCard.value = true;
+
+// Auto hide
+setTimeout(() => {
+  showCard.value = false;
+}, 3000);
+
+    // 🎉 انيميشن الكونفيتي
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 }
+    });
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    isClaiming.value = null;
+  }
+};
 
 // -------------------- Robust Dark-mode detection --------------------
 const isDark = ref(false);
@@ -700,6 +830,15 @@ onMounted(() => {
 
   interval = setInterval(nextSlide, 5000);
   fetchOffers();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      userId.value = user.uid;
+      fetchClaimedOffers(user.uid);
+    } else {
+      userId.value = null;
+      claimedOfferIds.value = new Set();
+    }
+  });
 });
 
 // -------------------- Cleanup --------------------
