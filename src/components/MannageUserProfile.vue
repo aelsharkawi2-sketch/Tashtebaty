@@ -94,8 +94,11 @@
               <input
                 v-model="tempClient.email"
                 type="email"
-                :disabled="!isEditing"
-                class="w-full p-3 rounded-xl border border-(--border) focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
+                disabled
+                :class="[
+                  isEditing ? 'cursor-not-allowed' : ''
+                ]"
+                class=" w-full p-3 rounded-xl border border-(--border) focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
               />
             </div>
 
@@ -222,7 +225,7 @@
             </div>
           </div>
           <div
-            class="flex-1 h-56 sm:h-64 w-full rounded-2xl overflow-hidden border border-(--border) shadow-md relative"
+            class="flex-1 mt-20 h-56 sm:h-64 w-full rounded-2xl overflow-hidden border border-(--border) shadow-md relative"
           >
             <div
               v-if="isUpdatingMap"

@@ -69,8 +69,11 @@
           <input
             v-model="tempTechnician.email"
             type="email"
-            :disabled="!isEditing"
+            disabled
             :placeholder="texts[lang]?.technicianDashboard?.profile?.emailPlaceholder || 'Email address'"
+            :class="[
+                  isEditing ? 'cursor-not-allowed' : ''
+                ]"
             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 text-gray-500 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
@@ -146,13 +149,13 @@
       </div>
     </div>
 
+    <h3 class="text-xl ml-2 font-semibold text-[#133B5D] dark:text-white">
+      {{ texts[lang]?.technicianDashboard?.profile?.addressLabel || "Address" }}
+    </h3>
     <div
       class="bg-white dark:bg-[#16222B] p-6 rounded-2xl shadow-md border border-gray-200 flex flex-col md:flex-row gap-6"
     >
       <div class="flex-1 space-y-4">
-        <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white">
-          {{ texts[lang]?.technicianDashboard?.profile?.addressLabel || "Address" }}
-        </h3>
         <div>
             <label class="block text-gray-700 dark:text-white font-medium mb-1">
               {{ texts[lang]?.technicianDashboard?.profile?.streetLabel || "Street" }}
@@ -191,7 +194,7 @@
         </div>
       </div>
       <div
-        class="flex-1 h-64 w-full rounded-2xl overflow-hidden border border-gray-300 shadow-inner"
+        class="flex-1 h-64 w-full mt-3 rounded-2xl overflow-hidden border border-gray-300 shadow-inner"
       >
         <iframe
           :src="mapSrc"
