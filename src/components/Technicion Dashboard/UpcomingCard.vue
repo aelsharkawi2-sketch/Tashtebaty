@@ -73,7 +73,6 @@ const confirmCode = () => {
     enteredCode.value = "";
   } else {
     alertMessage.value =
-      texts[lang].technicianDashboard.messages?.incorrectCode ||
       "❌ Incorrect code. Please verify with the client.";
     showAlert.value = true;
   }
